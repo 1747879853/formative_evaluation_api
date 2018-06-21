@@ -1,6 +1,4 @@
 class ApplicationController < ActionController::API
-  protect_from_forgery
-
   # Include Knock within your application.
   include Knock::Authenticable
   
