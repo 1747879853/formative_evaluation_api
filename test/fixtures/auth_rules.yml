@@ -5,8 +5,13 @@
 # below each fixture, per the syntax in the comments below
 #
 one:
-  username: 'admin_test'
-  email: 'admin_test@welltek.com'
+  name: 'Admin/Index/index'
+  title: '后台首页'
+
+two:
+  name: 'Admin/Index/welcome'
+  title: '欢迎页面'
+
 #
 # two: {}
 # column: value

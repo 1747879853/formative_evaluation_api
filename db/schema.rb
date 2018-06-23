@@ -10,10 +10,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_20_083925) do
+ActiveRecord::Schema.define(version: 2018_06_23_014808) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "auth_groups", force: :cascade do |t|
+    t.string "title", null: false
+    t.integer "status", default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "auth_groups_rules", id: false, force: :cascade do |t|
+    t.bigint "auth_group_id", null: false
+    t.bigint "auth_rule_id", null: false
+  end
+
+  create_table "auth_rules", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "title", null: false
+    t.integer "status", default: 1, null: false
+    t.text "condition"
+    t.integer "parent_id", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_auth_rules_on_name"
+  end
+
+  create_table "auth_users_groups", id: false, force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "auth_group_id", null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "username", null: false

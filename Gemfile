@@ -50,3 +50,5 @@ gem 'active_model_serializers'
 gem 'rack-cors'
 gem 'knock'
 gem 'jwt'
+
+gem 'acts_as_tree'

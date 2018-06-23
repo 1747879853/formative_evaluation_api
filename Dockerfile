@@ -7,6 +7,8 @@ RUN apt-get update && apt-get install -y curl apt-transport-https && \
 RUN apt-get update && apt-get install -y \
   build-essential \
   libpq-dev \
+  postgresql-client-common \
+  postgresql-client-9.5 \
   nodejs \
   ruby \
   ruby-dev \
