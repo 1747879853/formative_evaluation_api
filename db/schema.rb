@@ -27,6 +27,11 @@ ActiveRecord::Schema.define(version: 2018_06_23_014808) do
     t.bigint "auth_rule_id", null: false
   end
 
+  create_table "auth_groups_users", id: false, force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "auth_group_id", null: false
+  end
+
   create_table "auth_rules", force: :cascade do |t|
     t.string "name", null: false
     t.string "title", null: false
@@ -36,11 +41,6 @@ ActiveRecord::Schema.define(version: 2018_06_23_014808) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_auth_rules_on_name"
-  end
-
-  create_table "auth_users_groups", id: false, force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "auth_group_id", null: false
   end
 
   create_table "users", force: :cascade do |t|

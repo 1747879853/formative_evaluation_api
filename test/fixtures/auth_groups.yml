@@ -9,3 +9,8 @@
 #
 # two: {}
 # column: value
+
+one:
+  title: '超级管理员'
+two:
+  title: '生产经理'

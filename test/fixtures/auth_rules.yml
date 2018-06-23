@@ -5,12 +5,26 @@
 # below each fixture, per the syntax in the comments below
 #
 one:
+  id: 1
   name: 'Admin/Index/index'
   title: '后台首页'
 
 two:
+  id: 2
   name: 'Admin/Index/welcome'
   title: '欢迎页面'
+  parent_id: 1
+
+three:
+  id: 3
+  name: 'Manufacturing/Index/index'
+  title: '生产首页'
+
+four:
+  id: 4
+  name: 'Manufacturing/Index/bom'
+  title: '物料清单'
+  parent_id: 3
 
 #
 # two: {}

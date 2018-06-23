@@ -7,6 +7,10 @@
 one:
   username: 'admin_test'
   email: 'admin_test@welltek.com'
+
+two:
+  username: 'manager'
+  email: 'manager@welltek.com'
 #
 # two: {}
 # column: value
