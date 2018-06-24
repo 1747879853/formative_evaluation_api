@@ -84,6 +84,9 @@ test:
 #
 production:
   <<: *default
-  database: app_production
-  username: app
+  database: wisdom_secretary_api
+  username: wisdomsecretary
   password: <%= ENV['APP_DATABASE_PASSWORD'] %>
+  host: 127.0.0.1
+  # pool: 100
+  # password: dongying0546***+-
