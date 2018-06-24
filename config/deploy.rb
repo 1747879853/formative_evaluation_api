@@ -2,7 +2,7 @@
 lock "~> 3.11.0"
 
 set :application, "wisdom_secretary_api"
-set :repo_url, 'ssh://passenger@127.0.0.1/home/passenger/wisdomSecretary.git'
+set :repo_url, 'ssh://passenger@127.0.0.1/home/passenger/wisdom_secretary_api.git'
 
 # Default branch is :master
 ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
