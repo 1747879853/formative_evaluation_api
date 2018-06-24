@@ -47,9 +47,4 @@ private
     params.require(:user).permit(:username, :email, :password, :password_confirmation)
   end
   
-  # Adding a method to check if current_user can update itself. 
-  # This uses our UserModel method.
-  def authorize
-    return_unauthorized unless current_user && current_user.can_modify_user?(params[:id])
-  end
 end

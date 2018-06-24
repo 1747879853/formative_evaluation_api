@@ -19,6 +19,11 @@ Rails.application.routes.draw do
       patch  '/user/:id'       => 'users#update'
       delete '/user/:id'       => 'users#destroy'
       # resources :users, only: [:index, :current, :create, :update, :destroy]
+
+      # Order actions
+      get    '/orders'          => 'orders#index'
+      # WorkOrder actions
+      # 
     end
   end
 
