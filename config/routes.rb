@@ -20,6 +20,9 @@ Rails.application.routes.draw do
       delete '/user/:id'       => 'users#destroy'
       # resources :users, only: [:index, :current, :create, :update, :destroy]
 
+      # Authority actions
+      get    '/authRuleList'   =>  'authorities#index'
+
       # Order actions
       get    '/orders'          => 'orders#index'
       # WorkOrder actions
