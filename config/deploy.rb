@@ -41,3 +41,5 @@ append :linked_dirs, "public/_attachment"
 
 # rvm setting
 set :rvm_ruby_version, '2.3.1'
+
+set :passenger_restart_with_touch, true
