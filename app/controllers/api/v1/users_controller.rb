@@ -1,12 +1,12 @@
 class Api::V1::UsersController < Api::V1::BaseController
   # Use Knock to make sure the current_user is authenticated before completing request.
-  before_action :authenticate_user,  only: [:index, :current, :update]
-  before_action :authorize_as_admin, only: [:destroy]
-  before_action :authorize,          only: [:update]
+  # before_action :authenticate_user_in_production_mode
+  # before_action :authorize_as_admin, only: [:destroy]
+  # before_action :authorize,          only: [:update]
   
   # Should work if the current_user is authenticated.
   def index
-    render json: {status: 200, msg: 'Logged-in'}
+    render json: User.all
   end
   
   # Call this method to check if the user is logged-in.
@@ -18,25 +18,43 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   # Method to create a new user using the safe params we setup.
   def create
-    user = User.new(user_params)
-    if user.save
-      render json: {status: 200, msg: 'User was created.'}
+    unauthorized and return unless Auth.check('Admin/User/create', current_user) || current_user.id == 1
+
+    begin
+      user = User.new(user_params)
+      if user.save!
+        render json: user
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500
     end
   end
 
   # Method to update a specific user. User will need to be authorized.
   def update
-    user = User.find(params[:id])
-    if user.update(user_params)
-      render json: { status: 200, msg: 'User details have been updated.' }
+    unauthorized and return unless Auth.check('Admin/User/update', current_user) || current_user.id.to_s == params[:id]
+
+    begin
+      user = User.find(params[:id])
+      if user.update(user_params)
+        render json: user
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500
     end
   end
 
   # Method to delete a user, this method is only for admin accounts.
   def destroy
-    user = User.find(params[:id])
-    if user.destroy
-      render json: { status: 200, msg: 'User has been deleted.' }
+    unauthorized and return unless Auth.check('Admin/User/destroy', current_user) || current_user.id == 1
+
+    begin
+      user = User.find(params[:id])
+      if user.destroy
+        render json: { }
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500      
     end
   end
   
