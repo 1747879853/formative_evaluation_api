@@ -43,3 +43,51 @@ supermessi.auth_groups.push group1
 
 jkropp.auth_groups.destroy_all
 jkropp.auth_groups.push group2
+
+
+order = Order.find_or_create_by(id: 1)
+order.no = '1271115636988060'
+order.title = 'xxxxxx'
+order.client_title = '力五'
+order.record_time = '2018-05-03'
+order.save!
+
+work_order = WorkOrder.find_or_create_by(id: 1)
+work_order.number = 6
+work_order.title = '中铁19局京雄铁路'
+work_order.template_type = '实体墩(9*3.6m-7.2*3m)墩身平板 模板焊接单（50:1）'
+work_order.maker = '王新'
+work_order.order_id = 1 
+work_order.status = 1
+work_order.record_time = Time.now
+work_order.save!
+
+material = Material.find_or_create_by(id: 1)
+material.number = 8
+material.graph_no = '图号DS-936-01,图号DS-936-02,图号DS-936-03,图号DS-936-05'
+material.name = '4.2m*2m平板'
+material.comment = '边框孔冲Φ22*30孔'
+material.work_order_id = 1
+material.save!
+
+bom1 = Bom.find_or_create_by(id: 1)
+bom1.number = 2
+bom1.total = 16
+bom1.name = '面板'
+bom1.spec = '6mm钢板'
+bom1.length = 1900
+bom1.width = 2000
+bom1.comment = ''
+bom1.material_id = 1
+bom1.save!
+
+bom2 = Bom.find_or_create_by(id: 2)
+bom2.number = 3
+bom2.total = 24
+bom2.name = '流水槽面板4'
+bom2.spec = '7mm钢板'
+bom2.length = 555
+bom2.width = 333
+bom2.comment = 'aaaaa'
+bom2.material_id = 1
+bom2.save!
