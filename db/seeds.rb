@@ -13,6 +13,42 @@ jkropp = User.find_or_create_by({username: 'jkropp', email: 'james@kropp.com'})
 jkropp.password = 'password'
 jkropp.save!
 
+
+workshop_user1 = User.find_or_create_by({username: 'xialiaozhuren1',email: '56700663@qq.com'})
+workshop_user1.password = 'password'
+workshop_user1.save!
+
+workshop_user2 = User.find_or_create_by({username: 'xialiaozhuren2',email: '56700666@qq.com'})
+workshop_user2.password = 'password'
+workshop_user2.save!
+
+workshop_user3 = User.find_or_create_by({username: 'zupinzhuren1',email: '56700661@qq.com'})
+workshop_user3.password = 'password'
+workshop_user3.save!
+
+workshop_user4 = User.find_or_create_by({username: 'zupinzhuren2',email: '56700662@qq.com'})
+workshop_user4.password = 'password'
+workshop_user4.save!
+
+workteam_user5 = User.find_or_create_by({username: 'xialiaobanzhuren1',email: '56700665@qq.com'})
+workteam_user5.password = 'password'
+workteam_user5.save!
+
+workteam_user6 = User.find_or_create_by({username: 'xialiaobanzhuren2',email: '56700667@qq.com'})
+workteam_user6.password = 'password'
+workteam_user6.save!
+
+workteam_user7 = User.find_or_create_by({username: 'zupinbanzhuren1',email: '567006658@qq.com'})
+workteam_user7.password = 'password'
+workteam_user7.save!
+
+workteam_user8 = User.find_or_create_by({username: 'zupinbanzhuren2',email: '567006678@qq.com'})
+workteam_user8.password = 'password'
+workteam_user8.save!
+
+
+
+
 rules1 = AuthRule.find_or_create_by({ name: 'Admin/Index/index', title: '后台首页'})
 rules1.save!
 rules2 = AuthRule.find_or_create_by({ name: 'Admin/Index/welcome', title: '欢迎页面' })
@@ -91,3 +127,59 @@ bom2.width = 333
 bom2.comment = 'aaaaa'
 bom2.material_id = 1
 bom2.save!
+
+
+
+
+
+ws1 = WorkShop.find_or_create_by(id: 1)
+ws1.name = '下料车间1'
+ws1.dept_type = '下料'
+ws1.user_id = 3
+ws1.save!
+
+ws3 = WorkShop.find_or_create_by(id: 2)
+ws3.name = '下料车间2'
+ws3.dept_type = '下料'
+ws3.user_id = 4
+ws3.save!
+
+ws2 = WorkShop.find_or_create_by(id: 3)
+ws2.name = '组拼车间1'
+ws2.dept_type = '组拼'
+ws2.user_id = 5
+ws2.save!
+
+ws4 = WorkShop.find_or_create_by(id: 4)
+ws4.name = '组拼车间2'
+ws4.dept_type = '组拼'
+ws4.user_id = 6
+ws4.save!
+
+
+
+wt1 = WorkTeam.find_or_create_by(id: 1)
+wt1.name = '下料班组1'
+wt1.work_shop_id = 1
+wt1.user_id = 7
+wt1.save!
+
+
+wt2 = WorkTeam.find_or_create_by(id: 2)
+wt2.name = '下料班组2'
+wt2.work_shop_id = 1
+wt2.user_id = 8
+wt2.save!
+
+wt3 = WorkTeam.find_or_create_by(id: 1)
+wt3.name = '组拼班组1'
+wt3.work_shop_id = 3
+wt3.user_id = 9
+wt3.save!
+
+
+wt4 = WorkTeam.find_or_create_by(id: 2)
+wt4.name = '组拼班组2'
+wt4.work_shop_id = 4
+wt4.user_id = 10
+wt4.save!
