@@ -29,6 +29,7 @@ Rails.application.routes.draw do
       # WorkOrder actions
       # Approval actions
       get '/approval_list'   =>'approval#approval_list'
+      post '/approval_create'   =>'approval#approval_create'
     end
   end
 
