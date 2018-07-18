@@ -6,4 +6,15 @@ class Api::V1::OrdersController < Api::V1::BaseController
 
     render json: {order: 100}
   end
+
+  def order_list
+  	 if not Auth.check('approval/approval_list', current_user)
+    	unauthorized 
+    	return
+    end
+  	order_all = Order.all
+  	render json: {
+  		orders: order_all
+  	}
+  end
 end

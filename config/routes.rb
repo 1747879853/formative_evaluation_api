@@ -25,10 +25,12 @@ Rails.application.routes.draw do
       post   '/authRuleList'   =>  'authorities#add'
 
       # Order actions
-      get    '/orders'          => 'orders#index'
+      get    '/orders'          => 'orders#order_list'
       # WorkOrder actions
       # Approval actions
       get '/approval_list'   =>'approval#approval_list'
+
+
     end
   end
 
