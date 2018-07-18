@@ -1,0 +1,3 @@
+class WorkShopTask < ApplicationRecord
+  
+end

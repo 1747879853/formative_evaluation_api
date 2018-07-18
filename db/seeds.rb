@@ -106,6 +106,16 @@ material.comment = '边框孔冲Φ22*30孔'
 material.work_order_id = 1
 material.save!
 
+
+material = Material.find_or_create_by(id: 2)
+material.number = 8
+material.graph_no = '图号DS-936-09,图号DS-936-08,图号DS-936-07,图号DS-936-09'
+material.name = '4.5m*20m平板'
+material.comment = '边框孔冲Φ22*80孔'
+material.work_order_id = 1
+material.save!
+
+
 bom1 = Bom.find_or_create_by(id: 1)
 bom1.number = 2
 bom1.total = 16
@@ -127,6 +137,31 @@ bom2.width = 333
 bom2.comment = 'aaaaa'
 bom2.material_id = 1
 bom2.save!
+
+
+
+bom3 = Bom.find_or_create_by(id: 3)
+bom3.number = 2
+bom3.total = 16
+bom3.name = '面板1'
+bom3.spec = '6mm钢板1'
+bom3.length = 1800
+bom3.width = 1900
+bom3.comment = ''
+bom3.material_id = 2
+bom3.save!
+
+bom4 = Bom.find_or_create_by(id: 24)
+bom4.number = 3
+bom4.total = 24
+bom4.name = '流水槽面板2'
+bom4.spec = '7mm钢板2'
+bom4.length = 666
+bom4.width = 777
+bom4.comment = 'aaaaa'
+bom4.material_id = 2
+bom4.save!
+
 
 
 
