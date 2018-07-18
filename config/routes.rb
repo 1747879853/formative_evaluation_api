@@ -25,10 +25,16 @@ Rails.application.routes.draw do
       post   '/authRuleList'   =>  'authorities#add'
 
       # Order actions
-      get    '/orders'          => 'orders#order_list'
+      get    '/orders'         => 'orders#order_list'
+      get    '/order_details'  => 'orders#order_details' 
+      get    '/xialiao'        => 'orders#xialiao' 
+      get    '/zupin'          => 'orders#zupin' 
+      get    '/work_order_details' => 'orders#work_order_details' 
+
+      post   '/work_shop_task' => 'orders#work_shop_task_add'
       # WorkOrder actions
       # Approval actions
-      get '/approval_list'   =>'approval#approval_list'
+      get '/approval_list'     =>'approval#approval_list'
 
 
     end
