@@ -10,10 +10,70 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_17_091850) do
+ActiveRecord::Schema.define(version: 2018_07_18_072616) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "approval20180718152612s", force: :cascade do |t|
+    t.string "field0"
+    t.text "field1"
+    t.string "field2"
+    t.string "field3"
+    t.datetime "field4"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval_detail20180718152612s", force: :cascade do |t|
+    t.string "field0"
+    t.string "field1"
+    t.integer "approval20180718152612_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval_detail_fields", force: :cascade do |t|
+    t.bigint "approval_id"
+    t.string "name"
+    t.string "en_name"
+    t.string "control"
+    t.string "comment"
+    t.string "info"
+    t.integer "sequence"
+    t.string "selectoptions"
+    t.string "dateformat"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["approval_id"], name: "index_approval_detail_fields_on_approval_id"
+  end
+
+  create_table "approval_fields", force: :cascade do |t|
+    t.bigint "approval_id"
+    t.string "name"
+    t.string "en_name"
+    t.string "control"
+    t.string "comment"
+    t.string "info"
+    t.integer "sequence"
+    t.string "selectoptions"
+    t.string "dateformat"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["approval_id"], name: "index_approval_fields_on_approval_id"
+  end
+
+  create_table "approvals", force: :cascade do |t|
+    t.string "name"
+    t.string "en_name_main"
+    t.string "en_name_detail"
+    t.string "comment"
+    t.datetime "created_time"
+    t.datetime "stoped_time"
+    t.integer "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "auth_groups", force: :cascade do |t|
     t.string "title", null: false
@@ -97,6 +157,29 @@ ActiveRecord::Schema.define(version: 2018_07_17_091850) do
     t.datetime "record_time"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "procedure_nodes", force: :cascade do |t|
+    t.bigint "procedure_id"
+    t.string "name"
+    t.integer "sequence"
+    t.string "owner_type"
+    t.bigint "owner_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["owner_type", "owner_id"], name: "index_procedure_nodes_on_owner_type_and_owner_id"
+    t.index ["procedure_id"], name: "index_procedure_nodes_on_procedure_id"
+  end
+
+  create_table "procedures", force: :cascade do |t|
+    t.bigint "approval_id"
+    t.string "comment"
+    t.datetime "created_time"
+    t.datetime "stoped_time"
+    t.integer "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["approval_id"], name: "index_procedures_on_approval_id"
   end
 
   create_table "users", force: :cascade do |t|

@@ -34,9 +34,14 @@ Rails.application.routes.draw do
       post   '/work_shop_task' => 'orders#work_shop_task_add'
       # WorkOrder actions
       # Approval actions
-      get '/approval_list'     =>'approval#approval_list'
+# <<<<<<< HEAD
+#       get '/approval_list'     =>'approval#approval_list'
 
 
+# =======
+      get '/approval_list'   =>'approval#approval_list'
+      post '/approval_create'   =>'approval#approval_create'
+# >>>>>>> 07207fadd2253151a0adf34e454045f619b79c14
     end
   end
 
