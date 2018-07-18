@@ -60,13 +60,7 @@ class Api::V1::ApprovalController < Api::V1::BaseController
     	return
     end
 
-  	#stop the old approval
-  	#if id==-1表示创建新申请，否则是修改旧的审批
-  	if params[:approval_id]!="-1"  
-  		app = Approval.find_by(id: params[:approval_id])
-  		app.status = 0 if app
 
-  	end
   	#always create a new approval whether click create a new or modify old approval
   	t = Time.now
   	ts = t.strftime('%Y%m%d%H%M%S')
@@ -135,6 +129,15 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 		# open model file and add some has_many etc
 
 		system("rails db:migrate")
+
+	  	#create success,then stop the old approval
+	  	#if id==-1表示创建新审批，否则是修改旧的审批
+	  	#new approval's create time === old approval's stop time
+	  	if params[:approval_id]!="-1"  
+	  		app = Approval.find_by(id: params[:approval_id])
+	  		app.status = 0 if app
+	  		app.stoped_time =t if app
+	  	end
 
 		render json:{msg: '保存成功',code: 1}
   	rescue Exception => e
