@@ -3,6 +3,7 @@ class User < ApplicationRecord
   has_many :auth_rules, through: :auth_groups
   has_many :work_shops
   has_many :work_teams
+  has_many :work_shop_tasks
 
   # Necessary to authenticate.
   has_secure_password

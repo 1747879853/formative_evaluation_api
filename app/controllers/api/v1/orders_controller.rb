@@ -94,7 +94,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
   			wst = WorkShopTask.new
   		  wst.work_shop_id = WorkShop.find_by_user_id(e).id
   		  wst.work_order_id = params[:work_order_id]
-  		  wst.user_id = e
+  		  wst.user_id = 1
   		  wst.record_time = Time.now
   		  if not wst.save
   		  	msg ="分派失败！"
@@ -105,6 +105,61 @@ class Api::V1::OrdersController < Api::V1::BaseController
     render json:{
     	msg: msg
     }
+  end
+
+
+  def work_shop_order_list 
+  	work_shop_order_list = WorkOrder.joins(work_shop_tasks: [work_shop: :user]).where("work_shops.user_id=?",params[:user_id]).select("work_orders.id as work_order_id,work_orders.title,work_orders.maker,work_orders.template_type,work_shops.name,work_shops.id as work_shop_id,users.username,users.id as user_id,work_orders.number ")
+
+  	# work_shop_order_list = WorkOrder.joins(work_shop_tasks: [work_shop: :user]).select("work_orders.id as work_order_id,work_orders.title,work_orders.maker,work_orders.template_type,work_shops.name,work_shops.id as work_shop_id,users.username,users.id as user_id,work_orders.number ")
+  	# data = []
+  	# work_shop_order_list.each do |e|
+  	# 	list = []
+  	# 	list << e
+  	# 	data<<list
+  	# end
+  
+  	render json: {
+  	 data: work_shop_order_list
+  	 }
+  end
+
+  def work_teams
+
+  	teams = WorkTeam.where(work_shop_id: params[:work_shop_id])
+  	render json:{
+  		teams: teams
+  	}
+
+  end
+
+
+  def work_team_task_add
+
+  	wo = WorkOrder.find(params[:work_order_id])
+  	materials_id = wo.materials.pluck(:id)
+  	p materials_id
+  	msg = "分派到班组成功！"
+  	ActiveRecord::Base.transaction do
+	  	materials_id.each do |e|
+	  		wtt = WorkTeamTask.new
+	  		wtt.work_team_id = params[:work_team_id]
+	  		wtt.material_id = e
+	  		wtt.user_id = params[:user_id]
+	  		wtt.record_time = Time.now
+	  		wtt.number = params[:number]
+	  		wtt.status = 0
+	  		if not wtt.save
+	  			msg = "分派到班组失败！"
+	  		end
+
+	  	end
+    end
+
+    render json: {
+    	msg: msg
+    }
+
   end
 
 end

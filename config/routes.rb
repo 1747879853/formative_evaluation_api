@@ -32,6 +32,10 @@ Rails.application.routes.draw do
       get    '/work_order_details' => 'orders#work_order_details' 
 
       post   '/work_shop_task' => 'orders#work_shop_task_add'
+      get    '/work_shop_order_list' => 'orders#work_shop_order_list'
+      get    '/teams'  => 'orders#work_teams'
+
+      post   '/work_team_task' => 'orders#work_team_task_add'
       # WorkOrder actions
       
       # Approval actions
