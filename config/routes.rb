@@ -27,10 +27,26 @@ Rails.application.routes.draw do
       patch  '/authRuleList'   =>  'authorities#patch_rulelist'
       
       get    '/authGroupList'  =>  'authorities#get_grouplist'
+
       # Order actions
-      get    '/orders'          => 'orders#index'
+      get    '/orders'         => 'orders#order_list'
+      get    '/order_details'  => 'orders#order_details' 
+      get    '/xialiao'        => 'orders#xialiao' 
+      get    '/zupin'          => 'orders#zupin' 
+      get    '/work_order_details' => 'orders#work_order_details' 
+
+      post   '/work_shop_task' => 'orders#work_shop_task_add'
       # WorkOrder actions
-      # 
+      
+      # Approval actions
+      get '/approval_list'   =>'approval#approval_list'
+      post '/approval_create'   =>'approval#approval_create'
+      get '/approval_field_list' =>'approval#approval_field_list'
+
+      # Procedure actions
+      get '/procedure_nodes'   =>'procedure#procedure_nodes'
+      post '/procedure_create' =>'procedure#procedure_create'
+
     end
   end
 
