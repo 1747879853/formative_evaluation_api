@@ -6,7 +6,6 @@ class CreateAuthRules < ActiveRecord::Migration[5.2]
       t.integer :status, null: false, default: 1
       t.text :condition
       t.integer :parent_id, default: 0
-
       t.timestamps
     end
   end
