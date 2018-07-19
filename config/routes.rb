@@ -21,8 +21,12 @@ Rails.application.routes.draw do
       # resources :users, only: [:index, :current, :create, :update, :destroy]
 
       # Authority actions
-      get    '/authRuleList'   =>  'authorities#index'
-      post   '/authRuleList'   =>  'authorities#add'
+      get    '/authRuleList'   =>  'authorities#get_rulelist'
+      post   '/authRuleList'   =>  'authorities#post_rulelist'
+      delete '/authRuleList'   =>  'authorities#delete_rulelist'
+      patch  '/authRuleList'   =>  'authorities#patch_rulelist'
+      
+      get    '/authGroupList'  =>  'authorities#get_grouplist'
 
       # Order actions
       get    '/orders'         => 'orders#order_list'
