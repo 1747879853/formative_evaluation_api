@@ -27,6 +27,9 @@ Rails.application.routes.draw do
       patch  '/authRuleList'   =>  'authorities#patch_rulelist'
       
       get    '/authGroupList'  =>  'authorities#get_grouplist'
+      post   '/authGroupList'  =>  'authorities#post_grouplist'
+      delete '/authGroupList'  =>  'authorities#delete_grouplist'
+      patch  '/authGroupList'  =>  'authorities#patch_grouplist'
 
       # Order actions
       get    '/orders'         => 'orders#order_list'

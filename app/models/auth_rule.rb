@@ -9,4 +9,13 @@ class AuthRule < ApplicationRecord
   validates_uniqueness_of   :name
   validates_uniqueness_of   :title
 
+  def as_json(options = {})
+		h = {}	
+		h[:id] = self.id
+		h[:title] = self.title
+		h[:expand] = true
+		h[:checked] = false
+		h[:children] = self.children if self.children
+		h
+	end
 end

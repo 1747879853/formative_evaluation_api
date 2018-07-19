@@ -49,11 +49,53 @@ class Api::V1::AuthoritiesController < Api::V1::BaseController
     render  json:{'a': AuthGroup.where(status: 1).all ,'b': AuthRule.where(parent_id: 0).all}
   end
   
+  def post_grouplist
+
+    begin
+      authgroup = AuthGroup.new(authgroup_params)
+      if authgroup.save!
+        render json: authgroup
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500
+    end
+  end
+
+  def delete_grouplist
+
+    begin
+      authgroup = AuthGroup.find(params.require(:params)[:id])
+      if authgroup.update(params.require(:params).permit(:status))
+        render json: { }
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500      
+    end
+  end
+
+  def patch_grouplist
+
+    begin
+      authgroup = AuthGroup.find(params.require(:params)[:group_id])
+      authgroup.auth_rules.destroy_all
+      a = params.require(:params)[:id]
+      authgroup.auth_rules.push AuthRule.where(id: a).all
+      render json: authgroup
+    
+    rescue Exception => e
+      render json: { msg: e }, status: 500
+    end
+  end
+
   private
   
   # Setting up strict parameters for when we add account creation.
   def authrule_params
     params.require(:params).permit(:name, :title, :status, :condition, :parent_id)
   end 
+
+  def authgroup_params
+    params.require(:params).permit(:title)
+  end
 
 end

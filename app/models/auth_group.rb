@@ -5,4 +5,11 @@ class AuthGroup < ApplicationRecord
   validates_presence_of     :title
   validates_uniqueness_of   :title
 
+  def as_json(options = {})
+		h = {}	
+		h[:id] = self.id
+		h[:name] = self.title
+		h[:checked_id] = auth_rules.map(&:id)
+		h
+	end
 end
