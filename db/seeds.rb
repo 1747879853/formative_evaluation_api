@@ -61,6 +61,12 @@ rules4 = AuthRule.find_or_create_by({ name: 'Manufacturing/Index/bom', title: '�
 rules4.parent = rules3
 rules4.save!
 
+rules5 = AuthRule.find_or_create_by({ name: 'Admin/ShowNav/config', title: '系统设置'})
+rules5.save!
+rules6 = AuthRule.find_or_create_by({ name: 'Admin/ShowNav/Nav', title: '菜单管理'})
+rules6.parent = rules5
+rules6.save!
+
 group1 = AuthGroup.find_or_create_by({title: '超级管理员'})
 group1.save!
 group2 = AuthGroup.find_or_create_by({title: '生产经理'})

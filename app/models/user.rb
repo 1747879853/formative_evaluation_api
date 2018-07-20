@@ -3,6 +3,7 @@ class User < ApplicationRecord
   has_many :auth_rules, through: :auth_groups
   has_many :work_shops
   has_many :work_teams
+  has_many :work_shop_tasks
 
   # Necessary to authenticate.
   has_secure_password
@@ -29,6 +30,12 @@ class User < ApplicationRecord
   # This method tells us if the user is an admin or not.
   def is_admin?
     role == 'admin'
+  end
+
+  def as_json(options = {})
+    h = super(options)  
+    h[:checked_id] = auth_groups.map(&:id)
+    h
   end
 
 end

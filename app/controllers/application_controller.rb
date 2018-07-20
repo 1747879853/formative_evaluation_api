@@ -13,7 +13,8 @@ class ApplicationController < ActionController::API
   end
   
   def unauthorized
-    head :unauthorized
+    # head :unauthorized
+    head :forbidden
   end
 
   # Method for checking if current_user is admin or not.
