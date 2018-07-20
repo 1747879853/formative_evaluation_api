@@ -43,6 +43,11 @@ Rails.application.routes.draw do
       get    '/teams'  => 'orders#work_teams'
 
       post   '/work_team_task' => 'orders#work_team_task_add'
+      get    '/work_team_task_list' => 'orders#work_team_task_list'
+      get    '/team_task_boms' => 'orders#team_task_boms'
+
+      post   '/team_task_material_finished' => 'orders#team_task_material_finished'
+      post   '/team_task_material_passed'   => 'orders#team_task_material_passed'
       # WorkOrder actions
       
       # Approval actions
