@@ -2,7 +2,7 @@
 class AuthGroupSerializer < ActiveModel::Serializer
 
   attribute :id
-  attribute :title, key: :name
+  attribute :title
   attribute :checked_id
 
   def checked_id
