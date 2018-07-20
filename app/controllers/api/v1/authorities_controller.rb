@@ -87,6 +87,26 @@ class Api::V1::AuthoritiesController < Api::V1::BaseController
     end
   end
 
+  def get_userlist
+    # unauthorized and return unless Auth.check('Admin/Authority/list', current_user)
+
+    render  json:{'a': User.all ,'b': AuthGroup.where(status: 1).all}
+  end
+
+  def patch_userlist
+
+    begin
+      authuser = User.find(params.require(:params)[:user_id])
+      authuser.auth_groups.destroy_all
+      a = params.require(:params)[:id]
+      authuser.auth_groups.push AuthGroup.where(id: a).all
+      render json: authuser
+    
+    rescue Exception => e
+      render json: { msg: e }, status: 500
+    end
+  end
+
   private
   
   # Setting up strict parameters for when we add account creation.

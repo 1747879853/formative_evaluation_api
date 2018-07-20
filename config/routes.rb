@@ -31,6 +31,8 @@ Rails.application.routes.draw do
       delete '/authGroupList'  =>  'authorities#delete_grouplist'
       patch  '/authGroupList'  =>  'authorities#patch_grouplist'
 
+      get    '/authUserList'   =>  'authorities#get_userlist'
+      patch  '/authUserList'   =>  'authorities#patch_userlist'
       # Order actions
       get    '/orders'         => 'orders#order_list'
       get    '/order_details'  => 'orders#order_details' 
