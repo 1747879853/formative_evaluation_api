@@ -138,7 +138,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
 
   	wo = WorkOrder.find(params[:work_order_id])
   	materials_id = wo.materials.pluck(:id)
-  	p materials_id
+  	# p materials_id
   	msg = "分派到班组成功！"
   	ActiveRecord::Base.transaction do
 	  	materials_id.each do |e|
@@ -160,6 +160,75 @@ class Api::V1::OrdersController < Api::V1::BaseController
     	msg: msg
     }
 
+  end
+
+  def work_team_task_list
+  	wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).select("work_team_tasks.id as id,materials.id as mid,materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
+  	render json:{
+  		data: wtt
+  	}
+  end
+
+  def team_task_boms
+  	mid = params[:material_id]
+  	
+  	team_task_boms = Bom.joins(material: :work_team_tasks).where("materials.id=?",mid).select("boms.name,materials.name as m_name,work_team_tasks.number,boms.number*work_team_tasks.number as qty, boms.spec,boms.length,boms.width,boms.comment")
+   	render json:{
+   		boms: team_task_boms
+   	}
+  end
+
+
+  def team_task_material_finished
+
+  	finished_num = params[:finish_number]
+  	team_task_id = params[:team_task_id]
+
+  	wtt = WorkTeamTask.find_by(id: team_task_id)
+  	wtt.finished_number =(wtt.finished_number ? wtt.finished_number : 0)+finished_num
+
+  	wttd = WorkTeamTaskDetail.new
+  	wttd.work_team_task_id = team_task_id
+  	wttd.finished_number = finished_num
+  	wttd.user_id = 1    #需替换成正式人员
+  	wttd.record_time = Time.now
+	  
+	  if wtt.save&&wttd.save
+	  	
+	  	msg = "提交成功"
+	  else
+	  	msg = "保存失败"
+	  end
+	
+  	render json:{
+  		msg: msg
+  	}
+  end
+
+  def team_task_material_passed
+  	
+  	passed_num = params[:pass_number]
+  	team_task_id = params[:team_task_id]
+
+  	wtt = WorkTeamTask.find_by(id: team_task_id)
+  	wtt.passed_number =(wtt.passed_number ? wtt.passed_number : 0)+passed_num
+
+  	wttd = WorkTeamTaskDetail.new
+  	wttd.work_team_task_id = team_task_id
+  	wttd.passed_number = passed_num
+  	wttd.user_id = 1    #需替换成正式人员
+  	wttd.record_time = Time.now
+	  
+	  if wtt.save&&wttd.save
+	  	
+	  	msg = "提交成功"
+	  else
+	  	msg = "保存失败"
+	  end
+	
+  	render json:{
+  		msg: msg
+  	}
   end
 
 end

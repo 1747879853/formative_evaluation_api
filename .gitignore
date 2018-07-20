@@ -19,3 +19,9 @@
 
 # Ignore Byebug command history file.
 .byebug_history
+
+/app/models/approval2*.rb
+/app/models/approval_detail*.rb
+/db/migrate/*_create_approval*s.rb
+/db/migrate/*_create_approval_detail*s.rb
+
