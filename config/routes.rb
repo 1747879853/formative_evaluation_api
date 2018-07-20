@@ -26,6 +26,8 @@ Rails.application.routes.draw do
       delete '/authRuleList'   =>  'authorities#delete_rulelist'
       patch  '/authRuleList'   =>  'authorities#patch_rulelist'
       
+      get    '/user_group_list'=>  'authorities#get_user_group_list'
+
       get    '/authGroupList'  =>  'authorities#get_grouplist'
       post   '/authGroupList'  =>  'authorities#post_grouplist'
       delete '/authGroupList'  =>  'authorities#delete_grouplist'

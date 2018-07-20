@@ -48,7 +48,11 @@ class Api::V1::AuthoritiesController < Api::V1::BaseController
 
     render  json:{'a': AuthGroup.where(status: 1).all ,'b': AuthRule.where(parent_id: 0).all}
   end
-  
+
+  def get_user_group_list
+  	render  json: AuthGroup.where(status: 1).all
+  end
+
   def post_grouplist
 
     begin
