@@ -13,11 +13,11 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       # User actions
-      get    '/users'          => 'users#index'
+      get    '/userList'       => 'users#get_userlist'
       get    '/users/current'  => 'users#current'
-      post   '/users/create'   => 'users#create'
-      patch  '/user/:id'       => 'users#update'
-      delete '/user/:id'       => 'users#destroy'
+      post   '/userList'       => 'users#post_userlist'
+      patch  '/userList'       => 'users#patch_userlist'
+      delete '/userList'       => 'users#delete_userlist'
       # resources :users, only: [:index, :current, :create, :update, :destroy]
 
       # Authority actions
