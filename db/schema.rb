@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+
 ActiveRecord::Schema.define(version: 2018_07_21_080021) do
+
+
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,10 +28,91 @@ ActiveRecord::Schema.define(version: 2018_07_21_080021) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "approval20180721064310s", force: :cascade do |t|
+    t.string "field0"
+    t.text "field1"
+    t.string "field2"
+    t.string "field3"
+    t.datetime "field4"
+    t.integer "approval_id"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.integer "procedure_id"
+    t.string "node_ids"
+    t.string "role_ids"
+    t.integer "node_id_now"
+    t.integer "submit_to_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180721065907s", force: :cascade do |t|
+    t.string "field0"
+    t.text "field1"
+    t.string "field2"
+    t.string "field3"
+    t.datetime "field4"
+    t.integer "approval_id"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.integer "procedure_id"
+    t.string "node_ids"
+    t.string "role_ids"
+    t.integer "node_id_now"
+    t.integer "submit_to_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180721071312s", force: :cascade do |t|
+    t.string "field0"
+    t.text "field1"
+    t.string "field2"
+    t.string "field3"
+    t.datetime "field4"
+    t.integer "approval_id"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.integer "procedure_id"
+    t.string "node_ids"
+    t.string "role_ids"
+    t.integer "node_id_now"
+    t.integer "submit_to_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "approval_detail20180718152612s", force: :cascade do |t|
     t.string "field0"
     t.string "field1"
     t.integer "approval20180718152612_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval_detail20180721064310s", force: :cascade do |t|
+    t.string "field0"
+    t.string "field1"
+    t.integer "approval20180721064310_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval_detail20180721065907s", force: :cascade do |t|
+    t.string "field0"
+    t.string "field1"
+    t.integer "approval20180721065907_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval_detail20180721071312s", force: :cascade do |t|
+    t.string "field0"
+    t.string "field1"
+    t.integer "approval20180721071312_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
