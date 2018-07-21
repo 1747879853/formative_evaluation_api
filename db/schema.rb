@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_18_072616) do
+ActiveRecord::Schema.define(version: 2018_07_21_080021) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -134,6 +134,7 @@ ActiveRecord::Schema.define(version: 2018_07_18_072616) do
     t.datetime "approval_time"
     t.string "approval_comment"
     t.integer "status"
+    t.string "apply_comment"
     t.index ["approval_owner_id"], name: "index_boms_approvals_on_approval_owner_id"
     t.index ["user_id"], name: "index_boms_approvals_on_user_id"
     t.index ["work_team_task_id"], name: "index_boms_approvals_on_work_team_task_id"
