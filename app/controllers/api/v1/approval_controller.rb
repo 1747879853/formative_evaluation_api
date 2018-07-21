@@ -85,7 +85,7 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 				app_field_ctl << value[:control]			
 			end
 
-			app_field_str = ApprovalField.generateStr(app_field_name,app_field_ctl)
+			app_field_str = ApprovalField.generateStr(app_field_name,app_field_ctl) + ApprovalField.solid_field_str()
 			console_cmd1 ="rails generate model " + apr.en_name_main + " " + app_field_str +'--no-assets --no-test-framework'
 
 			system(console_cmd1)
@@ -125,6 +125,7 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 		  		app = Approval.find_by(id: params[:approval_id])
 		  		app.status = 0 if app
 		  		app.stoped_time =t if app
+		  		app.save!
 		  	end
 
 			render json:{msg: '保存成功',code: 1}
@@ -143,16 +144,57 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	    	unauthorized 
 	    	return
 	    end
-	    app = Approval.find_by(id: params[:approval_id])
-	    model_main = app.en_name_main.classify.constantize
-	    # model_detail = app.en_name_detail.classify.constantize
-        
-        p params[:detailhash]            
-	    mm = model_main.new(params[:mainhash])
-	    # mm.save!
+	 #parameters like this:  
+     # "approvalid":10,
+     # "mainhash":{"field0":"111","field1":"222","field2":"选项1","field3":"选项2","field4":"2018-07-20T16:00:00.000Z"},
+     # "detailhasharr":[{"field0":"333","field1":"选项1"},{"field0":"444","field1":"选项2"}],
+     # "submit_user_id":1
+     
+	    t = Time.now
+	  	ts = t.strftime('%Y%m%d%H%M%S')
 
-	    render json:{msg: '保存成功',code: 1}
+	    params.permit(:approvalid)
+	    params.permit(:submit_user_id)
+	    params.require(:mainhash).permit!
+		detail_arr_permit
 
+		app_id = params[:approvalid]
+		m_hash = params[:mainhash]
+		d_hash_arr = params[:detailhasharr]
+		sui = params[:submit_user_id]
+	    begin
+	    	
+		    app = Approval.find_by(id: app_id)
+		    model_main = app.en_name_main.classify.constantize
+	        
+	        # the next field is solid added at server,not filled by client.
+	        m_hash["approval_id"] = app_id
+	        # bug: ????????????????????????????????
+	        m_hash["user_id"] = 1 #current_user.id   # who submited the approval
+	        m_hash["no"] = app.name + ts
+	        m_hash["submit_time"] = t
+			pro = app.procedures.where(status: 1).first
+			m_hash["procedure_id"] = pro.id
+			p_nodes = pro.procedure_nodes.order(:sequence)
+			m_hash["node_ids"] = p_nodes.map(&:id).join(",")
+			m_hash["role_ids"] = p_nodes.map(&:owner_id).join(",")
+			m_hash["node_id_now"] = p_nodes.first.id
+			m_hash["submit_to_user_id"] = sui
+		    mm = model_main.create(m_hash)
+
+		    if d_hash_arr.length > 0
+		    	main_key_id = app.en_name_main.downcase + '_id'
+				model_detail = app.en_name_detail.classify.constantize
+
+				d_hash_arr.each do |hh|
+					hh[main_key_id] = mm.id
+					model_detail.create(hh)
+				end
+			end
+			render json:{msg: '保存成功',code: 1}
+		rescue Exception => e
+			render json:{msg: '保存失败',code: 0}	    	
+	    end
 	end
 
 # <Option value="单行输入框">单行输入框</Option>
@@ -160,6 +202,12 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 # <Option value="单选框">单选框</Option>
 # <Option value="多选框">多选框</Option>
 # <Option value="日期">日期</Option>
-
+private
+	def detail_arr_permit
+		params.require(:detailhasharr).map do |pp|
+		  pp.permit!
+		end
+	end
+	
   
 end
