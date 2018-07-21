@@ -20,6 +20,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   def post_userlist
     begin
       user = User.new(user_params)
+      user.password='123456'
       if user.save!
         render json: user
       end
@@ -58,7 +59,7 @@ private
   
   # Setting up strict parameters for when we add account creation.
   def user_params
-    params.require(:params).permit(:username, :email, :tel, :status,:password_digest)
+    params.require(:params).permit(:username, :email, :tel, :status)
   end
   
 end
