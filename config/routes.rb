@@ -44,19 +44,23 @@ Rails.application.routes.draw do
 
       post   '/work_shop_task' => 'orders#work_shop_task_add'
       get    '/work_shop_order_list' => 'orders#work_shop_order_list'
-      get    '/teams'  => 'orders#work_teams'
+      get    '/teams'          => 'orders#work_teams'
 
       post   '/work_team_task' => 'orders#work_team_task_add'
-      get    '/work_team_task_list' => 'orders#work_team_task_list'
+      get    '/work_team_task_list'  => 'orders#work_team_task_list'
       get    '/team_task_boms' => 'orders#team_task_boms'
 
       post   '/team_task_material_finished' => 'orders#team_task_material_finished'
       post   '/team_task_material_passed'   => 'orders#team_task_material_passed'
+      post   '/boms_approval'  => 'orders#boms_approval'
+      get    '/boms_approvals' => 'orders#boms_approval_list'
+      get    '/boms_approval_detail' => 'orders#boms_approval_detail'
       # WorkOrder actions
       
       # Approval actions
       get '/approval_list'   =>'approval#approval_list'
       post '/approval_create'   =>'approval#approval_create'
+      post '/approval_save'   =>'approval#approval_save'
       get '/approval_field_list' =>'approval#approval_field_list'
 
       # Procedure actions
