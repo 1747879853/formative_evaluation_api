@@ -5,6 +5,7 @@ class User < ApplicationRecord
   has_many :work_teams
   has_many :work_shop_tasks
   has_many :approval_current_nodes
+  has_many :boms_approvals
 
   # Necessary to authenticate.
   has_secure_password

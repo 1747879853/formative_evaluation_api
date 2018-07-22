@@ -172,7 +172,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
   def team_task_boms
   	mid = params[:material_id]
   	
-  	team_task_boms = Bom.joins(material: :work_team_tasks).where("materials.id=?",mid).select("boms.name,materials.name as m_name,work_team_tasks.number,boms.number*work_team_tasks.number as qty, boms.spec,boms.length,boms.width,boms.comment")
+  	team_task_boms = Bom.joins(material: :work_team_tasks).where("materials.id=?",mid).select("boms.id as bom_id,boms.name,materials.name as m_name,work_team_tasks.number,boms.number*work_team_tasks.number as qty, boms.spec,boms.length,boms.width,boms.comment")
    	render json:{
    		boms: team_task_boms
    	}
@@ -231,4 +231,60 @@ class Api::V1::OrdersController < Api::V1::BaseController
   	}
   end
 
+
+  def boms_approval
+  	p params
+  	msg ="领料成功"
+  	ActiveRecord::Base.transaction do
+	  	ba = BomsApproval.new
+	  	ba.work_team_task_id = params[:team_task_id]
+	  	ba.status = 1
+	  	ba.user_id = params[:user_id]
+	  	ba.approval_owner_id = WorkTeamTask.find_by_id(params[:team_task_id]).user_id
+	  	ba.apply_comment =params[:comment]
+	  	ba.record_time = Time.now
+	  	if not ba.save
+	  		msg = "保存失败"
+	  	end
+	  	params[:boms].each do |e|
+	  		bad = BomsApprovalDetail.new
+	  		bad.boms_approval_id = ba.id
+	  		bad.bom_id = e["bom_id"]
+	  		bad.approval_number = e["req_qty"]
+	  		if not bad.save
+	  			msg = "保存失败"
+	  		end
+	  	end
+	  	
+	   
+
+  	end
+
+  	render json:{
+  		msg: msg
+  		}
+  		
+  end
+
+  def boms_approval_list
+
+  	if params[:approval] == "1"
+  		ba = BomsApproval.where(approval_owner_id: params[:user_id],status: 1)
+  	else
+  		ba = BomsApproval.where(work_team_task_id: params[:team_task_id])
+    end
+  	render json:{
+  		boms_approval_list: ba
+  	}
+  end
+
+  def boms_approval_detail
+
+  	boms_approval_detail = Bom.joins(boms_approval_details: :boms_approval).where("boms_approval_details.boms_approval_id=?",params[:approval_id]).select("boms.*,boms_approval_details.approval_number as req_qty")
+  	
+  	render json:{
+  		boms_approval_detail: boms_approval_detail
+  	}
+  end
+  
 end

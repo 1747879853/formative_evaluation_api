@@ -5,8 +5,8 @@ class Api::V1::UsersController < Api::V1::BaseController
   # before_action :authorize,          only: [:update]
   
   # Should work if the current_user is authenticated.
-  def index
-    render json: User.all
+  def get_userlist
+    render json: User.where(status: 1).all
   end
   
   # Call this method to check if the user is logged-in.
@@ -17,11 +17,10 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   # Method to create a new user using the safe params we setup.
-  def create
-    unauthorized and return unless Auth.check('Admin/User/create', current_user) || current_user.id == 1
-
+  def post_userlist
     begin
       user = User.new(user_params)
+      user.password='123456'
       if user.save!
         render json: user
       end
@@ -31,12 +30,11 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   # Method to update a specific user. User will need to be authorized.
-  def update
-    unauthorized and return unless Auth.check('Admin/User/update', current_user) || current_user.id.to_s == params[:id]
+  def patch_userlist
 
     begin
-      user = User.find(params[:id])
-      if user.update(user_params)
+      user = User.find(params.require(:params)[:id])
+      if user.update(params.require(:params).permit(:email, :username, :tel))
         render json: user
       end
     rescue Exception => e
@@ -45,12 +43,11 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   # Method to delete a user, this method is only for admin accounts.
-  def destroy
-    unauthorized and return unless Auth.check('Admin/User/destroy', current_user) || current_user.id == 1
+  def delete_userlist
 
     begin
-      user = User.find(params[:id])
-      if user.destroy
+      user = User.find(params.require(:params)[:id])
+      if user.update(params.require(:params).permit(:status))
         render json: { }
       end
     rescue Exception => e
@@ -62,7 +59,7 @@ private
   
   # Setting up strict parameters for when we add account creation.
   def user_params
-    params.require(:user).permit(:username, :email, :password, :password_confirmation)
+    params.require(:params).permit(:username, :email, :tel, :status)
   end
   
 end

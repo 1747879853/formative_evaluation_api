@@ -13,11 +13,11 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       # User actions
-      get    '/users'          => 'users#index'
+      get    '/userList'       => 'users#get_userlist'
       get    '/users/current'  => 'users#current'
-      post   '/users/create'   => 'users#create'
-      patch  '/user/:id'       => 'users#update'
-      delete '/user/:id'       => 'users#destroy'
+      post   '/userList'       => 'users#post_userlist'
+      patch  '/userList'       => 'users#patch_userlist'
+      delete '/userList'       => 'users#delete_userlist'
       # resources :users, only: [:index, :current, :create, :update, :destroy]
 
       # Authority actions
@@ -44,14 +44,17 @@ Rails.application.routes.draw do
 
       post   '/work_shop_task' => 'orders#work_shop_task_add'
       get    '/work_shop_order_list' => 'orders#work_shop_order_list'
-      get    '/teams'  => 'orders#work_teams'
+      get    '/teams'          => 'orders#work_teams'
 
       post   '/work_team_task' => 'orders#work_team_task_add'
-      get    '/work_team_task_list' => 'orders#work_team_task_list'
+      get    '/work_team_task_list'  => 'orders#work_team_task_list'
       get    '/team_task_boms' => 'orders#team_task_boms'
 
       post   '/team_task_material_finished' => 'orders#team_task_material_finished'
       post   '/team_task_material_passed'   => 'orders#team_task_material_passed'
+      post   '/boms_approval'  => 'orders#boms_approval'
+      get    '/boms_approvals' => 'orders#boms_approval_list'
+      get    '/boms_approval_detail' => 'orders#boms_approval_detail'
       # WorkOrder actions
       
       # Approval actions
