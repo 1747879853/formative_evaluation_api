@@ -1,2 +1,0 @@
-class ApprovalDetail20180718152612 < ApplicationRecord
-end

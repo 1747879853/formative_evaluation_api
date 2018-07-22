@@ -21,14 +21,16 @@ class ApprovalField < ApplicationRecord
   def self.solid_field_str()
     str = " "
     str = str + "approval_id" +":" +"integer "
+    str = str + "approval_name" +":" +"string "
     str = str + "user_id" +":" +"integer "
     str = str + "no" +":" +"string "
     str = str + "submit_time" +":" +"datetime "
+    str = str + "finish_time" +":" +"datetime "
     str = str + "procedure_id" +":" +"integer "
-    str = str + "node_ids" +":" +"string "
-    str = str + "role_ids" +":" +"string "
-    str = str + "node_id_now" +":" +"integer "
-    str = str + "submit_to_user_id" +":" +"integer "
+    # str = str + "node_ids" +":" +"string "
+    # str = str + "role_ids" +":" +"string "
+    # str = str + "node_id_now" +":" +"integer "
+    # str = str + "submit_to_user_id" +":" +"integer "
     return str
   end
 end

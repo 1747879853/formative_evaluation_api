@@ -151,38 +151,45 @@ class Api::V1::ApprovalController < Api::V1::BaseController
      # "submit_user_id":1
      
 	    t = Time.now
-	  	ts = t.strftime('%Y%m%d%H%M%S')
+	  	ts = t.strftime('%Y%m%d%H%M%S%L')  #%L -Millisecond of the second (000..999)
 
 	    params.permit(:approvalid)
 	    params.permit(:submit_user_id)
 	    params.require(:mainhash).permit!
-		detail_arr_permit
+		
+		d_hash_arr = []
+		if params[:detailhasharr].length > 0
+			detail_arr_permit
+			d_hash_arr = params[:detailhasharr]
+		end
+
 
 		app_id = params[:approvalid]
 		m_hash = params[:mainhash]
-		d_hash_arr = params[:detailhasharr]
 		sui = params[:submit_user_id]
 	    begin
 	    	
 		    app = Approval.find_by(id: app_id)
 		    model_main = app.en_name_main.classify.constantize
 	        
-	        # the next field is solid added at server,not filled by client.
-	        m_hash["approval_id"] = app_id
+	        # the next fields are solid added at server,not filled by client.
+	        m_hash["approval_id"] = app.id
+	        m_hash["approval_name"] = app.name
 	        # bug: ????????????????????????????????
 	        m_hash["user_id"] = 1 #current_user.id   # who submited the approval
-	        m_hash["no"] = app.name + ts
+	        m_hash["no"] =  ts
 	        m_hash["submit_time"] = t
+	        m_hash["finish_time"] = nil
 			pro = app.procedures.where(status: 1).first
 			m_hash["procedure_id"] = pro.id
-			p_nodes = pro.procedure_nodes.order(:sequence)
-			m_hash["node_ids"] = p_nodes.map(&:id).join(",")
-			m_hash["role_ids"] = p_nodes.map(&:owner_id).join(",")
-			m_hash["node_id_now"] = p_nodes.first.id
-			m_hash["submit_to_user_id"] = sui
+			# p_nodes = pro.procedure_nodes.order(:sequence)
+			# m_hash["node_ids"] = p_nodes.map(&:id).join(",")
+			# m_hash["role_ids"] = p_nodes.map(&:owner_id).join(",")
+			# m_hash["node_id_now"] = p_nodes.first.id
+			# m_hash["submit_to_user_id"] = sui
 		    mm = model_main.create(m_hash)
 
-		    if d_hash_arr.length > 0
+		    if d_hash_arr.length>0
 		    	main_key_id = app.en_name_main.downcase + '_id'
 				model_detail = app.en_name_detail.classify.constantize
 
@@ -191,6 +198,16 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 					model_detail.create(hh)
 				end
 			end
+			p_nodes = pro.procedure_nodes.order(:sequence)
+			cur_node = ApprovalCurrentNode.new
+			cur_node.node_ids = p_nodes.map(&:id).join(",")
+			cur_node.procedure_node_id = p_nodes.first.id
+			cur_node.user_id = sui
+			cur_node.status = 0
+			cur_node.owner = mm
+			cur_node.save!
+
+
 			render json:{msg: '保存成功',code: 1}
 		rescue Exception => e
 			render json:{msg: '保存失败',code: 0}	    	
@@ -202,6 +219,75 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 # <Option value="单选框">单选框</Option>
 # <Option value="多选框">多选框</Option>
 # <Option value="日期">日期</Option>
+
+	def approval_to_me
+		# acn = ApprovalCurrentNode.where(user_id: current_user.id).where(status: 0)
+		acn = ApprovalCurrentNode.where(user_id: 1).where(status: 0)
+		ret_data = []
+		acn.each do |val|
+			hh ={}
+			mt = val.owner
+			hh[:title] = (User.find(mt.user_id).username + '的' + mt.approval_name) 
+			hh[:digest] = '待定'
+			hh[:submit_time] = mt.submit_time.try(:strftime,'%Y-%m-%d %H:%M:%S')
+			hh[:finish_time] = mt.finish_time.try(:strftime,'%Y-%m-%d %H:%M:%S')
+			hh[:status] = User.find(val.user_id).username + '审批中'
+
+			hh[:main_table] = mt
+			hh[:node_detail] = ApprovalDetail.where(owner: mt).order(:action_time)
+			ret_data << hh
+
+		end
+		render json:{
+			code: 1,
+			msg: "success",
+			data: ret_data,
+            rows: ret_data.length
+      }
+	end
+	def approval_to_me_done
+		acn = ApprovalCurrentNode.where(user_id: 1).where.not(status: 0)
+		ret_data = []
+		acn.each do |val|
+			hh ={}
+			mt = val.owner
+			hh[:title] = (User.find(mt.user_id).username + '的' + mt.approval_name) 
+			hh[:digest] = '待定'
+			hh[:submit_time] = mt.submit_time.try(:strftime,'%Y-%m-%d %H:%M:%S')
+			hh[:finish_time] = mt.finish_time.try(:strftime,'%Y-%m-%d %H:%M:%S')
+			if val.status == 1
+				hh[:status] = '审批通过'
+			elsif val.status == 2
+				hh[:status] = '审批拒绝'
+			end	
+
+			hh[:main_table] = mt
+			hh[:node_detail] = ApprovalDetail.where(owner: mt).order(:action_time)
+			
+			
+
+			ret_data << hh
+
+		end
+		ret_data = []
+		render json:{
+			code: 1,
+			msg: "success",
+			data: ret_data,
+            rows: ret_data.length
+      }
+	end
+	def approval_from_me
+
+		ret_data = []
+		render json:{
+			code: 1,
+			msg: "success",
+			data: ret_data,
+            rows: ret_data.length
+      }
+	end
+
 private
 	def detail_arr_permit
 		params.require(:detailhasharr).map do |pp|
