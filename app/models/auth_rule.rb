@@ -4,6 +4,8 @@ class AuthRule < ApplicationRecord
 
   acts_as_tree
 
+  scope :active, -> { where status: 1 }
+
   validates_presence_of     :name
   validates_presence_of     :title
   validates_uniqueness_of   :name
