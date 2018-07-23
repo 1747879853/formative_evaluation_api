@@ -3,7 +3,7 @@ class BomsApproval < ApplicationRecord
 	has_many :boms_approval_details
 	belongs_to :user
 
-  STATUS = [:"未提交",:"审核中",:"同意",:"否决"]
+  STATUS = [:"未提交",:"审核中",:"通过",:"否决"]
 
   enum status: STATUS
 
