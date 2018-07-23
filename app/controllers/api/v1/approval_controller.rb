@@ -215,6 +215,7 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 			cur_node.user_id = sui
 			cur_node.status = 0
 			cur_node.owner = mm
+			cur_node.submit_user_id = mm.user_id
 			cur_node.save!
 
 
@@ -244,7 +245,7 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 			hh[:submit_time] = mt.submit_time.try(:strftime,'%Y-%m-%d %H:%M:%S')
 			hh[:finish_time] = mt.finish_time.try(:strftime,'%Y-%m-%d %H:%M:%S')
 			#bug:  the next line's username is current_user.username,modified it in the futurn ???????
-			hh[:status] = User.find(val.user_id).username + '审批中'			
+			hh[:status] = User.find(val.user_id).username + '审批中...'			
 			ret_data << hh
 
 		end
@@ -364,11 +365,44 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	end
 
 	def approval_to_me_done
+		#bug : pay attention to the current_user ????????????
 		acn = ApprovalCurrentNode.where(user_id: 1).where.not(status: 0)
 		ret_data = []
 		acn.each do |val|
 			hh ={}
 			mt = val.owner
+			hh[:app_cur_id] = val.id
+			hh[:title] = (User.find(mt.user_id).username + '的' + mt.approval_name) 
+			hh[:digest] = '待定'
+			hh[:submit_time] = mt.submit_time.try(:strftime,'%Y-%m-%d %H:%M:%S')
+			hh[:finish_time] = mt.finish_time.try(:strftime,'%Y-%m-%d %H:%M:%S')
+			if val.status == 1
+				hh[:status] = '审批通过'
+			elsif val.status == 2
+				hh[:status] = '审批拒绝'
+			elsif val.status == 0
+				hh[:status] = User.find(val.user_id).username + '审批中...'
+			end	
+		
+			ret_data << hh
+
+		end
+
+		render json:{
+			code: 1,
+			msg: "success",
+			data: ret_data,
+            rows: ret_data.length
+		}
+	end
+	def approval_from_me
+		#bug : pay attention to the current_user ????????????
+		acn = ApprovalCurrentNode.where(submit_user_id: 1)
+		ret_data = []
+		acn.each do |val|
+			hh ={}
+			mt = val.owner
+			hh[:app_cur_id] = val.id
 			hh[:title] = (User.find(mt.user_id).username + '的' + mt.approval_name) 
 			hh[:digest] = '待定'
 			hh[:submit_time] = mt.submit_time.try(:strftime,'%Y-%m-%d %H:%M:%S')
@@ -378,26 +412,11 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 			elsif val.status == 2
 				hh[:status] = '审批拒绝'
 			end	
-
-			hh[:main_table] = mt
-			hh[:node_detail] = ApprovalDetail.where(owner: mt).order(:action_time)
-			
-			
-
+		
 			ret_data << hh
 
 		end
-		ret_data = []
-		render json:{
-			code: 1,
-			msg: "success",
-			data: ret_data,
-            rows: ret_data.length
-      }
-	end
-	def approval_from_me
 
-		ret_data = []
 		render json:{
 			code: 1,
 			msg: "success",
@@ -409,11 +428,17 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	def approval_pass
 		acn = ApprovalCurrentNode.find_by(id: params[:app_cur_id])
 		begin
+			t_now = Time.now
+
+			mt = acn.owner
+			mt.finish_time = t_now
+			mt.save 
+
 			ad = ApprovalDetail.new
 			ad.procedure_node_id = acn.procedure_node_id
 			ad.action_str = "同意"
 			ad.comment = params[:comment]
-			ad.action_time = Time.now
+			ad.action_time = t_now
 			ad.user_id = acn.user_id 
 			ad.owner_id = acn.owner_id
 			ad.owner_type = acn.owner_type
@@ -430,7 +455,7 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 				acn.user_id = params[:submit_to_user_id]
 				acn.status = 0
 			end
-			acn.save 
+			acn.save			
 
 			render json:{msg: '保存成功',code: 1}
 		rescue Exception => e
@@ -442,11 +467,17 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	def approval_reject
 		acn = ApprovalCurrentNode.find_by(id: params[:app_cur_id])
 		begin
+			t_now = Time.now
+
+			mt = acn.owner
+			mt.finish_time = t_now
+			mt.save
+
 			ad = ApprovalDetail.new
 			ad.procedure_node_id = acn.procedure_node_id
 			ad.action_str = "拒绝"
 			ad.comment = params[:comment]
-			ad.action_time = Time.now
+			ad.action_time = t_now
 			ad.user_id = acn.user_id
 			ad.owner = acn.owner
 			ad.save!
