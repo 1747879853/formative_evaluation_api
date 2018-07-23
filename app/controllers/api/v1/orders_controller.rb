@@ -171,8 +171,8 @@ class Api::V1::OrdersController < Api::V1::BaseController
 
   def team_task_boms
   	mid = params[:material_id]
-  	
-  	team_task_boms = Bom.joins(material: :work_team_tasks).where("materials.id=?",mid).select("boms.id as bom_id,boms.name,materials.name as m_name,work_team_tasks.number,boms.number*work_team_tasks.number as qty, boms.spec,boms.length,boms.width,boms.comment")
+  	task_id = params[:task_id]
+  	team_task_boms = Bom.joins(material: :work_team_tasks).where("materials.id=? and work_team_tasks.id=? ",mid,task_id).select("boms.id as bom_id,boms.name,materials.name as m_name,work_team_tasks.number,boms.number*work_team_tasks.number as qty, boms.spec,boms.length,boms.width,boms.comment")
    	render json:{
    		boms: team_task_boms
    	}
