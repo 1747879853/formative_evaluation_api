@@ -7,7 +7,14 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	    	unauthorized 
 	    	return
 	    end
-	    render json: Approval.where(status: 1)
+	    # the rows in json should in approval_to_me,here is by the way
+	    render json:{
+			code: 1,
+			msg: "success",
+			data: Approval.where(status: 1),
+			#bug: ????????? the next line: 1 should changed to current_user.id
+			rows: ApprovalCurrentNode.where(user_id: 1).where(status: 0).length			
+		}
 	end
 
 	def approval_field_list
@@ -113,6 +120,9 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 				app_field_str_d = ApprovalField.generateStr(app_field_name_d,app_field_ctl_d,apr.en_name_main)
 				console_cmd2 ="rails generate model " + apr.en_name_detail + " " + app_field_str_d + '--no-assets --no-test-framework'
 				system(console_cmd2)
+			else
+				apr.en_name_detail = nil  #if there's no detail table,let en_name_detail=nil
+				apr.save!
 			end
 			# open model file and add some has_many etc
 
@@ -221,20 +231,20 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 # <Option value="日期">日期</Option>
 
 	def approval_to_me
+		#bug : pay attention to the current_user ????????????
 		# acn = ApprovalCurrentNode.where(user_id: current_user.id).where(status: 0)
 		acn = ApprovalCurrentNode.where(user_id: 1).where(status: 0)
 		ret_data = []
 		acn.each do |val|
 			hh ={}
 			mt = val.owner
+			hh[:app_cur_id] = val.id
 			hh[:title] = (User.find(mt.user_id).username + '的' + mt.approval_name) 
 			hh[:digest] = '待定'
 			hh[:submit_time] = mt.submit_time.try(:strftime,'%Y-%m-%d %H:%M:%S')
 			hh[:finish_time] = mt.finish_time.try(:strftime,'%Y-%m-%d %H:%M:%S')
-			hh[:status] = User.find(val.user_id).username + '审批中'
-
-			hh[:main_table] = mt
-			hh[:node_detail] = ApprovalDetail.where(owner: mt).order(:action_time)
+			#bug:  the next line's username is current_user.username,modified it in the futurn ???????
+			hh[:status] = User.find(val.user_id).username + '审批中'			
 			ret_data << hh
 
 		end
@@ -242,9 +252,117 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 			code: 1,
 			msg: "success",
 			data: ret_data,
-            rows: ret_data.length
-      }
+			rows: ret_data.length
+		}
 	end
+	def approval_info
+		acn = ApprovalCurrentNode.find_by(id: params[:app_cur_id])
+		mt = acn.owner  #auto creted main table
+		app = Approval.find(mt.approval_id) #main table has approval_id
+
+		#bug:???? the next code will be change 1 to current_user.id
+		to_me_flag = false
+		if acn.user_id == 1  #current_user.id
+			to_me_flag = true
+		end
+
+		node_arr = acn.node_ids.split(",").map(&:to_i)
+
+		submit_to_users = []
+		if acn.procedure_node_id != node_arr.last  #the last node
+			proc_node_id = node_arr[node_arr.index(acn.procedure_node_id) + 1]
+			submit_to_users = ProcedureNode.find(proc_node_id).owner.users
+		end
+		
+
+		ret_data = {}
+		ret_data[:cur_node] = acn
+		ret_data[:main_record] = mt
+		ret_data[:detail_records] = []
+		if app.en_name_detail
+			model_detail = app.en_name_detail.classify.constantize
+			str = app.en_name_main.downcase + '_id=' + (mt.id).to_s
+			ret_data[:detail_records] = model_detail.where("#{str}")
+		end	
+
+		ret_data[:approval_record] = app
+		ret_data[:proc_node_details] = ApprovalDetail.where(owner: mt).order(:action_time)
+		ret_data[:proc_nodes] = Procedure.find(mt.procedure_id).procedure_nodes.order(:sequence)
+
+
+		app_no = {}
+		app_no["审批编号"] = mt.no
+
+		main_table_fields = {}
+		app.approval_fields.order(:sequence).each do |value|
+			main_table_fields[value.name] = mt[value.en_name]
+		end
+
+		detail_table_fields_arr = []
+		if app.en_name_detail
+			ret_data[:detail_records].each_with_index do |value,index|
+				t = {}
+				
+				app.approval_detail_fields.each do |ff|
+					t[ff.name] = value[ff.en_name]
+				end
+				detail_table_fields_arr << t
+			end
+		end
+
+
+
+		n_details = {}
+		ret_data[:proc_node_details].each do |value|
+			n_details[value.procedure_node_id] = value
+		end
+
+		proc_arr = []
+		#the first node is the submit form node
+		first_node = {}
+		first_node[:whowho] = User.find(mt.user_id).username
+		first_node[:act_str] = "发起申请"
+		first_node[:act_time] =  mt.submit_time.try(:strftime,'%Y-%m-%d %H:%M:%S')
+		proc_arr << first_node
+
+		flag = 0
+		ret_data[:proc_nodes].each do |nn|  #all procedure nodes
+			tt={}
+			tt[:title] = nn.name
+			if n_details[nn.id] # done node
+				 
+				tt[:whowho] = User.find(n_details[nn.id].user_id).username
+				tt[:act_str] = n_details[nn.id].action_str
+				tt[:act_time] = n_details[nn.id].action_time.try(:strftime,'%Y-%m-%d %H:%M:%S')
+				tt[:comment] = n_details[nn.id].comment
+			
+
+			elsif flag == 0 #first undone node
+				tt[:whowho] = User.find(acn.user_id).username
+				tt[:act_str] = '审批中'
+				flag = 1		
+			elsif flag == 1  #other undone node
+				tt[:whowho] = ''
+				tt[:act_str] = ''
+			end
+			proc_arr << tt
+		end
+
+
+
+		render json:{
+			code: 1,
+			msg: "success",
+			appno: app_no,
+			main_fields: main_table_fields,
+			detail_fields: detail_table_fields_arr,
+			procedure_nodes: proc_arr,
+			detail_title: (app.name + '明细'),
+			to_me_flag: to_me_flag,
+			submit_to_users: submit_to_users
+		}
+	end
+
 	def approval_to_me_done
 		acn = ApprovalCurrentNode.where(user_id: 1).where.not(status: 0)
 		ret_data = []
@@ -286,6 +404,63 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 			data: ret_data,
             rows: ret_data.length
       }
+	end
+
+	def approval_pass
+		acn = ApprovalCurrentNode.find_by(id: params[:app_cur_id])
+		begin
+			ad = ApprovalDetail.new
+			ad.procedure_node_id = acn.procedure_node_id
+			ad.action_str = "同意"
+			ad.comment = params[:comment]
+			ad.action_time = Time.now
+			ad.user_id = acn.user_id 
+			ad.owner_id = acn.owner_id
+			ad.owner_type = acn.owner_type
+			ad.save
+
+			node_arr = acn.node_ids.split(",").map(&:to_i)
+
+			if acn.procedure_node_id == node_arr.last  #the last node
+				# acn.user_id = nil
+				# acn.procedure_node_id = nil
+				acn.status = 1
+			else
+				acn.procedure_node_id = node_arr[node_arr.index(acn.procedure_node_id) + 1]
+				acn.user_id = params[:submit_to_user_id]
+				acn.status = 0
+			end
+			acn.save 
+
+			render json:{msg: '保存成功',code: 1}
+		rescue Exception => e
+			render json:{msg: '保存失败',code: 0}
+		end
+
+
+	end
+	def approval_reject
+		acn = ApprovalCurrentNode.find_by(id: params[:app_cur_id])
+		begin
+			ad = ApprovalDetail.new
+			ad.procedure_node_id = acn.procedure_node_id
+			ad.action_str = "拒绝"
+			ad.comment = params[:comment]
+			ad.action_time = Time.now
+			ad.user_id = acn.user_id
+			ad.owner = acn.owner
+			ad.save!
+
+			#because the user_id and procedure_node_id created by reference,so can't set nil or 0, so not change it.
+			# acn.user_id = nil		
+			# acn.procedure_node_id = nil
+			acn.status = 2
+			acn.save! 
+
+			render json:{msg: '保存成功',code: 1}
+		rescue Exception => e
+			render json:{msg: '保存失败',code: 0}
+		end
 	end
 
 private

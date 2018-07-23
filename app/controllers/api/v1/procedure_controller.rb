@@ -47,7 +47,7 @@ class Api::V1::ProcedureController < Api::V1::BaseController
 			nodes.each do |value|
 				pn = ProcedureNode.new
 				pn.name = value[:name]
-				pn.owner_type = 'Role'
+				pn.owner_type = 'AuthGroup'
 				pn.owner_id = value[:owner_id]
 				pn.sequence = value[:sequence]
 				pn.procedure_id = new_proc.id

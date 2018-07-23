@@ -65,6 +65,10 @@ Rails.application.routes.draw do
       get '/approval_to_me'   =>'approval#approval_to_me'
       get '/approval_to_me_done'   =>'approval#approval_to_me_done'
       get '/approval_from_me'   =>'approval#approval_from_me'
+      get '/approval_info'   =>'approval#approval_info'
+      post '/approval_pass'   =>'approval#approval_pass'
+      post '/approval_reject'   =>'approval#approval_reject'
+     
 
       # Procedure actions
       get '/procedure_nodes'   =>'procedure#procedure_nodes'
