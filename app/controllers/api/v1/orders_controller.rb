@@ -270,6 +270,8 @@ class Api::V1::OrdersController < Api::V1::BaseController
 
   	if params[:approval] == "1"
   		ba = BomsApproval.where(approval_owner_id: params[:user_id],status: 1)
+    elsif params[:approval] == "23"
+      ba = BomsApproval.where(approval_owner_id: params[:user_id],status: [2,3])
   	else
   		ba = BomsApproval.where(work_team_task_id: params[:team_task_id])
     end
@@ -285,6 +287,26 @@ class Api::V1::OrdersController < Api::V1::BaseController
   	render json:{
   		boms_approval_detail: boms_approval_detail
   	}
+  end
+
+  def auditing_boms
+
+    id = params[:id]
+    status = params[:status]
+    approval_comment = params[:approval_comment]
+    ba = BomsApproval.find_by_id(id)
+
+    ba.status = status
+    ba.approval_comment = approval_comment ? approval_comment : ""
+    if ba.save
+      msg = "审核成功"
+    else
+      msg = "审核失败"
+    end
+    
+    render json:{
+      msg: msg
+    }
   end
   
 end
