@@ -96,8 +96,12 @@ class Api::V1::OrdersController < Api::V1::BaseController
   		  wst.work_order_id = params[:work_order_id]
   		  wst.user_id = 1
   		  wst.record_time = Time.now
+
+
   		  if not wst.save
   		  	msg ="分派失败！"
+        else
+          wst.work_logs.create(work_order_id:params[:work_order_id],record_time:Time.now,description: User.find_by_id(wst.user_id).username+"分配工单:"+ params[:work_order_id].to_s+" 到"+  WorkShop.find_by_user_id(e).name+"车间") 
   		  end
   		end
   	end
@@ -151,6 +155,8 @@ class Api::V1::OrdersController < Api::V1::BaseController
 	  		wtt.status = 0
 	  		if not wtt.save
 	  			msg = "分派到班组失败！"
+        else
+          wtt.work_logs.create(work_order_id:params[:work_order_id],record_time: Time.now,description: User.find_by_id(params[:user_id]).username+"分派"+Material.find_by_id(e).name+"到:"+WorkTeam.find_by_id( params[:work_team_id]).name+";数量："+params[:number].to_s)
 	  		end
 
 	  	end
@@ -306,6 +312,25 @@ class Api::V1::OrdersController < Api::V1::BaseController
     
     render json:{
       msg: msg
+    }
+  end
+
+
+  def order_process
+
+    worklogs = WorkLog.where(work_order_id:Order.joins(:work_orders).where("orders.id =?",params[:id]).select("work_orders.id")).order("work_order_id,record_time")
+    
+    render json:{
+      worklogs: worklogs
+    }
+  end
+
+  def team_task_finish
+    wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_team_tasks.id= ?",params[:id]).select("work_team_tasks.id as id,materials.id as mid,materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
+    wttd = WorkTeamTaskDetail.where(work_team_task_id:params[:id])
+    render json:{
+      data: wtt,
+      wttd: wttd
     }
   end
   

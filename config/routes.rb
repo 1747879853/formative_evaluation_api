@@ -56,6 +56,8 @@ Rails.application.routes.draw do
       get    '/boms_approvals' => 'orders#boms_approval_list'
       get    '/boms_approval_detail' => 'orders#boms_approval_detail'
       post   '/auditing_boms'  => 'orders#auditing_boms'
+      get    '/order_process'  => 'orders#order_process'
+      get    '/team_task_finish' => 'orders#team_task_finish'
       # WorkOrder actions
       
       # Approval actions
