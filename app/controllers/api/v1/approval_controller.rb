@@ -7,11 +7,24 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	    	unauthorized 
 	    	return
 	    end
+
+	    render json:{
+			code: 1,
+			msg: "success",
+			data: Approval.all,
+		}
+	end
+	def approval_list_inuse
+	    # unauthorized and return unless 
+	    if not Auth.check('approval/approval_list_inuse', current_user)
+	    	unauthorized 
+	    	return
+	    end
 	    # the rows in json should in approval_to_me,here is by the way
 	    render json:{
 			code: 1,
 			msg: "success",
-			data: Approval.where(status: 1),
+			data: Approval.all.where(status: 1),
 			#bug: ????????? the next line: 1 should changed to current_user.id
 			rows: ApprovalCurrentNode.where(user_id: 1).where(status: 0).length			
 		}
@@ -150,7 +163,7 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	end
 
 	def approval_save
-		if not Auth.check('approval/approval_list', current_user)
+		if not Auth.check('approval/approval_save', current_user)
 	    	unauthorized 
 	    	return
 	    end
@@ -232,6 +245,11 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 # <Option value="日期">日期</Option>
 
 	def approval_to_me
+		if not Auth.check('approval/approval_to_me', current_user)
+	    	unauthorized 
+	    	return
+	    end
+
 		#bug : pay attention to the current_user ????????????
 		# acn = ApprovalCurrentNode.where(user_id: current_user.id).where(status: 0)
 		acn = ApprovalCurrentNode.where(user_id: 1).where(status: 0)
@@ -257,6 +275,11 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 		}
 	end
 	def approval_info
+		if not Auth.check('approval/approval_info', current_user)
+	    	unauthorized 
+	    	return
+	    end
+
 		acn = ApprovalCurrentNode.find_by(id: params[:app_cur_id])
 		mt = acn.owner  #auto creted main table
 		app = Approval.find(mt.approval_id) #main table has approval_id
@@ -365,6 +388,11 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	end
 
 	def approval_to_me_done
+		if not Auth.check('approval/approval_to_me_done', current_user)
+	    	unauthorized 
+	    	return
+	    end
+
 		#bug : pay attention to the current_user ????????????
 		acn = ApprovalCurrentNode.where(user_id: 1).where.not(status: 0)
 		ret_data = []
@@ -396,6 +424,11 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 		}
 	end
 	def approval_from_me
+		if not Auth.check('approval/approval_from_me', current_user)
+	    	unauthorized 
+	    	return
+	    end
+
 		#bug : pay attention to the current_user ????????????
 		acn = ApprovalCurrentNode.where(submit_user_id: 1)
 		ret_data = []
@@ -426,6 +459,11 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	end
 
 	def approval_pass
+		if not Auth.check('approval/approval_pass', current_user)
+	    	unauthorized 
+	    	return
+	    end
+
 		acn = ApprovalCurrentNode.find_by(id: params[:app_cur_id])
 		begin
 			t_now = Time.now
@@ -465,6 +503,11 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 
 	end
 	def approval_reject
+		if not Auth.check('approval/approval_reject', current_user)
+	    	unauthorized 
+	    	return
+	    end
+
 		acn = ApprovalCurrentNode.find_by(id: params[:app_cur_id])
 		begin
 			t_now = Time.now
