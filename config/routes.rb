@@ -62,6 +62,7 @@ Rails.application.routes.draw do
       
       # Approval actions
       get '/approval_list'   =>'approval#approval_list'
+      get '/approval_list_inuse'   =>'approval#approval_list_inuse'
       post '/approval_create'   =>'approval#approval_create'
       post '/approval_save'   =>'approval#approval_save'
       get '/approval_field_list' =>'approval#approval_field_list'
