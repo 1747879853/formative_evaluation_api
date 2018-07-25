@@ -79,6 +79,8 @@ Rails.application.routes.draw do
       get '/approval_info'   =>'approval#approval_info'
       post '/approval_pass'   =>'approval#approval_pass'
       post '/approval_reject'   =>'approval#approval_reject'
+      post '/approval_start'   =>'approval#approval_start'
+      post '/approval_stop'   =>'approval#approval_stop'
      
 
       # Procedure actions

@@ -11,7 +11,7 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	    render json:{
 			code: 1,
 			msg: "success",
-			data: Approval.all,
+			data: Approval.all.order(status: :desc),
 		}
 	end
 	def approval_list_inuse
@@ -531,6 +531,27 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 			acn.status = 2
 			acn.save! 
 
+			render json:{msg: '保存成功',code: 1}
+		rescue Exception => e
+			render json:{msg: '保存失败',code: 0}
+		end
+	end
+	def approval_stop
+		begin
+			app = Approval.find_by(id: params[:approval_id])
+			app.status = 0
+			app.save!
+			render json:{msg: '保存成功',code: 1}
+		rescue Exception => e
+			render json:{msg: '保存失败',code: 0}
+		end
+
+	end
+	def approval_start
+		begin
+			app = Approval.find_by(id: params[:approval_id])
+			app.status = 1
+			app.save!
 			render json:{msg: '保存成功',code: 1}
 		rescue Exception => e
 			render json:{msg: '保存失败',code: 0}
