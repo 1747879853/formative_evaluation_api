@@ -62,16 +62,24 @@ Rails.application.routes.draw do
       post   '/boms_approval'  => 'orders#boms_approval'
       get    '/boms_approvals' => 'orders#boms_approval_list'
       get    '/boms_approval_detail' => 'orders#boms_approval_detail'
+      post   '/auditing_boms'  => 'orders#auditing_boms'
+      get    '/order_process'  => 'orders#order_process'
+      get    '/team_task_finish' => 'orders#team_task_finish'
       # WorkOrder actions
       
       # Approval actions
       get '/approval_list'   =>'approval#approval_list'
+      get '/approval_list_inuse'   =>'approval#approval_list_inuse'
       post '/approval_create'   =>'approval#approval_create'
       post '/approval_save'   =>'approval#approval_save'
       get '/approval_field_list' =>'approval#approval_field_list'
       get '/approval_to_me'   =>'approval#approval_to_me'
       get '/approval_to_me_done'   =>'approval#approval_to_me_done'
       get '/approval_from_me'   =>'approval#approval_from_me'
+      get '/approval_info'   =>'approval#approval_info'
+      post '/approval_pass'   =>'approval#approval_pass'
+      post '/approval_reject'   =>'approval#approval_reject'
+     
 
       # Procedure actions
       get '/procedure_nodes'   =>'procedure#procedure_nodes'

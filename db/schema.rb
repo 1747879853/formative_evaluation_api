@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 2018_07_25_054908) do
     t.integer "status"
     t.string "owner_type"
     t.bigint "owner_id"
+    t.integer "submit_user_id"
     t.index ["owner_type", "owner_id"], name: "index_approval_current_nodes_on_owner_type_and_owner_id"
     t.index ["procedure_node_id"], name: "index_approval_current_nodes_on_procedure_node_id"
     t.index ["user_id"], name: "index_approval_current_nodes_on_user_id"
@@ -218,6 +219,8 @@ ActiveRecord::Schema.define(version: 2018_07_25_054908) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "work_order_id"
+    t.integer "order_id"
     t.index ["owner_type", "owner_id"], name: "index_work_logs_on_owner_type_and_owner_id"
   end
 
