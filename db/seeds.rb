@@ -46,6 +46,24 @@ workteam_user8 = User.find_or_create_by({username: 'zupinbanzhuren2',email: '567
 workteam_user8.password = 'password'
 workteam_user8.save!
 
+cost1 = Cost.find_or_create_by({title:'车辆费1'})
+cost1.save!
+cost2 = Cost.find_or_create_by({title:'保养费2'})
+cost2.parent=cost1
+cost2.save!
+cost3 = Cost.find_or_create_by({title:'加油费3'})
+cost3.parent=cost1
+cost3.save!
+cost4 = Cost.find_or_create_by({title:'保险费4'})
+cost4.parent=cost3
+cost4.save!
+
+cost5 = Cost.find_or_create_by({title:'邮电费5'})
+cost5.save!
+cost6 = Cost.find_or_create_by({title:'快递费6'})
+cost6.parent=cost5
+cost6.save!
+
 
 
 
@@ -66,6 +84,10 @@ rules5.save!
 rules6 = AuthRule.find_or_create_by({ name: 'Admin/ShowNav/Nav', title: '菜单管理'})
 rules6.parent = rules5
 rules6.save!
+
+
+
+
 
 group1 = AuthGroup.find_or_create_by({title: '超级管理员'})
 group1.save!

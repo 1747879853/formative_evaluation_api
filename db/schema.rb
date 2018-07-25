@@ -10,20 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_21_221142) do
+ActiveRecord::Schema.define(version: 2018_07_25_054908) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "approval20180718152612s", force: :cascade do |t|
-    t.string "field0"
-    t.text "field1"
-    t.string "field2"
-    t.string "field3"
-    t.datetime "field4"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
 
   create_table "approval_current_nodes", force: :cascade do |t|
     t.string "node_ids"
@@ -35,14 +25,6 @@ ActiveRecord::Schema.define(version: 2018_07_21_221142) do
     t.index ["owner_type", "owner_id"], name: "index_approval_current_nodes_on_owner_type_and_owner_id"
     t.index ["procedure_node_id"], name: "index_approval_current_nodes_on_procedure_node_id"
     t.index ["user_id"], name: "index_approval_current_nodes_on_user_id"
-  end
-
-  create_table "approval_detail20180718152612s", force: :cascade do |t|
-    t.string "field0"
-    t.string "field1"
-    t.integer "approval20180718152612_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "approval_detail_fields", force: :cascade do |t|
@@ -163,6 +145,14 @@ ActiveRecord::Schema.define(version: 2018_07_21_221142) do
     t.index ["approval_owner_id"], name: "index_boms_approvals_on_approval_owner_id"
     t.index ["user_id"], name: "index_boms_approvals_on_user_id"
     t.index ["work_team_task_id"], name: "index_boms_approvals_on_work_team_task_id"
+  end
+
+  create_table "costs", force: :cascade do |t|
+    t.string "title", null: false
+    t.integer "parent_id", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["title"], name: "index_costs_on_title"
   end
 
   create_table "materials", force: :cascade do |t|

@@ -35,7 +35,7 @@ module App
     config.autoload_paths << Rails.root.join('lib')
     config.eager_load_paths << Rails.root.join('lib')
 
-    config.i18n.default_locale = :cn
+    # config.i18n.default_locale = :cn
     config.time_zone = 'Beijing'
     config.active_record.default_timezone = :local
   end

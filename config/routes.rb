@@ -35,6 +35,13 @@ Rails.application.routes.draw do
 
       get    '/authUserList'   =>  'authorities#get_userlist'
       patch  '/authUserList'   =>  'authorities#patch_userlist'
+      
+      # Cost actions
+      get    '/costList'       =>  'cost#get_costlist'
+      post   '/costList'       =>  'cost#post_costlist'
+      delete '/costList'       =>  'cost#delete_costlist'
+      patch   '/costList'       =>  'cost#patch_costlist'
+
       # Order actions
       get    '/orders'         => 'orders#order_list'
       get    '/order_details'  => 'orders#order_details' 
