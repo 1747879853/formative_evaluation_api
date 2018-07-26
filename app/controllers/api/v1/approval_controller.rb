@@ -287,7 +287,8 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 
 	    params.permit(:approvaladminid)
 	    params.permit(:submit_user_id)
-	    params.require(:mainhash).permit!
+	    
+    	params.require(:mainhash).permit!
 		
 		d_hash_arr = []
 		if params[:detailhasharr].length > 0
@@ -304,7 +305,7 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	    app = app_admin.approvals.where(status: 1).first
 	    begin	    	
 		    
-		    model_main = app.en_name_main.classify.constantize
+		    model_main = app.en_name_main.classify.safe_constantize
 	        
 	        # the next fields are solid added at server,not filled by client.
 	        m_hash["approval_id"] = app.id
@@ -324,7 +325,7 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 
 		    if d_hash_arr.length>0
 		    	main_key_id = app.en_name_main.downcase + '_id'
-				model_detail = app.en_name_detail.classify.constantize
+				model_detail = app.en_name_detail.classify.safe_constantize
 
 				d_hash_arr.each do |hh|
 					hh[main_key_id] = mm.id
