@@ -333,5 +333,86 @@ class Api::V1::OrdersController < Api::V1::BaseController
       wttd: wttd
     }
   end
+
+  def get_work_shop
+    
+    render json: WorkShop.where(status: 1).all
+  end
+
+  def post_work_shop
+
+    begin
+      workshop = WorkShop.new(params.require(:params).permit(:name, :dept_type, :status, :user_id))
+      if workshop.save!
+        render json: workshop
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500
+    end
+  end
+
+  def delete_work_shop
+
+    begin
+      workshop = WorkShop.find(params.require(:params)[:id])
+      if workshop.update(params.require(:params).permit(:status))
+        render json: { }
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500      
+    end
+  end
+
+  def patch_work_shop
+
+    begin
+      workshop = WorkShop.find(params.require(:params)[:id])
+      if workshop.update(params.require(:params).permit(:name, :dept_type, :user_id))
+        render json: workshop
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500
+    end
+  end
+
+  def get_work_team
+    
+    render json: WorkTeam.where(status: 1).all
+  end
   
+  def post_work_team
+
+    begin
+      workteam = WorkTeam.new(params.require(:params).permit(:name, :work_shop_id, :status, :user_id))
+      if workteam.save!
+        render json: workteam
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500
+    end
+  end
+
+  def delete_work_team
+
+    begin
+      workteam = WorkTeam.find(params.require(:params)[:id])
+      if workteam.update(params.require(:params).permit(:status))
+        render json: { }
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500      
+    end
+  end
+
+  def patch_work_team
+    begin
+      workteam = WorkTeam.find(params.require(:params)[:id])
+      if workteam.update(params.require(:params).permit(:name, :work_shop_id, :user_id))
+        render json: workteam
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500
+    end
+  end
+
 end

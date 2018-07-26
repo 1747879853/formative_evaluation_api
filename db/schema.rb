@@ -10,17 +10,269 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_25_054908) do
+ActiveRecord::Schema.define(version: 2018_07_26_080110) do
+
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "approval20180718152612s", force: :cascade do |t|
+
+    t.integer "approval_id"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.integer "procedure_id"
+    t.string "node_ids"
+    t.string "role_ids"
+    t.integer "node_id_now"
+    t.integer "submit_to_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180721065907s", force: :cascade do |t|
     t.string "field0"
     t.text "field1"
     t.string "field2"
     t.string "field3"
     t.datetime "field4"
+    t.integer "approval_id"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.integer "procedure_id"
+    t.string "node_ids"
+    t.string "role_ids"
+    t.integer "node_id_now"
+    t.integer "submit_to_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180722094026s", force: :cascade do |t|
+    t.string "field0"
+    t.string "field1"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180722193219s", force: :cascade do |t|
+    t.datetime "field0"
+    t.text "field1"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180722194320s", force: :cascade do |t|
+    t.text "field0"
+    t.datetime "field1"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180722195439s", force: :cascade do |t|
+    t.text "field0"
+    t.datetime "field1"
+    t.datetime "field2"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180724061652s", force: :cascade do |t|
+    t.string "field0"
+    t.string "field1"
+    t.string "field2"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180724111207s", force: :cascade do |t|
+    t.string "field0"
+    t.string "field1"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180725212605s", force: :cascade do |t|
+    t.datetime "field0"
+    t.text "field1"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180725213120s", force: :cascade do |t|
+    t.string "field0"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180725214001s", force: :cascade do |t|
+    t.string "field0"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180725214401s", force: :cascade do |t|
+    t.string "field0"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180725214624s", force: :cascade do |t|
+    t.string "field0"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180726094921s", force: :cascade do |t|
+    t.string "field0"
+    t.datetime "field1"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180726100021s", force: :cascade do |t|
+    t.string "field0"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180726112047s", force: :cascade do |t|
+    t.string "field0"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180726122657s", force: :cascade do |t|
+    t.string "field0"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180726160104s", force: :cascade do |t|
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval_admins", force: :cascade do |t|
+    t.string "name"
+    t.string "comment"
+    t.datetime "created_time"
+    t.integer "status"
+>>>>>>> 50c3de82e24de94d8d089e01b5080a5664cff493
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -38,6 +290,7 @@ ActiveRecord::Schema.define(version: 2018_07_25_054908) do
     t.index ["user_id"], name: "index_approval_current_nodes_on_user_id"
   end
 
+<<<<<<< HEAD
   create_table "approval_detail20180718152612s", force: :cascade do |t|
     t.string "field0"
     t.string "field1"
@@ -45,6 +298,8 @@ ActiveRecord::Schema.define(version: 2018_07_25_054908) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+=======
+>>>>>>> 50c3de82e24de94d8d089e01b5080a5664cff493
 
   create_table "approval_detail_fields", force: :cascade do |t|
     t.bigint "approval_id"
@@ -99,6 +354,8 @@ ActiveRecord::Schema.define(version: 2018_07_25_054908) do
     t.integer "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "approval_admin_id"
+    t.index ["approval_admin_id"], name: "index_approvals_on_approval_admin_id"
   end
 
   create_table "auth_groups", force: :cascade do |t|
@@ -166,6 +423,15 @@ ActiveRecord::Schema.define(version: 2018_07_25_054908) do
     t.index ["work_team_task_id"], name: "index_boms_approvals_on_work_team_task_id"
   end
 
+  create_table "costdata", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "thing"
+    t.string "money", null: false
+    t.string "summaries_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "costs", force: :cascade do |t|
     t.string "title", null: false
     t.integer "parent_id", default: 0
@@ -215,6 +481,17 @@ ActiveRecord::Schema.define(version: 2018_07_25_054908) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["approval_id"], name: "index_procedures_on_approval_id"
+  end
+
+  create_table "summaries", force: :cascade do |t|
+    t.date "date", null: false
+    t.string "address"
+    t.text "workcontent"
+    t.string "transport"
+    t.text "explain"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["date"], name: "index_summaries_on_date"
   end
 
   create_table "users", force: :cascade do |t|
@@ -274,6 +551,7 @@ ActiveRecord::Schema.define(version: 2018_07_25_054908) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status", default: "1", null: false
     t.index ["user_id"], name: "index_work_shops_on_user_id"
   end
 
@@ -311,8 +589,10 @@ ActiveRecord::Schema.define(version: 2018_07_25_054908) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status", default: "1", null: false
     t.index ["user_id"], name: "index_work_teams_on_user_id"
     t.index ["work_shop_id"], name: "index_work_teams_on_work_shop_id"
   end
 
+  add_foreign_key "approvals", "approval_admins"
 end

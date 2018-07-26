@@ -50,7 +50,6 @@ workteam_user8 = User.find_or_create_by({username: 'zupinbanzhuren2',email: '567
 workteam_user8.password = 'password'
 workteam_user8.save!
 
-
 AuthRule.delete_all
 rule10 = AuthRule.find_or_create_by({ name: 'Admin/index', title: '后台首页'})
 rule10.save!

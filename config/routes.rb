@@ -40,7 +40,12 @@ Rails.application.routes.draw do
       get    '/costList'       =>  'cost#get_costlist'
       post   '/costList'       =>  'cost#post_costlist'
       delete '/costList'       =>  'cost#delete_costlist'
-      patch   '/costList'       =>  'cost#patch_costlist'
+      patch  '/costList'       =>  'cost#patch_costlist'
+
+      # Work actions
+      get    '/workList'       =>  'summary#get_summary'
+      post   '/workList'       =>  'summary#post_summary'
+      # Costdata actions
 
       # Order actions
       get    '/orders'         => 'orders#order_list'
@@ -65,9 +70,20 @@ Rails.application.routes.draw do
       post   '/auditing_boms'  => 'orders#auditing_boms'
       get    '/order_process'  => 'orders#order_process'
       get    '/team_task_finish' => 'orders#team_task_finish'
+
+      get    '/work_teams'     => 'orders#get_work_team'
+      post   '/work_teams'     => 'orders#post_work_team'
+      delete '/work_teams'     => 'orders#delete_work_team'
+      patch  '/work_teams'     => 'orders#patch_work_team'
+
+      get    '/work_shops'     => 'orders#get_work_shop'
+      post   '/work_shops'     => 'orders#post_work_shop'
+      delete '/work_shops'     => 'orders#delete_work_shop'
+      patch  '/work_shops'     => 'orders#patch_work_shop'
       # WorkOrder actions
       
       # Approval actions
+      get '/approval_admin_list'   =>'approval#approval_admin_list'
       get '/approval_list'   =>'approval#approval_list'
       get '/approval_list_inuse'   =>'approval#approval_list_inuse'
       post '/approval_create'   =>'approval#approval_create'
@@ -79,6 +95,8 @@ Rails.application.routes.draw do
       get '/approval_info'   =>'approval#approval_info'
       post '/approval_pass'   =>'approval#approval_pass'
       post '/approval_reject'   =>'approval#approval_reject'
+      post '/approval_admin_start'   =>'approval#approval_admin_start'
+      post '/approval_admin_stop'   =>'approval#approval_admin_stop'
      
 
       # Procedure actions

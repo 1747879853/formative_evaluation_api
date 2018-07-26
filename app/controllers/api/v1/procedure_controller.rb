@@ -7,7 +7,10 @@ class Api::V1::ProcedureController < Api::V1::BaseController
     	unauthorized 
     	return
     end
-    prec = Procedure.where(approval_id: params[:approval_id]).where(status: 1)
+    app_admin = ApprovalAdmin.find_by(id: params[:approval_admin_id])
+    app = app_admin.approvals.where(status: 1).first
+
+    prec = Procedure.where(approval_id: app.id).where(status: 1)
     if prec.length > 0
     	render json: prec.first.procedure_nodes.order(:sequence)
     else
@@ -25,16 +28,18 @@ class Api::V1::ProcedureController < Api::V1::BaseController
 	begin
 		tn = Time.now
 
-		old_proc_arr = Procedure.where(status: 1).where(approval_id: params[:approval_id])
-		if old_proc_arr.length >0 
-			old_proc = old_proc_arr.first
+		app_admin = ApprovalAdmin.find_by(id: params[:approval_admin_id])
+    	app = app_admin.approvals.where(status: 1).first
+
+		old_proc = Procedure.where(status: 1).where(approval_id: app.id).first
+		if old_proc 
 			old_proc.status = 0
 			old_proc.stoped_time = tn
 			old_proc.save!
 		end
 
 		new_proc = Procedure.new
-		new_proc.approval_id = params[:approval_id]
+		new_proc.approval_id = app.id
 		new_proc.status = 1
 		new_proc.created_time = tn
 		new_proc.stoped_time = nil
