@@ -77,6 +77,26 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 		end
 	end
 
+	def approval_field_edit
+	    # unauthorized and return unless 
+	    if not Auth.check('approval/approval_field_edit', current_user)
+	    	unauthorized 
+	    	return
+	    end
+
+	    app_admin = ApprovalAdmin.find_by(id: params[:approval_admin_id])
+	    app = app_admin.approvals.where(status: 1).first
+	    
+	    render json: {
+	    	'msg': 'success',
+	    	'code': 1,
+	    	'approval_data': app,
+	    	'approval_field_data': app.approval_fields.order(:sequence) || [],
+	    	'approval_detail_field_data': app.approval_detail_fields.order(:sequence) || []
+	    }
+		
+	end
+
 	def approval_create
 	  	if not Auth.check('approval/approval_create', current_user)
 	    	unauthorized 
@@ -321,6 +341,7 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 			# m_hash["role_ids"] = p_nodes.map(&:owner_id).join(",")
 			# m_hash["node_id_now"] = p_nodes.first.id
 			# m_hash["submit_to_user_id"] = sui
+			m_hash.delete("xxx")  #fuck rails parameters permit!
 		    mm = model_main.create(m_hash)
 
 		    if d_hash_arr.length>0
@@ -393,13 +414,14 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 		app = Approval.find(mt.approval_id) #main table has approval_id
 
 		to_me_flag = false
-		if acn.user_id == current_user.id
+		# 审批未完成并且审批人==current_user,才给to_me_flag = true
+		if acn.status == 0 && acn.user_id == current_user.id
 			to_me_flag = true
 		end
 
 		node_arr = acn.node_ids.split(",").map(&:to_i)
 
-		submit_to_users = []
+		submit_to_users = []  #只有最后一个节点的submit_to_users为空
 		if acn.procedure_node_id != node_arr.last  #the last node
 			proc_node_id = node_arr[node_arr.index(acn.procedure_node_id) + 1]
 			submit_to_users = ProcedureNode.find(proc_node_id).owner.users
@@ -461,14 +483,11 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 			tt={}
 			tt[:title] = nn.name
 			if n_details[nn.id] # done node
-				 
 				tt[:whowho] = User.find(n_details[nn.id].user_id).username
 				tt[:act_str] = n_details[nn.id].action_str
 				tt[:act_time] = n_details[nn.id].action_time.try(:strftime,'%Y-%m-%d %H:%M:%S')
 				tt[:comment] = n_details[nn.id].comment
-			
-
-			elsif flag == 0 #first undone node
+			elsif flag == 0 && acn.status != 2 #first undone node
 				tt[:whowho] = User.find(acn.user_id).username
 				tt[:act_str] = '审批中'
 				flag = 1		
@@ -551,6 +570,8 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 				hh[:status] = '审批通过'
 			elsif val.status == 2
 				hh[:status] = '审批拒绝'
+			elsif val.status == 0
+				hh[:status] = User.find(val.user_id).username + '审批中...'
 			end	
 		
 			ret_data << hh
@@ -574,11 +595,6 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 		acn = ApprovalCurrentNode.find_by(id: params[:app_cur_id])
 		begin
 			t_now = Time.now
-
-			mt = acn.owner
-			mt.finish_time = t_now
-			mt.save 
-
 			ad = ApprovalDetail.new
 			ad.procedure_node_id = acn.procedure_node_id
 			ad.action_str = "同意"
@@ -595,6 +611,11 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 				# acn.user_id = nil
 				# acn.procedure_node_id = nil
 				acn.status = 1
+
+				# 该审批已经完成，所以填入完成时间
+				mt = acn.owner
+				mt.finish_time = t_now
+				mt.save
 			else
 				acn.procedure_node_id = node_arr[node_arr.index(acn.procedure_node_id) + 1]
 				acn.user_id = params[:submit_to_user_id]
