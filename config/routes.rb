@@ -90,6 +90,7 @@ Rails.application.routes.draw do
       post '/approval_create'   =>'approval#approval_create'
       post '/approval_save'   =>'approval#approval_save'
       get '/approval_field_list' =>'approval#approval_field_list'
+      get '/approval_field_edit' =>'approval#approval_field_edit'
       get '/approval_to_me'   =>'approval#approval_to_me'
       get '/approval_to_me_done'   =>'approval#approval_to_me_done'
       get '/approval_from_me'   =>'approval#approval_from_me'

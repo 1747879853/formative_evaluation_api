@@ -17,9 +17,12 @@ namespace :auto_form do
 				app.delete
 		    end 
 		    appadmin.delete
+    		ApprovalCurrentNode.delete_all
+			ApprovalDetail.delete_all
+
 		end
 		system("rm -f app/models/approval2018*.rb")
-		system("rm -f app/models/approval_detail*.rb")
+		system("rm -f app/models/approval_detail2018*.rb")
 		system("rm -f db/migrate/*_create_approval2018*s.rb")
 		system("rm -f db/migrate/*_create_approval_detail2018*s.rb")
 	end	
