@@ -16,7 +16,9 @@ ActiveRecord::Schema.define(version: 2018_07_26_080110) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "approval20180718152612s", force: :cascade do |t|
+
+
+  create_table "approval20180721064310s", force: :cascade do |t|
 
     t.integer "approval_id"
     t.integer "user_id"
