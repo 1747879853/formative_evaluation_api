@@ -40,7 +40,12 @@ Rails.application.routes.draw do
       get    '/costList'       =>  'cost#get_costlist'
       post   '/costList'       =>  'cost#post_costlist'
       delete '/costList'       =>  'cost#delete_costlist'
-      patch   '/costList'       =>  'cost#patch_costlist'
+      patch  '/costList'       =>  'cost#patch_costlist'
+
+      # Work actions
+      get    '/workList'       =>  'summary#get_summary'
+      post   '/workList'       =>  'summary#post_summary'
+      # Costdata actions
 
       # Order actions
       get    '/orders'         => 'orders#order_list'
@@ -78,6 +83,7 @@ Rails.application.routes.draw do
       # WorkOrder actions
       
       # Approval actions
+      get '/approval_admin_list'   =>'approval#approval_admin_list'
       get '/approval_list'   =>'approval#approval_list'
       get '/approval_list_inuse'   =>'approval#approval_list_inuse'
       post '/approval_create'   =>'approval#approval_create'
@@ -89,6 +95,8 @@ Rails.application.routes.draw do
       get '/approval_info'   =>'approval#approval_info'
       post '/approval_pass'   =>'approval#approval_pass'
       post '/approval_reject'   =>'approval#approval_reject'
+      post '/approval_admin_start'   =>'approval#approval_admin_start'
+      post '/approval_admin_stop'   =>'approval#approval_admin_stop'
      
 
       # Procedure actions

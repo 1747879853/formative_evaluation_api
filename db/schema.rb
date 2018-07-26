@@ -10,17 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_26_030410) do
+
+ActiveRecord::Schema.define(version: 2018_07_26_042659) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "approval20180718152612s", force: :cascade do |t|
-    t.string "field0"
-    t.text "field1"
-    t.string "field2"
-    t.string "field3"
-    t.datetime "field4"
+
+  create_table "approval_admins", force: :cascade do |t|
+    t.string "name"
+    t.string "comment"
+    t.datetime "created_time"
+    t.integer "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -36,14 +37,6 @@ ActiveRecord::Schema.define(version: 2018_07_26_030410) do
     t.index ["owner_type", "owner_id"], name: "index_approval_current_nodes_on_owner_type_and_owner_id"
     t.index ["procedure_node_id"], name: "index_approval_current_nodes_on_procedure_node_id"
     t.index ["user_id"], name: "index_approval_current_nodes_on_user_id"
-  end
-
-  create_table "approval_detail20180718152612s", force: :cascade do |t|
-    t.string "field0"
-    t.string "field1"
-    t.integer "approval20180718152612_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "approval_detail_fields", force: :cascade do |t|
@@ -99,6 +92,8 @@ ActiveRecord::Schema.define(version: 2018_07_26_030410) do
     t.integer "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "approval_admin_id"
+    t.index ["approval_admin_id"], name: "index_approvals_on_approval_admin_id"
   end
 
   create_table "auth_groups", force: :cascade do |t|
@@ -166,6 +161,15 @@ ActiveRecord::Schema.define(version: 2018_07_26_030410) do
     t.index ["work_team_task_id"], name: "index_boms_approvals_on_work_team_task_id"
   end
 
+  create_table "costdata", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "thing"
+    t.string "money", null: false
+    t.string "summaries_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "costs", force: :cascade do |t|
     t.string "title", null: false
     t.integer "parent_id", default: 0
@@ -215,6 +219,17 @@ ActiveRecord::Schema.define(version: 2018_07_26_030410) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["approval_id"], name: "index_procedures_on_approval_id"
+  end
+
+  create_table "summaries", force: :cascade do |t|
+    t.date "date", null: false
+    t.string "address"
+    t.text "workcontent"
+    t.string "transport"
+    t.text "explain"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["date"], name: "index_summaries_on_date"
   end
 
   create_table "users", force: :cascade do |t|
@@ -317,4 +332,5 @@ ActiveRecord::Schema.define(version: 2018_07_26_030410) do
     t.index ["work_shop_id"], name: "index_work_teams_on_work_shop_id"
   end
 
+  add_foreign_key "approvals", "approval_admins"
 end

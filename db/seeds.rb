@@ -19,7 +19,7 @@ production_manager.password = 'password'
 production_manager.save!
 
 workshop_user1 = User.find_or_create_by({username: 'xialiaozhuren1',email: '56700663@qq.com'})
-workshop_user1.password = 'password'
+workshop_user1.password = 'pass>>>word'
 workshop_user1.save!
 
 workshop_user2 = User.find_or_create_by({username: 'xialiaozhuren2',email: '56700666@qq.com'})
@@ -49,7 +49,6 @@ workteam_user7.save!
 workteam_user8 = User.find_or_create_by({username: 'zupinbanzhuren2',email: '567006678@qq.com'})
 workteam_user8.password = 'password'
 workteam_user8.save!
-
 
 AuthRule.delete_all
 rule10 = AuthRule.find_or_create_by({ name: 'Admin/index', title: '后台首页'})
