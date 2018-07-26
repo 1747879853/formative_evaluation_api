@@ -14,7 +14,7 @@ dev = User.find_or_create_by({username: 'dev', email: 'dev@welltek.com'})
 dev.password = 'password'
 dev.save!
 
-production_manager = User.find_or_create_by({username: 'shengchanjingli',email: 'shengchanjingli@qq.com'})
+production_manager = User.find_or_create_by({username: 'shengchanjingli',email: 'shengchanjingli'})
 production_manager.password = 'password'
 production_manager.save!
 
@@ -104,6 +104,12 @@ rule71.save!
 rule72 = AuthRule.find_or_create_by({ name: 'users-manage/organization', title: '组织管理'})
 rule72.parent = rule70
 rule72.save!
+rule73 = AuthRule.find_or_create_by({ name: 'users-manage/workshop-maintenance', title: '车间维护'})
+rule73.parent = rule70
+rule73.save!
+rule74 = AuthRule.find_or_create_by({ name: 'users-manage/workteam-maintenance', title: '班组维护'})
+rule74.parent = rule70
+rule74.save!
 
 rule80 = AuthRule.find_or_create_by({ name: 'employee-information/index', title: '员工信息'})
 rule80.save!
@@ -136,6 +142,8 @@ group1.auth_rules.push rule61
 # group1.auth_rules.push rule70
 group1.auth_rules.push rule71
 group1.auth_rules.push rule72
+group1.auth_rules.push rule73
+group1.auth_rules.push rule74
 
 group2.auth_rules.destroy_all
 group2.auth_rules.push rule10
@@ -179,6 +187,8 @@ group6.auth_rules.push rule62
 group6.auth_rules.push rule70
 group6.auth_rules.push rule71
 group6.auth_rules.push rule72
+group6.auth_rules.push rule73
+group6.auth_rules.push rule74
 group6.auth_rules.push rule80
 group6.auth_rules.push rule81
 
