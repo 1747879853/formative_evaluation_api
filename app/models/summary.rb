@@ -1,8 +1,8 @@
- class Summaries < ApplicationRecord
+ class Summary < ApplicationRecord
   has_many :costdatas
+  belongs_to :users
   
   validates_presence_of     :date
-  validates_uniqueness_of   :date
 
   def as_json(options = {})
   		h = {}	

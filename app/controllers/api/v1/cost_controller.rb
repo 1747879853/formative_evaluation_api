@@ -2,8 +2,7 @@ class Api::V1::CostController < Api::V1::BaseController
   # before_action :authorize
   
   def get_costlist
-    # unauthorized and return unless Auth.check('Admin/Authority/list', current_user)
-
+    # unauthorized and return unless Auth.check('Admin/daily_summary/costlist', current_user)
     render json: Cost.where(parent_id: 0).all
   end
 
