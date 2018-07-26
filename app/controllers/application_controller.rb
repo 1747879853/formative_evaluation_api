@@ -9,7 +9,7 @@ class ApplicationController < ActionController::API
   protected
 
   def authenticate_user_in_production_mode
-    authenticate_user unless Rails.env.development?
+    authenticate_user 
   end
   
   def unauthorized
