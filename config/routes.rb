@@ -7,11 +7,12 @@ Rails.application.routes.draw do
   # root   'home#index'
   # get    'auth'            => 'home#auth'
   
-  # Get login token from Knock
-  post   'user_token'      => 'user_token#create'
   
   namespace :api do
     namespace :v1 do
+      # Get login token from Knock
+      post   'user_token'      => 'user_token#create'
+
       # User actions
       get    '/userList'       => 'users#get_userlist'
       get    '/users/current'  => 'users#current'
