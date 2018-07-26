@@ -94,7 +94,7 @@ class Api::V1::AuthoritiesController < Api::V1::BaseController
   def get_userlist
     # unauthorized and return unless Auth.check('Admin/Authority/list', current_user)
 
-    render  json:{'a': User.all ,'b': AuthGroup.where(status: 1).all}
+    render  json:{'a': User.where(status: 1).all ,'b': AuthGroup.where(status: 1).all}
   end
 
   def patch_userlist

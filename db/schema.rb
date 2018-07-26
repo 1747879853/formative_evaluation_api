@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_25_054908) do
+ActiveRecord::Schema.define(version: 2018_07_26_030410) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "approval20180718152612s", force: :cascade do |t|
+    t.string "field0"
+    t.text "field1"
+    t.string "field2"
+    t.string "field3"
+    t.datetime "field4"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "approval_current_nodes", force: :cascade do |t|
     t.string "node_ids"
@@ -26,6 +36,14 @@ ActiveRecord::Schema.define(version: 2018_07_25_054908) do
     t.index ["owner_type", "owner_id"], name: "index_approval_current_nodes_on_owner_type_and_owner_id"
     t.index ["procedure_node_id"], name: "index_approval_current_nodes_on_procedure_node_id"
     t.index ["user_id"], name: "index_approval_current_nodes_on_user_id"
+  end
+
+  create_table "approval_detail20180718152612s", force: :cascade do |t|
+    t.string "field0"
+    t.string "field1"
+    t.integer "approval20180718152612_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "approval_detail_fields", force: :cascade do |t|
@@ -256,6 +274,7 @@ ActiveRecord::Schema.define(version: 2018_07_25_054908) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status", default: "1", null: false
     t.index ["user_id"], name: "index_work_shops_on_user_id"
   end
 
@@ -293,6 +312,7 @@ ActiveRecord::Schema.define(version: 2018_07_25_054908) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status", default: "1", null: false
     t.index ["user_id"], name: "index_work_teams_on_user_id"
     t.index ["work_shop_id"], name: "index_work_teams_on_work_shop_id"
   end
