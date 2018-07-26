@@ -18,9 +18,7 @@ class Api::V1::CostController < Api::V1::BaseController
     end
   end
 
-  def cost_params
-    params.require(:params).permit(:title,:parent_id)
-  end
+
 
   def delete_costlist
 
@@ -44,6 +42,12 @@ class Api::V1::CostController < Api::V1::BaseController
     rescue Exception => e
       render json: { msg: e }, status: 500
     end
+  end
+
+  private
+
+  def cost_params
+    params.require(:params).permit(:title,:parent_id)
   end
 
 end

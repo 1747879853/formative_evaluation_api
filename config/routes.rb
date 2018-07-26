@@ -40,7 +40,12 @@ Rails.application.routes.draw do
       get    '/costList'       =>  'cost#get_costlist'
       post   '/costList'       =>  'cost#post_costlist'
       delete '/costList'       =>  'cost#delete_costlist'
-      patch   '/costList'       =>  'cost#patch_costlist'
+      patch  '/costList'       =>  'cost#patch_costlist'
+
+      # Work actions
+      get    '/workList'       =>  'summary#get_summary'
+      post   '/workList'       =>  'summary#post_summary'
+      # Costdata actions
 
       # Order actions
       get    '/orders'         => 'orders#order_list'
