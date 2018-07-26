@@ -15,6 +15,37 @@ ActiveRecord::Schema.define(version: 2018_07_26_015742) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "approval20180718152612s", force: :cascade do |t|
+    t.string "field0"
+    t.text "field1"
+    t.string "field2"
+    t.string "field3"
+    t.datetime "field4"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180720094653s", force: :cascade do |t|
+    t.string "field0"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180725182633s", force: :cascade do |t|
+    t.string "field0"
+    t.integer "approval_id"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.integer "procedure_id"
+    t.string "node_ids"
+    t.string "role_ids"
+    t.integer "node_id_now"
+    t.integer "submit_to_user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "approval_current_nodes", force: :cascade do |t|
     t.string "node_ids"
     t.bigint "procedure_node_id"
@@ -26,6 +57,30 @@ ActiveRecord::Schema.define(version: 2018_07_26_015742) do
     t.index ["owner_type", "owner_id"], name: "index_approval_current_nodes_on_owner_type_and_owner_id"
     t.index ["procedure_node_id"], name: "index_approval_current_nodes_on_procedure_node_id"
     t.index ["user_id"], name: "index_approval_current_nodes_on_user_id"
+  end
+
+  create_table "approval_detail20180718152612s", force: :cascade do |t|
+    t.string "field0"
+    t.string "field1"
+    t.integer "approval20180718152612_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval_detail20180720094653s", force: :cascade do |t|
+    t.string "field0"
+    t.string "field1"
+    t.integer "approval20180720094653_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval_detail20180725182633s", force: :cascade do |t|
+    t.string "field0"
+    t.string "field1"
+    t.integer "approval20180725182633_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "approval_detail_fields", force: :cascade do |t|

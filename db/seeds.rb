@@ -19,7 +19,7 @@ production_manager.password = 'password'
 production_manager.save!
 
 workshop_user1 = User.find_or_create_by({username: 'xialiaozhuren1',email: '56700663@qq.com'})
-workshop_user1.password = 'password'
+workshop_user1.password = 'pass>>>word'
 workshop_user1.save!
 
 workshop_user2 = User.find_or_create_by({username: 'xialiaozhuren2',email: '56700666@qq.com'})
@@ -49,47 +49,6 @@ workteam_user7.save!
 workteam_user8 = User.find_or_create_by({username: 'zupinbanzhuren2',email: '567006678@qq.com'})
 workteam_user8.password = 'password'
 workteam_user8.save!
-
-<<<<<<< HEAD
-cost1 = Cost.find_or_create_by({title:'车辆费1'})
-cost1.save!
-cost2 = Cost.find_or_create_by({title:'保养费2'})
-cost2.parent=cost1
-cost2.save!
-cost3 = Cost.find_or_create_by({title:'加油费3'})
-cost3.parent=cost1
-cost3.save!
-cost4 = Cost.find_or_create_by({title:'保险费4'})
-cost4.parent=cost3
-cost4.save!
-
-cost5 = Cost.find_or_create_by({title:'邮电费5'})
-cost5.save!
-cost6 = Cost.find_or_create_by({title:'快递费6'})
-cost6.parent=cost5
-cost6.save!
-
-
-
-
-rules1 = AuthRule.find_or_create_by({ name: 'Admin/Index/index', title: '后台首页'})
-rules1.save!
-rules2 = AuthRule.find_or_create_by({ name: 'Admin/Index/welcome', title: '欢迎页面' })
-rules2.parent = rules1
-rules2.save!
-
-rules3 = AuthRule.find_or_create_by({ name: 'Manufacturing/Index/index', title: '生产首页'})
-rules3.save!
-rules4 = AuthRule.find_or_create_by({ name: 'Manufacturing/Index/bom', title: '物料清单'})
-rules4.parent = rules3
-rules4.save!
-
-rules5 = AuthRule.find_or_create_by({ name: 'Admin/ShowNav/config', title: '系统设置'})
-rules5.save!
-rules6 = AuthRule.find_or_create_by({ name: 'Admin/ShowNav/Nav', title: '菜单管理'})
-rules6.parent = rules5
-rules6.save!
-=======
 
 AuthRule.delete_all
 rule10 = AuthRule.find_or_create_by({ name: 'Admin/index', title: '后台首页'})
@@ -151,7 +110,6 @@ rule80.save!
 rule81 = AuthRule.find_or_create_by({ name: 'employee-information/attendance-record', title: '考勤记录'})
 rule81.parent = rule80
 rule81.save!
->>>>>>> 396f723c7a6d6ccece9183cbae4604f1ce24220c
 
 group1 = AuthGroup.find_or_create_by({title: '超级管理员'})
 group1.save!
