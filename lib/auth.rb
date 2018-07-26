@@ -1,7 +1,7 @@
 class Auth
   class << self
     def check(auth_name, user, relation: 'or', outer: {})
-      return true if Rails.env.development?
+      return true #if Rails.env.development?
       
       auth_names = auth_name.strip.split(',').map(&:strip)
       auth_rules = user.auth_rules
