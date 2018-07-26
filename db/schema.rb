@@ -15,16 +15,6 @@ ActiveRecord::Schema.define(version: 2018_07_26_030410) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "approval20180718152612s", force: :cascade do |t|
-    t.string "field0"
-    t.text "field1"
-    t.string "field2"
-    t.string "field3"
-    t.datetime "field4"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "approval_admins", force: :cascade do |t|
     t.string "name"
     t.string "comment"
@@ -45,14 +35,6 @@ ActiveRecord::Schema.define(version: 2018_07_26_030410) do
     t.index ["owner_type", "owner_id"], name: "index_approval_current_nodes_on_owner_type_and_owner_id"
     t.index ["procedure_node_id"], name: "index_approval_current_nodes_on_procedure_node_id"
     t.index ["user_id"], name: "index_approval_current_nodes_on_user_id"
-  end
-
-  create_table "approval_detail20180718152612s", force: :cascade do |t|
-    t.string "field0"
-    t.string "field1"
-    t.integer "approval20180718152612_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "approval_detail_fields", force: :cascade do |t|
