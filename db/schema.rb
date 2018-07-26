@@ -12,6 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2018_07_26_080110) do
 
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -292,31 +293,6 @@ ActiveRecord::Schema.define(version: 2018_07_26_080110) do
     t.index ["user_id"], name: "index_approval_current_nodes_on_user_id"
   end
 
-  create_table "approval_detail20180721064310s", force: :cascade do |t|
-    t.string "field0"
-    t.string "field1"
-    t.integer "approval20180721064310_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "approval_detail20180721065907s", force: :cascade do |t|
-    t.string "field0"
-    t.string "field1"
-    t.integer "approval20180721065907_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "approval_detail20180726160104s", force: :cascade do |t|
-    t.string "field0"
-    t.string "field1"
-    t.string "field2"
-    t.string "field3"
-    t.integer "approval20180726160104_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
 
   create_table "approval_detail_fields", force: :cascade do |t|
     t.bigint "approval_id"
@@ -568,6 +544,7 @@ ActiveRecord::Schema.define(version: 2018_07_26_080110) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status", default: "1", null: false
     t.index ["user_id"], name: "index_work_shops_on_user_id"
   end
 
@@ -605,6 +582,7 @@ ActiveRecord::Schema.define(version: 2018_07_26_080110) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status", default: "1", null: false
     t.index ["user_id"], name: "index_work_teams_on_user_id"
     t.index ["work_shop_id"], name: "index_work_teams_on_work_shop_id"
   end
