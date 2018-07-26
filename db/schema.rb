@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_25_054908) do
+ActiveRecord::Schema.define(version: 2018_07_26_015742) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -148,6 +148,15 @@ ActiveRecord::Schema.define(version: 2018_07_25_054908) do
     t.index ["work_team_task_id"], name: "index_boms_approvals_on_work_team_task_id"
   end
 
+  create_table "costdata", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "thing"
+    t.string "money", null: false
+    t.string "summaries_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "costs", force: :cascade do |t|
     t.string "title", null: false
     t.integer "parent_id", default: 0
@@ -197,6 +206,17 @@ ActiveRecord::Schema.define(version: 2018_07_25_054908) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["approval_id"], name: "index_procedures_on_approval_id"
+  end
+
+  create_table "summaries", force: :cascade do |t|
+    t.date "date", null: false
+    t.string "address"
+    t.text "workcontent"
+    t.string "transport"
+    t.text "explain"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["date"], name: "index_summaries_on_date"
   end
 
   create_table "users", force: :cascade do |t|
