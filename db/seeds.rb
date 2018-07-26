@@ -213,7 +213,7 @@ dev.auth_groups.push group6
 order = Order.find_or_create_by(id: 1)
 order.no = '1271115636988060'
 order.title = 'xxxxxx'
-order.client_title = '力五'
+order.client_title = '阿里公司'
 order.record_time = '2018-05-03'
 order.save!
 
@@ -322,19 +322,6 @@ ws4.save!
 
 
 
-wt1 = WorkTeam.find_or_create_by(id: 1)
-wt1.name = '下料班组1'
-wt1.work_shop_id = 1
-wt1.user_id = 7
-wt1.save!
-
-
-wt2 = WorkTeam.find_or_create_by(id: 2)
-wt2.name = '下料班组2'
-wt2.work_shop_id = 1
-wt2.user_id = 8
-wt2.save!
-
 wt3 = WorkTeam.find_or_create_by(id: 1)
 wt3.name = '组拼班组1'
 wt3.work_shop_id = 3
@@ -347,6 +334,19 @@ wt4.name = '组拼班组2'
 wt4.work_shop_id = 4
 wt4.user_id = 10
 wt4.save!
+
+wt1 = WorkTeam.find_or_create_by(id: 3)
+wt1.name = '下料班组1'
+wt1.work_shop_id = 1
+wt1.user_id = 7
+wt1.save!
+
+
+wt2 = WorkTeam.find_or_create_by(id: 4)
+wt2.name = '下料班组2'
+wt2.work_shop_id = 1
+wt2.user_id = 8
+wt2.save!
 
 cost1 = Cost.find_or_create_by({title:'车辆费1'})
 cost1.save!
