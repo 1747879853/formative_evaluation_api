@@ -68,6 +68,7 @@ Rails.application.routes.draw do
       # WorkOrder actions
       
       # Approval actions
+      get '/approval_admin_list'   =>'approval#approval_admin_list'
       get '/approval_list'   =>'approval#approval_list'
       get '/approval_list_inuse'   =>'approval#approval_list_inuse'
       post '/approval_create'   =>'approval#approval_create'
@@ -79,8 +80,8 @@ Rails.application.routes.draw do
       get '/approval_info'   =>'approval#approval_info'
       post '/approval_pass'   =>'approval#approval_pass'
       post '/approval_reject'   =>'approval#approval_reject'
-      post '/approval_start'   =>'approval#approval_start'
-      post '/approval_stop'   =>'approval#approval_stop'
+      post '/approval_admin_start'   =>'approval#approval_admin_start'
+      post '/approval_admin_stop'   =>'approval#approval_admin_stop'
      
 
       # Procedure actions

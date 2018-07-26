@@ -1,7 +1,20 @@
 class Api::V1::ApprovalController < Api::V1::BaseController
 	# before_action :authorize
   
-	def approval_list
+  	def approval_admin_list
+	    # unauthorized and return unless 
+	    if not Auth.check('approval/approval_admin_list', current_user)
+	    	unauthorized 
+	    	return
+	    end
+
+	    render json:{
+			code: 1,
+			msg: "success",
+			data: ApprovalAdmin.all.order('status DESC,created_time')
+		}
+	end
+	def approval_list   #not used
 	    # unauthorized and return unless 
 	    if not Auth.check('approval/approval_list', current_user)
 	    	unauthorized 
@@ -24,20 +37,22 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	    render json:{
 			code: 1,
 			msg: "success",
-			data: Approval.all.where(status: 1),
-			#bug: ????????? the next line: 1 should changed to current_user.id
-			rows: ApprovalCurrentNode.where(user_id: 1).where(status: 0).length			
+			data: ApprovalAdmin.all.where(status: 1),
+			rows: ApprovalCurrentNode.where(user_id: current_user.id).where(status: 0).length			
 		}
 	end
 
 	def approval_field_list
 	    # unauthorized and return unless 
-	    if not Auth.check('approval/approval_list', current_user)
+	    if not Auth.check('approval/approval_field_list', current_user)
 	    	unauthorized 
 	    	return
 	    end
-	    app = Approval.find_by(id: params[:approval_id])
-	    pro = Procedure.where(approval_id: params[:approval_id]).where(status: 1).first
+
+	    app_admin = ApprovalAdmin.find_by(id: params[:approval_admin_id])
+	    app = app_admin.approvals.where(status: 1).first
+	    
+	    pro = Procedure.where(approval_id: app.id).where(status: 1).first
 	    if pro 
 	    #suggest owner_type in procedure_nodes is 'Role'
 	    #suggest owner_id in procedure_nodes is one of role's id
@@ -67,55 +82,51 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	    	unauthorized 
 	    	return
 	    end
-
-
 	  	#always create a new approval whether click create a new or modify old approval
 	  	t = Time.now
 	  	ts = t.strftime('%Y%m%d%H%M%S')
 
 	  	begin
-			apr = Approval.new	
-			apr.name = params[:approval_name]
-			apr.en_name_main = 'Approval'+ts
-			apr.en_name_detail = 'ApprovalDetail'+ts
-			apr.comment = params[:approval_comment]
-			apr.created_time = t
-			apr.stoped_time = nil
-			apr.status = 1
-			apr.save!
 
-			# apr.id
-			app_field_name = []
-			app_field_ctl = []
-			app_field_str = ""
-			params[:approval_field_data].each_with_index  do |value,index|
-				af = ApprovalField.new
-				af.approval_id = apr.id
-				af.name = value[:name] 
-				af.en_name = 'field'+ value[:sequence].to_s
-				af.control = value[:control]
-				af.comment = value[:comment]
-				af.info = value[:info]
-				af.sequence = value[:sequence]
-				af.selectoptions = value[:selectoptions]
-				af.dateformat = value[:dateformat]
-				af.save!
+	  		para_admin_id = params[:approval_admin_id] 
+  			para_name = params[:approval_admin_name]
+  			para_comment = params[:approval_admin_comment]
 
-				app_field_name << af.en_name
-				app_field_ctl << value[:control]			
-			end
+	  		if para_admin_id == 0  #表示创建新审批
+	  			para_name = params[:approval_admin_name]
+	  			para_comment = params[:approval_admin_comment]
 
-			app_field_str = ApprovalField.generateStr(app_field_name,app_field_ctl) + ApprovalField.solid_field_str()
-			console_cmd1 ="rails generate model " + apr.en_name_main + " " + app_field_str +'--no-assets --no-test-framework'
+		  		all_name = ApprovalAdmin.all.map(&:name)
+		  		if all_name.index(para_name) && all_name.index(para_name) >= 0
+		  			render json:{ msg: '审批名称与已有审批重名!',code: 1}
+		  			return
+		  		end		  	
 
-			system(console_cmd1)
+		  		apr_admin = ApprovalAdmin.new
+		  		apr_admin.name = para_name
+				apr_admin.comment = para_comment
+				apr_admin.created_time = t
+				apr_admin.status = 1
+				apr_admin.save!
 
-			if params[:approval_detail_field_data].length >0
-				app_field_name_d = []
-				app_field_ctl_d = []
-				app_field_str_d = ""
-				params[:approval_detail_field_data].each_with_index  do |value,index|
-					af = ApprovalDetailField.new
+
+				apr = Approval.new	
+				apr.name = para_name
+				apr.en_name_main = 'Approval'+ts
+				apr.en_name_detail = 'ApprovalDetail'+ts
+				apr.comment = para_comment
+				apr.created_time = t
+				apr.stoped_time = nil
+				apr.status = 1
+				apr.approval_admin_id = apr_admin.id
+				apr.save!
+
+				# apr.id
+				app_field_name = []
+				app_field_ctl = []
+				app_field_str = ""
+				params[:approval_field_data].each_with_index  do |value,index|
+					af = ApprovalField.new
 					af.approval_id = apr.id
 					af.name = value[:name] 
 					af.en_name = 'field'+ value[:sequence].to_s
@@ -127,29 +138,127 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 					af.dateformat = value[:dateformat]
 					af.save!
 
-					app_field_name_d << af.en_name
-					app_field_ctl_d << af.control
+					app_field_name << af.en_name
+					app_field_ctl << value[:control]			
 				end
-				app_field_str_d = ApprovalField.generateStr(app_field_name_d,app_field_ctl_d,apr.en_name_main)
-				console_cmd2 ="rails generate model " + apr.en_name_detail + " " + app_field_str_d + '--no-assets --no-test-framework'
-				system(console_cmd2)
-			else
-				apr.en_name_detail = nil  #if there's no detail table,let en_name_detail=nil
+
+				app_field_str = ApprovalField.generateStr(app_field_name,app_field_ctl) + ApprovalField.solid_field_str()
+				console_cmd1 ="rails generate model " + apr.en_name_main + " " + app_field_str +'--no-assets --no-test-framework'
+
+				system(console_cmd1)
+
+				if params[:approval_detail_field_data].length >0
+					app_field_name_d = []
+					app_field_ctl_d = []
+					app_field_str_d = ""
+					params[:approval_detail_field_data].each_with_index  do |value,index|
+						af = ApprovalDetailField.new
+						af.approval_id = apr.id
+						af.name = value[:name] 
+						af.en_name = 'field'+ value[:sequence].to_s
+						af.control = value[:control]
+						af.comment = value[:comment]
+						af.info = value[:info]
+						af.sequence = value[:sequence]
+						af.selectoptions = value[:selectoptions]
+						af.dateformat = value[:dateformat]
+						af.save!
+
+						app_field_name_d << af.en_name
+						app_field_ctl_d << af.control
+					end
+					app_field_str_d = ApprovalField.generateStr(app_field_name_d,app_field_ctl_d,apr.en_name_main)
+					console_cmd2 ="rails generate model " + apr.en_name_detail + " " + app_field_str_d + '--no-assets --no-test-framework'
+					system(console_cmd2)
+				else
+					apr.en_name_detail = nil  #if there's no detail table,let en_name_detail=nil
+					apr.save!
+				end
+				# open model file and add some has_many etc
+
+				system("rails db:migrate")
+			else  #修改旧的审批
+				apr_admin = ApprovalAdmin.find_by(id: para_admin_id)
+		  		apr_admin.name = para_name
+				apr_admin.comment = para_comment
+				apr_admin.save!
+
+				#stop the old approval
+				app = apr_admin.approvals.where(status: 1).first
+				app.status = 0
+				app.stoped_time = t
+				app.save!
+
+				#create the new approval
+				apr = Approval.new	
+				apr.name = para_name
+				apr.en_name_main = 'Approval'+ts
+				apr.en_name_detail = 'ApprovalDetail'+ts
+				apr.comment = para_comment
+				apr.created_time = t
+				apr.stoped_time = nil
+				apr.status = 1
+				apr.approval_admin_id = apr_admin.id
 				apr.save!
-			end
-			# open model file and add some has_many etc
 
-			system("rails db:migrate")
+				# apr.id
+				app_field_name = []
+				app_field_ctl = []
+				app_field_str = ""
+				params[:approval_field_data].each_with_index  do |value,index|
+					af = ApprovalField.new
+					af.approval_id = apr.id
+					af.name = value[:name] 
+					af.en_name = 'field'+ value[:sequence].to_s
+					af.control = value[:control]
+					af.comment = value[:comment]
+					af.info = value[:info]
+					af.sequence = value[:sequence]
+					af.selectoptions = value[:selectoptions]
+					af.dateformat = value[:dateformat]
+					af.save!
 
-		  	#create success,then stop the old approval
-		  	#if id==-1表示创建新审批，否则是修改旧的审批
-		  	#new approval's create time === old approval's stop time
-		  	if params[:approval_id]!="-1"  
-		  		app = Approval.find_by(id: params[:approval_id])
-		  		app.status = 0 if app
-		  		app.stoped_time =t if app
-		  		app.save!
-		  	end
+					app_field_name << af.en_name
+					app_field_ctl << value[:control]			
+				end
+
+				app_field_str = ApprovalField.generateStr(app_field_name,app_field_ctl) + ApprovalField.solid_field_str()
+				console_cmd1 ="rails generate model " + apr.en_name_main + " " + app_field_str +'--no-assets --no-test-framework'
+
+				system(console_cmd1)
+
+				if params[:approval_detail_field_data].length >0
+					app_field_name_d = []
+					app_field_ctl_d = []
+					app_field_str_d = ""
+					params[:approval_detail_field_data].each_with_index  do |value,index|
+						af = ApprovalDetailField.new
+						af.approval_id = apr.id
+						af.name = value[:name] 
+						af.en_name = 'field'+ value[:sequence].to_s
+						af.control = value[:control]
+						af.comment = value[:comment]
+						af.info = value[:info]
+						af.sequence = value[:sequence]
+						af.selectoptions = value[:selectoptions]
+						af.dateformat = value[:dateformat]
+						af.save!
+
+						app_field_name_d << af.en_name
+						app_field_ctl_d << af.control
+					end
+					app_field_str_d = ApprovalField.generateStr(app_field_name_d,app_field_ctl_d,apr.en_name_main)
+					console_cmd2 ="rails generate model " + apr.en_name_detail + " " + app_field_str_d + '--no-assets --no-test-framework'
+					system(console_cmd2)
+				else
+					apr.en_name_detail = nil  #if there's no detail table,let en_name_detail=nil
+					apr.save!
+				end
+				# open model file and add some has_many etc
+
+				system("rails db:migrate")
+
+			end		  
 
 			render json:{msg: '保存成功',code: 1}
 	  	rescue Exception => e
@@ -176,7 +285,7 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	    t = Time.now
 	  	ts = t.strftime('%Y%m%d%H%M%S%L')  #%L -Millisecond of the second (000..999)
 
-	    params.permit(:approvalid)
+	    params.permit(:approvaladminid)
 	    params.permit(:submit_user_id)
 	    params.require(:mainhash).permit!
 		
@@ -187,19 +296,20 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 		end
 
 
-		app_id = params[:approvalid]
+		appadmin_id = params[:approvaladminid]
 		m_hash = params[:mainhash]
 		sui = params[:submit_user_id]
-	    begin
-	    	
-		    app = Approval.find_by(id: app_id)
+
+		app_admin = ApprovalAdmin.find_by(id: appadmin_id)
+	    app = app_admin.approvals.where(status: 1).first
+	    begin	    	
+		    
 		    model_main = app.en_name_main.classify.constantize
 	        
 	        # the next fields are solid added at server,not filled by client.
 	        m_hash["approval_id"] = app.id
 	        m_hash["approval_name"] = app.name
-	        # bug: ????????????????????????????????
-	        m_hash["user_id"] = 1 #current_user.id   # who submited the approval
+	        m_hash["user_id"] = current_user.id   # who submited the approval
 	        m_hash["no"] =  ts
 	        m_hash["submit_time"] = t
 	        m_hash["finish_time"] = nil
@@ -250,9 +360,7 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	    	return
 	    end
 
-		#bug : pay attention to the current_user ????????????
-		# acn = ApprovalCurrentNode.where(user_id: current_user.id).where(status: 0)
-		acn = ApprovalCurrentNode.where(user_id: 1).where(status: 0)
+		acn = ApprovalCurrentNode.where(user_id: current_user.id).where(status: 0)
 		ret_data = []
 		acn.each do |val|
 			hh ={}
@@ -262,8 +370,8 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 			hh[:digest] = '待定'
 			hh[:submit_time] = mt.submit_time.try(:strftime,'%Y-%m-%d %H:%M:%S')
 			hh[:finish_time] = mt.finish_time.try(:strftime,'%Y-%m-%d %H:%M:%S')
-			#bug:  the next line's username is current_user.username,modified it in the futurn ???????
-			hh[:status] = User.find(val.user_id).username + '审批中...'			
+			# hh[:status] = User.find(val.user_id).username + '审批中...'
+			hh[:status] = current_user.username + '审批中...'			
 			ret_data << hh
 
 		end
@@ -279,14 +387,12 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	    	unauthorized 
 	    	return
 	    end
-
 		acn = ApprovalCurrentNode.find_by(id: params[:app_cur_id])
 		mt = acn.owner  #auto creted main table
 		app = Approval.find(mt.approval_id) #main table has approval_id
 
-		#bug:???? the next code will be change 1 to current_user.id
 		to_me_flag = false
-		if acn.user_id == 1  #current_user.id
+		if acn.user_id == current_user.id
 			to_me_flag = true
 		end
 
@@ -393,23 +499,24 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	    	return
 	    end
 
-		#bug : pay attention to the current_user ????????????
-		acn = ApprovalCurrentNode.where(user_id: 1).where.not(status: 0)
+		ad = ApprovalDetail.where(user_id: current_user.id)
 		ret_data = []
-		acn.each do |val|
+		ad.each do |val|
 			hh ={}
 			mt = val.owner
-			hh[:app_cur_id] = val.id
+			acn = ApprovalCurrentNode.where(owner: mt).first
+
+			hh[:app_cur_id] = acn.id
 			hh[:title] = (User.find(mt.user_id).username + '的' + mt.approval_name) 
 			hh[:digest] = '待定'
 			hh[:submit_time] = mt.submit_time.try(:strftime,'%Y-%m-%d %H:%M:%S')
 			hh[:finish_time] = mt.finish_time.try(:strftime,'%Y-%m-%d %H:%M:%S')
-			if val.status == 1
+			if acn.status == 1
 				hh[:status] = '审批通过'
-			elsif val.status == 2
+			elsif acn.status == 2
 				hh[:status] = '审批拒绝'
-			elsif val.status == 0
-				hh[:status] = User.find(val.user_id).username + '审批中...'
+			elsif acn.status == 0
+				hh[:status] = User.find(acn.user_id).username + '审批中...'
 			end	
 		
 			ret_data << hh
@@ -429,8 +536,7 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	    	return
 	    end
 
-		#bug : pay attention to the current_user ????????????
-		acn = ApprovalCurrentNode.where(submit_user_id: 1)
+		acn = ApprovalCurrentNode.where(submit_user_id: current_user.id)
 		ret_data = []
 		acn.each do |val|
 			hh ={}
@@ -536,9 +642,9 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 			render json:{msg: '保存失败',code: 0}
 		end
 	end
-	def approval_stop
+	def approval_admin_stop
 		begin
-			app = Approval.find_by(id: params[:approval_id])
+			app = ApprovalAdmin.find_by(id: params[:approval_admin_id])
 			app.status = 0
 			app.save!
 			render json:{msg: '保存成功',code: 1}
@@ -547,9 +653,9 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 		end
 
 	end
-	def approval_start
+	def approval_admin_start
 		begin
-			app = Approval.find_by(id: params[:approval_id])
+			app = ApprovalAdmin.find_by(id: params[:approval_admin_id])
 			app.status = 1
 			app.save!
 			render json:{msg: '保存成功',code: 1}

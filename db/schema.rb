@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_25_134626) do
+ActiveRecord::Schema.define(version: 2018_07_26_042659) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -205,6 +205,68 @@ ActiveRecord::Schema.define(version: 2018_07_25_134626) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "approval20180726094921s", force: :cascade do |t|
+    t.string "field0"
+    t.datetime "field1"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180726100021s", force: :cascade do |t|
+    t.string "field0"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180726112047s", force: :cascade do |t|
+    t.string "field0"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180726122657s", force: :cascade do |t|
+    t.string "field0"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval_admins", force: :cascade do |t|
+    t.string "name"
+    t.string "comment"
+    t.datetime "created_time"
+    t.integer "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "approval_current_nodes", force: :cascade do |t|
     t.string "node_ids"
     t.bigint "procedure_node_id"
@@ -287,6 +349,8 @@ ActiveRecord::Schema.define(version: 2018_07_25_134626) do
     t.integer "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "approval_admin_id"
+    t.index ["approval_admin_id"], name: "index_approvals_on_approval_admin_id"
   end
 
   create_table "auth_groups", force: :cascade do |t|
@@ -503,4 +567,5 @@ ActiveRecord::Schema.define(version: 2018_07_25_134626) do
     t.index ["work_shop_id"], name: "index_work_teams_on_work_shop_id"
   end
 
+  add_foreign_key "approvals", "approval_admins"
 end
