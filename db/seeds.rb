@@ -14,41 +14,41 @@ dev = User.find_or_create_by({username: 'dev', email: 'dev@welltek.com'})
 dev.password = 'password'
 dev.save!
 
-production_manager = User.find_or_create_by({username: 'shengchanjingli',email: 'shengchanjingli'})
-production_manager.password = 'password'
-production_manager.save!
-
-workshop_user1 = User.find_or_create_by({username: 'xialiaozhuren1',email: '56700663@qq.com'})
+workshop_user1 = User.find_or_create_by({username: 'xialiaozhuren1',email: 'xialiaozhuren1'})
 workshop_user1.password = 'password'
 workshop_user1.save!
 
-workshop_user2 = User.find_or_create_by({username: 'xialiaozhuren2',email: '56700666@qq.com'})
+workshop_user2 = User.find_or_create_by({username: 'xialiaozhuren2',email: 'xialiaozhuren2'})
 workshop_user2.password = 'password'
 workshop_user2.save!
 
-workshop_user3 = User.find_or_create_by({username: 'zupinzhuren1',email: '56700661@qq.com'})
+workshop_user3 = User.find_or_create_by({username: 'zupinzhuren1',email: 'zupinzhuren1'})
 workshop_user3.password = 'password'
 workshop_user3.save!
 
-workshop_user4 = User.find_or_create_by({username: 'zupinzhuren2',email: '56700662@qq.com'})
+workshop_user4 = User.find_or_create_by({username: 'zupinzhuren2',email: 'zupinzhuren2'})
 workshop_user4.password = 'password'
 workshop_user4.save!
 
-workteam_user5 = User.find_or_create_by({username: 'xialiaobanzhuren1',email: '56700665@qq.com'})
+workteam_user5 = User.find_or_create_by({username: 'xialiaobanzhuren1',email: 'xialiaobanzhuren1'})
 workteam_user5.password = 'password'
 workteam_user5.save!
 
-workteam_user6 = User.find_or_create_by({username: 'xialiaobanzhuren2',email: '56700667@qq.com'})
+workteam_user6 = User.find_or_create_by({username: 'xialiaobanzhuren2',email: 'xialiaobanzhuren2'})
 workteam_user6.password = 'password'
 workteam_user6.save!
 
-workteam_user7 = User.find_or_create_by({username: 'zupinbanzhuren1',email: '567006658@qq.com'})
+workteam_user7 = User.find_or_create_by({username: 'zupinbanzhuren1',email: 'zupinbanzhuren1'})
 workteam_user7.password = 'password'
 workteam_user7.save!
 
-workteam_user8 = User.find_or_create_by({username: 'zupinbanzhuren2',email: '567006678@qq.com'})
+workteam_user8 = User.find_or_create_by({username: 'zupinbanzhuren2',email: 'zupinbanzhuren2'})
 workteam_user8.password = 'password'
 workteam_user8.save!
+
+production_manager = User.find_or_create_by({username: 'shengchanjingli',email: 'shengchanjingli'})
+production_manager.password = 'password'
+production_manager.save!
 
 AuthRule.delete_all
 rule10 = AuthRule.find_or_create_by({ name: 'Admin/index', title: '后台首页'})
