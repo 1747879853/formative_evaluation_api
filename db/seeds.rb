@@ -14,7 +14,7 @@ dev = User.find_or_create_by({username: 'dev', email: 'dev@welltek.com'})
 dev.password = 'password'
 dev.save!
 
-production_manager = User.find_or_create_by({username: 'shengchanjingli',email: 'shengchanjingli'})
+production_manager = User.find_or_create_by({username: 'shengchanjingli',email: 'shengchanjingli@qq.com'})
 production_manager.password = 'password'
 production_manager.save!
 
