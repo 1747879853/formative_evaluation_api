@@ -1,5 +1,5 @@
 class Costdata < ApplicationRecord
-  belongs_to :summaries
+  belongs_to :summary
 
   validates_presence_of     :money
   validates_presence_of     :name
