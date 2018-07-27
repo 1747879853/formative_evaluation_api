@@ -96,7 +96,7 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	    }
 		
 	end
-
+	# 创建新审批 或 编辑表单 的保存
 	def approval_create
 	  	if not Auth.check('approval/approval_create', current_user)
 	    	unauthorized 
@@ -209,6 +209,8 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 				app.stoped_time = t
 				app.save!
 
+
+
 				#create the new approval
 				apr = Approval.new	
 				apr.name = para_name
@@ -221,6 +223,20 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 				apr.approval_admin_id = apr_admin.id
 				apr.save!
 
+				#get the old approval's current used procedure
+				used_proc = Procedure.where(status: 1).where(approval_id: app.id).first
+				#the next line same as the before line?????
+				# used_proc = app.procedures.where(status: 1).first
+
+				if used_proc #if procedure has settled
+					copied_proc = Procedure.create(used_proc.attributes.merge({created_time: t,approval_id: apr.id, id:nil}))
+					used_proc.procedure_nodes.each do |pn|
+						ProcedureNode.create(pn.attributes.merge({procedure_id: copied_proc.id, id:nil}))
+					end
+					used_proc.status = 0
+					used_proc.stoped_time = t					
+					used_proc.save!
+				end
 				# apr.id
 				app_field_name = []
 				app_field_ctl = []
@@ -278,7 +294,7 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 
 				system("rails db:migrate")
 
-			end		  
+			end
 
 			render json:{msg: '保存成功',code: 1}
 	  	rescue Exception => e
