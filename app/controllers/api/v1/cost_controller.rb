@@ -2,11 +2,12 @@ class Api::V1::CostController < Api::V1::BaseController
   # before_action :authorize
   
   def get_costlist
-    # unauthorized and return unless Auth.check('Admin/daily_summary/costlist', current_user)
+    unauthorized and return unless Auth.check('daily_summary/get_costlist', current_user)
     render json: Cost.where(parent_id: 0).all
   end
 
   def post_costlist
+    unauthorized and return unless Auth.check('daily_summary/post_costlist', current_user)
   	begin
       cost = Cost.new(cost_params)
       if cost.save!
@@ -20,6 +21,7 @@ class Api::V1::CostController < Api::V1::BaseController
 
 
   def delete_costlist
+    unauthorized and return unless Auth.check('daily_summary/delete_costlist', current_user)
 
     begin
       cost = Cost.find(params.require(:params)[:id])
@@ -32,6 +34,7 @@ class Api::V1::CostController < Api::V1::BaseController
   end
 
   def patch_costlist
+    unauthorized and return unless Auth.check('daily_summary/patch_costlist', current_user)
 
     begin
       cost = Cost.find(params.require(:params)[:id])

@@ -1,6 +1,6 @@
 class Api::V1::SummaryController < Api::V1::BaseController
   def get_summary
-    # unauthorized and return unless Auth.check('Admin/Authority/list', current_user)
+    unauthorized and return unless Auth.check('daily_summary/get_summary', current_user)
     # last = Summary.where(:user_id => current_user.id)
     # last.each do |l|
     # if last.date.strftime("%Y-%m-%d") == Time.now.strftime("%Y-%m-%d")
@@ -24,6 +24,7 @@ class Api::V1::SummaryController < Api::V1::BaseController
   end
 
   def post_summary
+    unauthorized and return unless Auth.check('daily_summary/post_summary', current_user)
     # user = User.find(current_user.id)
   	begin
       summary = Summary.new
