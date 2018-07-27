@@ -14,41 +14,41 @@ dev = User.find_or_create_by({username: 'dev', email: 'dev@welltek.com'})
 dev.password = 'password'
 dev.save!
 
-production_manager = User.find_or_create_by({username: 'shengchanjingli',email: 'shengchanjingli'})
-production_manager.password = 'password'
-production_manager.save!
-
-workshop_user1 = User.find_or_create_by({username: 'xialiaozhuren1',email: '56700663@qq.com'})
-workshop_user1.password = 'pass>>>word'
+workshop_user1 = User.find_or_create_by({username: 'xialiaozhuren1',email: 'xialiaozhuren1'})
+workshop_user1.password = 'password'
 workshop_user1.save!
 
-workshop_user2 = User.find_or_create_by({username: 'xialiaozhuren2',email: '56700666@qq.com'})
+workshop_user2 = User.find_or_create_by({username: 'xialiaozhuren2',email: 'xialiaozhuren2'})
 workshop_user2.password = 'password'
 workshop_user2.save!
 
-workshop_user3 = User.find_or_create_by({username: 'zupinzhuren1',email: '56700661@qq.com'})
+workshop_user3 = User.find_or_create_by({username: 'zupinzhuren1',email: 'zupinzhuren1'})
 workshop_user3.password = 'password'
 workshop_user3.save!
 
-workshop_user4 = User.find_or_create_by({username: 'zupinzhuren2',email: '56700662@qq.com'})
+workshop_user4 = User.find_or_create_by({username: 'zupinzhuren2',email: 'zupinzhuren2'})
 workshop_user4.password = 'password'
 workshop_user4.save!
 
-workteam_user5 = User.find_or_create_by({username: 'xialiaobanzhuren1',email: '56700665@qq.com'})
+workteam_user5 = User.find_or_create_by({username: 'xialiaobanzhuren1',email: 'xialiaobanzhuren1'})
 workteam_user5.password = 'password'
 workteam_user5.save!
 
-workteam_user6 = User.find_or_create_by({username: 'xialiaobanzhuren2',email: '56700667@qq.com'})
+workteam_user6 = User.find_or_create_by({username: 'xialiaobanzhuren2',email: 'xialiaobanzhuren2'})
 workteam_user6.password = 'password'
 workteam_user6.save!
 
-workteam_user7 = User.find_or_create_by({username: 'zupinbanzhuren1',email: '567006658@qq.com'})
+workteam_user7 = User.find_or_create_by({username: 'zupinbanzhuren1',email: 'zupinbanzhuren1'})
 workteam_user7.password = 'password'
 workteam_user7.save!
 
-workteam_user8 = User.find_or_create_by({username: 'zupinbanzhuren2',email: '567006678@qq.com'})
+workteam_user8 = User.find_or_create_by({username: 'zupinbanzhuren2',email: 'zupinbanzhuren2'})
 workteam_user8.password = 'password'
 workteam_user8.save!
+
+production_manager = User.find_or_create_by({username: 'shengchanjingli',email: 'shengchanjingli'})
+production_manager.password = 'password'
+production_manager.save!
 
 AuthRule.delete_all
 rule10 = AuthRule.find_or_create_by({ name: 'Admin/index', title: '后台首页'})
@@ -104,6 +104,12 @@ rule71.save!
 rule72 = AuthRule.find_or_create_by({ name: 'users-manage/organization', title: '组织管理'})
 rule72.parent = rule70
 rule72.save!
+rule73 = AuthRule.find_or_create_by({ name: 'users-manage/workshop-maintenance', title: '车间维护'})
+rule73.parent = rule70
+rule73.save!
+rule74 = AuthRule.find_or_create_by({ name: 'users-manage/workteam-maintenance', title: '班组维护'})
+rule74.parent = rule70
+rule74.save!
 
 rule80 = AuthRule.find_or_create_by({ name: 'employee-information/index', title: '员工信息'})
 rule80.save!
@@ -136,6 +142,8 @@ group1.auth_rules.push rule61
 # group1.auth_rules.push rule70
 group1.auth_rules.push rule71
 group1.auth_rules.push rule72
+group1.auth_rules.push rule73
+group1.auth_rules.push rule74
 
 group2.auth_rules.destroy_all
 group2.auth_rules.push rule10
@@ -179,6 +187,8 @@ group6.auth_rules.push rule62
 group6.auth_rules.push rule70
 group6.auth_rules.push rule71
 group6.auth_rules.push rule72
+group6.auth_rules.push rule73
+group6.auth_rules.push rule74
 group6.auth_rules.push rule80
 group6.auth_rules.push rule81
 
@@ -212,7 +222,7 @@ dev.auth_groups.push group6
 order = Order.find_or_create_by(id: 1)
 order.no = '1271115636988060'
 order.title = 'xxxxxx'
-order.client_title = '力五'
+order.client_title = '阿里公司'
 order.record_time = '2018-05-03'
 order.save!
 
@@ -321,19 +331,6 @@ ws4.save!
 
 
 
-wt1 = WorkTeam.find_or_create_by(id: 1)
-wt1.name = '下料班组1'
-wt1.work_shop_id = 1
-wt1.user_id = 7
-wt1.save!
-
-
-wt2 = WorkTeam.find_or_create_by(id: 2)
-wt2.name = '下料班组2'
-wt2.work_shop_id = 1
-wt2.user_id = 8
-wt2.save!
-
 wt3 = WorkTeam.find_or_create_by(id: 1)
 wt3.name = '组拼班组1'
 wt3.work_shop_id = 3
@@ -346,6 +343,19 @@ wt4.name = '组拼班组2'
 wt4.work_shop_id = 4
 wt4.user_id = 10
 wt4.save!
+
+wt1 = WorkTeam.find_or_create_by(id: 3)
+wt1.name = '下料班组1'
+wt1.work_shop_id = 1
+wt1.user_id = 7
+wt1.save!
+
+
+wt2 = WorkTeam.find_or_create_by(id: 4)
+wt2.name = '下料班组2'
+wt2.work_shop_id = 1
+wt2.user_id = 8
+wt2.save!
 
 cost1 = Cost.find_or_create_by({title:'车辆费1'})
 cost1.save!

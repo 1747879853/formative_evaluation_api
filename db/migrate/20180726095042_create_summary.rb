@@ -6,7 +6,7 @@ class CreateSummary < ActiveRecord::Migration[5.2]
   		t.text :workcontent
   		t.string :transport
   		t.text :explain
-      t.bigint :uid
+      t.bigint :user_id
   		t.timestamps
     end
   end

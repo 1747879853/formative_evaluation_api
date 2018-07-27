@@ -7,11 +7,12 @@ Rails.application.routes.draw do
   # root   'home#index'
   # get    'auth'            => 'home#auth'
   
-  # Get login token from Knock
-  post   'user_token'      => 'user_token#create'
   
   namespace :api do
     namespace :v1 do
+      # Get login token from Knock
+      post   'user_token'      => 'user_token#create'
+
       # User actions
       get    '/userList'       => 'users#get_userlist'
       get    '/users/current'  => 'users#current'
@@ -70,6 +71,16 @@ Rails.application.routes.draw do
       post   '/auditing_boms'  => 'orders#auditing_boms'
       get    '/order_process'  => 'orders#order_process'
       get    '/team_task_finish' => 'orders#team_task_finish'
+
+      get    '/work_teams'     => 'orders#get_work_team'
+      post   '/work_teams'     => 'orders#post_work_team'
+      delete '/work_teams'     => 'orders#delete_work_team'
+      patch  '/work_teams'     => 'orders#patch_work_team'
+
+      get    '/work_shops'     => 'orders#get_work_shop'
+      post   '/work_shops'     => 'orders#post_work_shop'
+      delete '/work_shops'     => 'orders#delete_work_shop'
+      patch  '/work_shops'     => 'orders#patch_work_shop'
       # WorkOrder actions
       
       # Approval actions
@@ -79,6 +90,7 @@ Rails.application.routes.draw do
       post '/approval_create'   =>'approval#approval_create'
       post '/approval_save'   =>'approval#approval_save'
       get '/approval_field_list' =>'approval#approval_field_list'
+      get '/approval_field_edit' =>'approval#approval_field_edit'
       get '/approval_to_me'   =>'approval#approval_to_me'
       get '/approval_to_me_done'   =>'approval#approval_to_me_done'
       get '/approval_from_me'   =>'approval#approval_from_me'

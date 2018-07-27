@@ -15,6 +15,15 @@ ActiveRecord::Schema.define(version: 2018_07_26_095042) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "approval_admins", force: :cascade do |t|
+    t.string "name"
+    t.string "comment"
+    t.datetime "created_time"
+    t.integer "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "approval_current_nodes", force: :cascade do |t|
     t.string "node_ids"
     t.bigint "procedure_node_id"
@@ -152,7 +161,7 @@ ActiveRecord::Schema.define(version: 2018_07_26_095042) do
     t.string "name", null: false
     t.text "thing"
     t.string "money", null: false
-    t.string "summaries_id", null: false
+    t.bigint "summary_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -214,7 +223,7 @@ ActiveRecord::Schema.define(version: 2018_07_26_095042) do
     t.text "workcontent"
     t.string "transport"
     t.text "explain"
-    t.bigint "uid"
+    t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -276,6 +285,7 @@ ActiveRecord::Schema.define(version: 2018_07_26_095042) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status", default: "1", null: false
     t.index ["user_id"], name: "index_work_shops_on_user_id"
   end
 
@@ -313,6 +323,7 @@ ActiveRecord::Schema.define(version: 2018_07_26_095042) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status", default: "1", null: false
     t.index ["user_id"], name: "index_work_teams_on_user_id"
     t.index ["work_shop_id"], name: "index_work_teams_on_work_shop_id"
   end

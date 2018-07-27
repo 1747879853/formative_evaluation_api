@@ -94,7 +94,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
   			wst = WorkShopTask.new
   		  wst.work_shop_id = WorkShop.find_by_user_id(e).id
   		  wst.work_order_id = params[:work_order_id]
-  		  wst.user_id = 1
+  		  wst.user_id = current_user.id
   		  wst.record_time = Time.now
 
 
@@ -113,7 +113,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
 
 
   def work_shop_order_list 
-  	work_shop_order_list = WorkOrder.joins(work_shop_tasks: [work_shop: :user]).where("work_shops.user_id=?",params[:user_id]).select("work_orders.id as work_order_id,work_orders.title,work_orders.maker,work_orders.template_type,work_shops.name,work_shops.id as work_shop_id,users.username,users.id as user_id,work_orders.number ")
+  	work_shop_order_list = WorkOrder.joins(work_shop_tasks: [work_shop: :user]).where("work_shops.user_id=?",current_user.id).select("work_orders.id as work_order_id,work_orders.title,work_orders.maker,work_orders.template_type,work_shops.name,work_shops.id as work_shop_id,users.username,users.id as user_id,work_orders.number ")
 
   	# work_shop_order_list = WorkOrder.joins(work_shop_tasks: [work_shop: :user]).select("work_orders.id as work_order_id,work_orders.title,work_orders.maker,work_orders.template_type,work_shops.name,work_shops.id as work_shop_id,users.username,users.id as user_id,work_orders.number ")
   	# data = []
@@ -149,14 +149,14 @@ class Api::V1::OrdersController < Api::V1::BaseController
 	  		wtt = WorkTeamTask.new
 	  		wtt.work_team_id = params[:work_team_id]
 	  		wtt.material_id = e
-	  		wtt.user_id = params[:user_id]
+	  		wtt.user_id = current_user.id
 	  		wtt.record_time = Time.now
 	  		wtt.number = params[:number]
 	  		wtt.status = 0
 	  		if not wtt.save
 	  			msg = "分派到班组失败！"
         else
-          wtt.work_logs.create(work_order_id:params[:work_order_id],record_time: Time.now,description: User.find_by_id(params[:user_id]).username+"分派"+Material.find_by_id(e).name+"到:"+WorkTeam.find_by_id( params[:work_team_id]).name+";数量："+params[:number].to_s)
+          wtt.work_logs.create(work_order_id:params[:work_order_id],record_time: Time.now,description: User.find_by_id(current_user.id).username+"分派"+Material.find_by_id(e).name+"到:"+WorkTeam.find_by_id( params[:work_team_id]).name+";数量："+params[:number].to_s)
 	  		end
 
 	  	end
@@ -169,7 +169,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
   end
 
   def work_team_task_list
-  	wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).select("work_team_tasks.id as id,materials.id as mid,materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
+  	wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_teams.user_id=?",current_user.id).select("work_team_tasks.id as id,materials.id as mid,materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
   	render json:{
   		data: wtt
   	}
@@ -196,7 +196,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
   	wttd = WorkTeamTaskDetail.new
   	wttd.work_team_task_id = team_task_id
   	wttd.finished_number = finished_num
-  	wttd.user_id = 1    #需替换成正式人员
+  	wttd.user_id = current_user.id    #需替换成正式人员
   	wttd.record_time = Time.now
 	  
 	  if wtt.save&&wttd.save
@@ -222,7 +222,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
   	wttd = WorkTeamTaskDetail.new
   	wttd.work_team_task_id = team_task_id
   	wttd.passed_number = passed_num
-  	wttd.user_id = 1    #需替换成正式人员
+  	wttd.user_id = current_user.id    #需替换成正式人员
   	wttd.record_time = Time.now
 	  
 	  if wtt.save&&wttd.save
@@ -245,7 +245,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
 	  	ba = BomsApproval.new
 	  	ba.work_team_task_id = params[:team_task_id]
 	  	ba.status = 1
-	  	ba.user_id = params[:user_id]
+	  	ba.user_id = current_user.id
 	  	ba.approval_owner_id = WorkTeamTask.find_by_id(params[:team_task_id]).user_id
 	  	ba.apply_comment =params[:comment]
 	  	ba.record_time = Time.now
@@ -275,9 +275,9 @@ class Api::V1::OrdersController < Api::V1::BaseController
   def boms_approval_list
 
   	if params[:approval] == "1"
-  		ba = BomsApproval.where(approval_owner_id: params[:user_id],status: 1)
+  		ba = BomsApproval.where(approval_owner_id: current_user.id,status: 1)
     elsif params[:approval] == "23"
-      ba = BomsApproval.where(approval_owner_id: params[:user_id],status: [2,3])
+      ba = BomsApproval.where(approval_owner_id: current_user.id,status: [2,3])
   	else
   		ba = BomsApproval.where(work_team_task_id: params[:team_task_id])
     end
@@ -333,5 +333,86 @@ class Api::V1::OrdersController < Api::V1::BaseController
       wttd: wttd
     }
   end
+
+  def get_work_shop
+    
+    render json: WorkShop.where(status: 1).all
+  end
+
+  def post_work_shop
+
+    begin
+      workshop = WorkShop.new(params.require(:params).permit(:name, :dept_type, :status, :user_id))
+      if workshop.save!
+        render json: workshop
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500
+    end
+  end
+
+  def delete_work_shop
+
+    begin
+      workshop = WorkShop.find(params.require(:params)[:id])
+      if workshop.update(params.require(:params).permit(:status))
+        render json: { }
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500      
+    end
+  end
+
+  def patch_work_shop
+
+    begin
+      workshop = WorkShop.find(params.require(:params)[:id])
+      if workshop.update(params.require(:params).permit(:name, :dept_type, :user_id))
+        render json: workshop
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500
+    end
+  end
+
+  def get_work_team
+    
+    render json: WorkTeam.where(status: 1).all
+  end
   
+  def post_work_team
+
+    begin
+      workteam = WorkTeam.new(params.require(:params).permit(:name, :work_shop_id, :status, :user_id))
+      if workteam.save!
+        render json: workteam
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500
+    end
+  end
+
+  def delete_work_team
+
+    begin
+      workteam = WorkTeam.find(params.require(:params)[:id])
+      if workteam.update(params.require(:params).permit(:status))
+        render json: { }
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500      
+    end
+  end
+
+  def patch_work_team
+    begin
+      workteam = WorkTeam.find(params.require(:params)[:id])
+      if workteam.update(params.require(:params).permit(:name, :work_shop_id, :user_id))
+        render json: workteam
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500
+    end
+  end
+
 end

@@ -1,6 +1,7 @@
  class Summary < ApplicationRecord
+  belongs_to :user
   has_many :costdatas
-  belongs_to :users
+
   
   validates_presence_of     :date
 
