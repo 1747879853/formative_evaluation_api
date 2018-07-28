@@ -50,6 +50,7 @@ Rails.application.routes.draw do
 
       # Order actions
       get    '/orders'         => 'orders#order_list'
+      post   '/orders'         => 'orders#post_order'
       get    '/order_details'  => 'orders#order_details' 
       get    '/xialiao'        => 'orders#xialiao' 
       get    '/zupin'          => 'orders#zupin' 
