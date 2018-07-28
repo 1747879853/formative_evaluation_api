@@ -10,13 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-ActiveRecord::Schema.define(version: 2018_07_27_133108) do
-
+ActiveRecord::Schema.define(version: 2018_07_26_095042) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
 
   create_table "approval_admins", force: :cascade do |t|
     t.string "name"
@@ -39,7 +36,6 @@ ActiveRecord::Schema.define(version: 2018_07_27_133108) do
     t.index ["procedure_node_id"], name: "index_approval_current_nodes_on_procedure_node_id"
     t.index ["user_id"], name: "index_approval_current_nodes_on_user_id"
   end
-
 
   create_table "approval_detail_fields", force: :cascade do |t|
     t.bigint "approval_id"
@@ -94,6 +90,8 @@ ActiveRecord::Schema.define(version: 2018_07_27_133108) do
     t.integer "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "approval_admin_id"
+    t.index ["approval_admin_id"], name: "index_approvals_on_approval_admin_id"
   end
 
   create_table "auth_groups", force: :cascade do |t|
@@ -175,7 +173,6 @@ ActiveRecord::Schema.define(version: 2018_07_27_133108) do
     t.integer "parent_id", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["title"], name: "index_costs_on_title"
   end
 
   create_table "materials", force: :cascade do |t|
@@ -332,4 +329,5 @@ ActiveRecord::Schema.define(version: 2018_07_27_133108) do
     t.index ["work_shop_id"], name: "index_work_teams_on_work_shop_id"
   end
 
+  add_foreign_key "approvals", "approval_admins"
 end

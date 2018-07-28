@@ -3,7 +3,6 @@ class Cost < ApplicationRecord
   acts_as_tree
 
   validates_presence_of     :title
-  validates_uniqueness_of   :title
 
   def as_json(options = {})
 		h = {}	

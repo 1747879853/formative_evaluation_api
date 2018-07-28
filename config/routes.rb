@@ -54,7 +54,8 @@ Rails.application.routes.draw do
       get    '/order_details'  => 'orders#order_details' 
       get    '/xialiao'        => 'orders#xialiao' 
       get    '/zupin'          => 'orders#zupin' 
-      get    '/work_order_details' => 'orders#work_order_details' 
+      get    '/work_order_details'  => 'orders#work_order_details' 
+      post   '/work_order_details'  => 'orders#post_work_order'
 
       post   '/work_shop_task' => 'orders#work_shop_task_add'
       get    '/work_shop_order_list' => 'orders#work_shop_order_list'

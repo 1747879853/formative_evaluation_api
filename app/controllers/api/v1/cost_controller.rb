@@ -3,7 +3,10 @@ class Api::V1::CostController < Api::V1::BaseController
   
   def get_costlist
     unauthorized and return unless Auth.check('daily_summary/get_costlist', current_user)
-    render json: Cost.where(parent_id: 0).all
+    costs = Cost.where(parent_id: 0)
+    render json:{
+      costs: costs
+    }
   end
 
   def post_costlist

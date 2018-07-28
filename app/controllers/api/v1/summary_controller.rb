@@ -18,7 +18,7 @@ class Api::V1::SummaryController < Api::V1::BaseController
        "workcontent": summary.workcontent,
         "transport": summary.transport,
         "explain": summary.explain,
-        "costdata": Costdata.where(:summary_id => summary.id).all.each
+        "costdata": Costdata.where(:summary_id => summary.id)
       }         
     end
   end

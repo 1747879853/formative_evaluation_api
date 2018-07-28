@@ -32,13 +32,27 @@ class Api::V1::OrdersController < Api::V1::BaseController
   end
 
   def order_details
-
   	order = Order.find_by_id(params[:order_id])
   	work_orders = order.work_orders
   	render json: {
   		work_orders: work_orders
   	}
+  end
 
+  def post_work_order
+    work_order = WorkOrder.new
+    work_order.number = params[:number]
+    work_order.title = params[:title]
+    work_order.template_type = params[:template_type]
+    work_order.maker = params[:maker]
+    work_order.status = 1
+    work_order.order_id = params[:order_id]
+    work_order.record_time = Time.now
+    if work_order.save!
+      render json:{
+        work_order: work_order
+      }
+    end
   end
 
   def work_order_details
@@ -66,7 +80,6 @@ class Api::V1::OrdersController < Api::V1::BaseController
   
   def xialiao
   	xialiao = WorkShop.where(dept_type: '下料')
-
   	render json:{
   		manager: xialiao
   	}
