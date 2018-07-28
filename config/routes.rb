@@ -71,6 +71,7 @@ Rails.application.routes.draw do
       post   '/auditing_boms'  => 'orders#auditing_boms'
       get    '/order_process'  => 'orders#order_process'
       get    '/team_task_finish' => 'orders#team_task_finish'
+      get    '/checking_list'  => 'orders#checking_list'
 
       get    '/work_teams'     => 'orders#get_work_team'
       post   '/work_teams'     => 'orders#post_work_team'

@@ -10,13 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-ActiveRecord::Schema.define(version: 2018_07_27_133108) do
-
+ActiveRecord::Schema.define(version: 2018_07_26_095042) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
 
   create_table "approval_admins", force: :cascade do |t|
     t.string "name"
@@ -39,7 +36,6 @@ ActiveRecord::Schema.define(version: 2018_07_27_133108) do
     t.index ["procedure_node_id"], name: "index_approval_current_nodes_on_procedure_node_id"
     t.index ["user_id"], name: "index_approval_current_nodes_on_user_id"
   end
-
 
   create_table "approval_detail_fields", force: :cascade do |t|
     t.bigint "approval_id"

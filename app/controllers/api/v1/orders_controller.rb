@@ -156,7 +156,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
 	  		if not wtt.save
 	  			msg = "分派到班组失败！"
         else
-          wtt.work_logs.create(work_order_id:params[:work_order_id],record_time: Time.now,description: User.find_by_id(current_user.id).username+"分派"+Material.find_by_id(e).name+"到:"+WorkTeam.find_by_id( params[:work_team_id]).name+";数量："+params[:number].to_s)
+          wtt.work_logs.create(work_order_id:params[:work_order_id],record_time: Time.now,description: User.find_by_id(current_user.id).username+"分派"+Material.find_by_id(e).name+"到:"+WorkTeam.find_by_id( params[:work_team_id]).name+";数量："+params[:number].to_s+" ;")
 	  		end
 
 	  	end
@@ -218,7 +218,12 @@ class Api::V1::OrdersController < Api::V1::BaseController
 
   	wtt = WorkTeamTask.find_by(id: team_task_id)
   	wtt.passed_number =(wtt.passed_number ? wtt.passed_number : 0)+passed_num
-
+    wl = WorkLog.where(owner_type:"WorkTeamTask").where(owner_id:team_task_id).first
+    des = wl.description.split("|").count==1 ? wl.description.split("|") : wl.description.split("|")[0..-2]
+  
+    
+    wl.description = des.join(",") + "| 已完成数量: "+wtt.passed_number.to_s+";  生产进度: " + helper.number_to_percentage(wtt.passed_number*100/wtt.number,precision: 2)
+    wl.save
   	wttd = WorkTeamTaskDetail.new
   	wttd.work_team_task_id = team_task_id
   	wttd.passed_number = passed_num
@@ -315,6 +320,12 @@ class Api::V1::OrdersController < Api::V1::BaseController
     }
   end
 
+ def checking_list
+    wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where.not(finished_number:nil).select("work_team_tasks.id as id,materials.id as mid,materials.work_order_id as wo_id, materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
+    render json:{
+      data: wtt
+    }
+  end
 
   def order_process
 
@@ -413,6 +424,13 @@ class Api::V1::OrdersController < Api::V1::BaseController
     rescue Exception => e
       render json: { msg: e }, status: 500
     end
+  end
+
+
+  def helper
+    @helper ||= Class.new do
+      include ActionView::Helpers::NumberHelper
+    end.new
   end
 
 end
