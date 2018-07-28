@@ -349,7 +349,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
 
   def get_work_shop
     
-    render json: WorkShop.where(status: 1).all
+    render json: WorkShop.joins(:user).select("work_shops.id, name, dept_type, user_id, username").where(status: 1).all
   end
 
   def post_work_shop
@@ -390,7 +390,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
 
   def get_work_team
     
-    render json: WorkTeam.where(status: 1).all
+    render json: WorkTeam.joins(:work_shop).joins(:user).select("work_teams.id, work_teams.name, work_shop_id, work_shops.name as work_shop_name, work_teams.user_id, username").where(status: 1).all
   end
   
   def post_work_team
