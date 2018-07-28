@@ -43,3 +43,16 @@ append :linked_dirs, "public/_attachment"
 set :rvm_ruby_version, '2.3.1'
 
 set :passenger_restart_with_touch, true
+
+namespace :deploy do
+  desc "reload the database with seed data"
+  task :seed do
+    on roles(:web) do
+      within release_path do
+        with rails_env: fetch(:stage)  do
+          execute :bundle, "exec rake db:seed"
+        end
+      end
+    end
+  end
+end

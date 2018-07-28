@@ -46,6 +46,10 @@ workteam_user8 = User.find_or_create_by({username: 'zupinbanzhuren2',email: 'zup
 workteam_user8.password = 'password'
 workteam_user8.save!
 
+checking_user1 = User.find_or_create_by({username: 'zhijianyuan1',email: 'zhijianyuan1'})
+checking_user1.password = 'password'
+checking_user1.save!
+
 production_manager = User.find_or_create_by({username: 'shengchanjingli',email: 'shengchanjingli'})
 production_manager.password = 'password'
 production_manager.save!
@@ -65,9 +69,9 @@ rule22.save!
 rule23 = AuthRule.find_or_create_by({ name: 'production-manage/order-team', title: '班组'})
 rule23.parent = rule20
 rule23.save!
-# rule24 = AuthRule.find_or_create_by({ name: 'production-manage/requisition-list', title: '领料单'})
-# rule24.parent = rule20
-# rule24.save!
+rule24 = AuthRule.find_or_create_by({ name: 'production-manage/quality-checking', title: '质检'})
+rule24.parent = rule20
+rule24.save!
 
 rule30 = AuthRule.find_or_create_by({ name: 'approval/index', title: '审批管理'})
 rule30.save!
@@ -127,8 +131,11 @@ group4 = AuthGroup.find_or_create_by({title: '车间主任'})
 group4.save!
 group5 = AuthGroup.find_or_create_by({title: '班组长'})
 group5.save!
+
 group6 = AuthGroup.find_or_create_by({title: '开发者'})
 group6.save!
+group7 = AuthGroup.find_or_create_by({title: '质检员'})
+group7.save!
 
 group1.auth_rules.destroy_all
 group1.auth_rules.push rule10
@@ -174,7 +181,7 @@ group6.auth_rules.push rule20
 group6.auth_rules.push rule21
 group6.auth_rules.push rule22
 group6.auth_rules.push rule23
-# group6.auth_rules.push rule24
+group6.auth_rules.push rule24
 group6.auth_rules.push rule30
 group6.auth_rules.push rule40
 group6.auth_rules.push rule50
@@ -191,6 +198,10 @@ group6.auth_rules.push rule73
 group6.auth_rules.push rule74
 group6.auth_rules.push rule80
 group6.auth_rules.push rule81
+
+group7.auth_rules.destroy_all
+group7.auth_rules.push rule10
+group7.auth_rules.push rule24
 
 supermessi.auth_groups.destroy_all
 supermessi.auth_groups.push group1
@@ -215,6 +226,9 @@ workteam_user7.auth_groups.destroy_all
 workteam_user7.auth_groups.push group5
 workteam_user8.auth_groups.destroy_all
 workteam_user8.auth_groups.push group5
+
+checking_user1.auth_groups.destroy_all
+checking_user1.auth_groups.push group7
 
 dev.auth_groups.destroy_all
 dev.auth_groups.push group6
