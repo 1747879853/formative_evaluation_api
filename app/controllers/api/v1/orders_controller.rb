@@ -18,6 +18,19 @@ class Api::V1::OrdersController < Api::V1::BaseController
   	}
   end
 
+  def post_order
+    order = Order.new
+    order.no = params.require(:params)[:no]
+    order.client_title = params.require(:params)[:client_title]
+    order.record_time = Time.now
+    order.title = ""
+    if order.save!
+      render json: {
+        order: order
+      }
+    end
+  end
+
   def order_details
 
   	order = Order.find_by_id(params[:order_id])
