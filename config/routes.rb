@@ -85,6 +85,7 @@ Rails.application.routes.draw do
       delete '/work_shops'     => 'orders#delete_work_shop'
       patch  '/work_shops'     => 'orders#patch_work_shop'
       # WorkOrder actions
+      post   '/images'         => 'imageupload#upload'
       
       # Approval actions
       get '/approval_admin_list'   =>'approval#approval_admin_list'
