@@ -89,7 +89,7 @@ Rails.application.routes.draw do
       # images
       post   '/images'         => 'imageupload#upload'
       delete '/images'         => 'imageupload#delete_image'
-      
+            
       # Approval actions
       get '/approval_admin_list'   =>'approval#approval_admin_list'
       get '/approval_list'   =>'approval#approval_list'

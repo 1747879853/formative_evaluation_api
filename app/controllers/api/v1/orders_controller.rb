@@ -400,8 +400,8 @@ class Api::V1::OrdersController < Api::V1::BaseController
   end
 
   def get_work_shop
-    
-    render json: WorkShop.joins(:user).select("work_shops.id, name, dept_type, user_id, username").where(status: 1).all
+
+    render json:{'a': WorkShop.joins(:user).select("work_shops.id, name, dept_type, user_id, username").where(status: 1).all ,'b': User.select("id,username").where(status: 1).all}
   end
 
   def post_work_shop
@@ -441,8 +441,8 @@ class Api::V1::OrdersController < Api::V1::BaseController
   end
 
   def get_work_team
-    
-    render json: WorkTeam.joins(:work_shop).joins(:user).select("work_teams.id, work_teams.name, work_shop_id, work_shops.name as work_shop_name, work_teams.user_id, username").where(status: 1).all
+
+    render json:{'a': WorkTeam.joins(:work_shop).joins(:user).select("work_teams.id, work_teams.name, work_shop_id, work_shops.name as work_shop_name, work_teams.user_id, username").where(status: 1).all,'b': WorkShop.select("id, name,user_id").where(status: 1).all ,'c': User.select("id,username").where(status: 1).all}
   end
   
   def post_work_team
@@ -450,7 +450,8 @@ class Api::V1::OrdersController < Api::V1::BaseController
     begin
       workteam = WorkTeam.new(params.require(:params).permit(:name, :work_shop_id, :status, :user_id))
       if workteam.save!
-        render json: workteam
+        render json: WorkTeam.joins(:work_shop).joins(:user).select("work_teams.id, work_teams.name, work_shop_id, work_shops.name as work_shop_name, work_teams.user_id, username").where(id: workteam.id)
+
       end
     rescue Exception => e
       render json: { msg: e }, status: 500
@@ -473,7 +474,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
     begin
       workteam = WorkTeam.find(params.require(:params)[:id])
       if workteam.update(params.require(:params).permit(:name, :work_shop_id, :user_id))
-        render json: workteam
+        render json: WorkTeam.joins(:work_shop).joins(:user).select("work_teams.id, work_teams.name, work_shop_id, work_shops.name as work_shop_name, work_teams.user_id, username").where(id: workteam.id)
       end
     rescue Exception => e
       render json: { msg: e }, status: 500
