@@ -77,6 +77,34 @@ class Api::V1::OrdersController < Api::V1::BaseController
  		}
 
   end
+
+  def post_template
+    begin
+      material = Material.new(materials_params)
+      if material.save!
+        boms = params.require(:params)[:boms]
+        if boms.length > 0
+          boms.each do |value|
+            pn = Bom.new
+            pn.number =  value[:bom_number]    
+            pn.total  =  value[:total]
+            pn.name   =  value[:bom_name]
+            pn.spec   =  value[:spec]
+            pn.length    = value[:bom_length]
+            pn.width     = value[:bom_width]
+            pn.comment   = value[:bom_comment]
+            pn.material_id = material.id
+            pn.save! 
+          end
+        end
+      end
+      render json: {
+        iscommit: 1
+      }
+    rescue Exception => e
+      render json: { msg: e }, status: 500
+    end
+  end
   
   def xialiao
   	xialiao = WorkShop.where(dept_type: '下料')
@@ -457,6 +485,12 @@ class Api::V1::OrdersController < Api::V1::BaseController
     @helper ||= Class.new do
       include ActionView::Helpers::NumberHelper
     end.new
+  end
+
+  private
+
+  def materials_params
+    params.require(:params).permit(:number,:graph_no,:name,:comment,:work_order_id)
   end
 
 end
