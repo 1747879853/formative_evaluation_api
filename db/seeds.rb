@@ -371,9 +371,9 @@ wt2.work_shop_id = 1
 wt2.user_id = 8
 wt2.save!
 
-cost1 = Cost.find_or_create_by({title:'车辆费1'})
+cost1 = Cost.find_or_create_by({title:'车辆费2'})
 cost1.save!
-cost2 = Cost.find_or_create_by({title:'保养费2'})
+cost2 = Cost.find_or_create_by({title:'保养费1'})
 cost2.parent=cost1
 cost2.save!
 cost3 = Cost.find_or_create_by({title:'加油费3'})

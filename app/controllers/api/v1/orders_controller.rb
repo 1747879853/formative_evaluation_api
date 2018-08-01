@@ -32,13 +32,27 @@ class Api::V1::OrdersController < Api::V1::BaseController
   end
 
   def order_details
-
   	order = Order.find_by_id(params[:order_id])
   	work_orders = order.work_orders
   	render json: {
   		work_orders: work_orders
   	}
+  end
 
+  def post_work_order
+    work_order = WorkOrder.new
+    work_order.number = params[:number]
+    work_order.title = params[:title]
+    work_order.template_type = params[:template_type]
+    work_order.maker = params[:maker]
+    work_order.status = 1
+    work_order.order_id = params[:order_id]
+    work_order.record_time = Time.now
+    if work_order.save!
+      render json:{
+        work_order: work_order
+      }
+    end
   end
 
   def work_order_details
@@ -63,10 +77,37 @@ class Api::V1::OrdersController < Api::V1::BaseController
  		}
 
   end
+
+  def post_template
+    begin
+      material = Material.new(materials_params)
+      if material.save!
+        boms = params.require(:params)[:boms]
+        if boms.length > 0
+          boms.each do |value|
+            pn = Bom.new
+            pn.number =  value[:bom_number]    
+            pn.total  =  value[:total]
+            pn.name   =  value[:bom_name]
+            pn.spec   =  value[:spec]
+            pn.length    = value[:bom_length]
+            pn.width     = value[:bom_width]
+            pn.comment   = value[:bom_comment]
+            pn.material_id = material.id
+            pn.save! 
+          end
+        end
+      end
+      render json: {
+        iscommit: 1
+      }
+    rescue Exception => e
+      render json: { msg: e }, status: 500
+    end
+  end
   
   def xialiao
   	xialiao = WorkShop.where(dept_type: '下料')
-
   	render json:{
   		manager: xialiao
   	}
@@ -359,8 +400,8 @@ class Api::V1::OrdersController < Api::V1::BaseController
   end
 
   def get_work_shop
-    
-    render json: WorkShop.joins(:user).select("work_shops.id, name, dept_type, user_id, username").where(status: 1).all
+
+    render json:{'a': WorkShop.joins(:user).select("work_shops.id, name, dept_type, user_id, username").where(status: 1).all ,'b': User.select("id,username").where(status: 1).all}
   end
 
   def post_work_shop
@@ -400,8 +441,8 @@ class Api::V1::OrdersController < Api::V1::BaseController
   end
 
   def get_work_team
-    
-    render json: WorkTeam.joins(:work_shop).joins(:user).select("work_teams.id, work_teams.name, work_shop_id, work_shops.name as work_shop_name, work_teams.user_id, username").where(status: 1).all
+
+    render json:{'a': WorkTeam.joins(:work_shop).joins(:user).select("work_teams.id, work_teams.name, work_shop_id, work_shops.name as work_shop_name, work_teams.user_id, username").where(status: 1).all,'b': WorkShop.select("id, name,user_id").where(status: 1).all ,'c': User.select("id,username").where(status: 1).all}
   end
   
   def post_work_team
@@ -409,7 +450,8 @@ class Api::V1::OrdersController < Api::V1::BaseController
     begin
       workteam = WorkTeam.new(params.require(:params).permit(:name, :work_shop_id, :status, :user_id))
       if workteam.save!
-        render json: workteam
+        render json: WorkTeam.joins(:work_shop).joins(:user).select("work_teams.id, work_teams.name, work_shop_id, work_shops.name as work_shop_name, work_teams.user_id, username").where(id: workteam.id)
+
       end
     rescue Exception => e
       render json: { msg: e }, status: 500
@@ -432,7 +474,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
     begin
       workteam = WorkTeam.find(params.require(:params)[:id])
       if workteam.update(params.require(:params).permit(:name, :work_shop_id, :user_id))
-        render json: workteam
+        render json: WorkTeam.joins(:work_shop).joins(:user).select("work_teams.id, work_teams.name, work_shop_id, work_shops.name as work_shop_name, work_teams.user_id, username").where(id: workteam.id)
       end
     rescue Exception => e
       render json: { msg: e }, status: 500
@@ -444,6 +486,12 @@ class Api::V1::OrdersController < Api::V1::BaseController
     @helper ||= Class.new do
       include ActionView::Helpers::NumberHelper
     end.new
+  end
+
+  private
+
+  def materials_params
+    params.require(:params).permit(:number,:graph_no,:name,:comment,:work_order_id)
   end
 
 end

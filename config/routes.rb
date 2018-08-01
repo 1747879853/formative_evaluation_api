@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       post   '/userList'       => 'users#post_userlist'
       patch  '/userList'       => 'users#patch_userlist'
       delete '/userList'       => 'users#delete_userlist'
+      patch  '/userpass'       => 'users#patch_userpass'
       # resources :users, only: [:index, :current, :create, :update, :destroy]
 
       # Authority actions
@@ -54,8 +55,9 @@ Rails.application.routes.draw do
       get    '/order_details'  => 'orders#order_details' 
       get    '/xialiao'        => 'orders#xialiao' 
       get    '/zupin'          => 'orders#zupin' 
-      get    '/work_order_details' => 'orders#work_order_details' 
-
+      get    '/work_order_details'  => 'orders#work_order_details' 
+      post   '/work_order_details'  => 'orders#post_work_order'
+      post   '/template'       => 'orders#post_template'
       post   '/work_shop_task' => 'orders#work_shop_task_add'
       get    '/work_shop_order_list' => 'orders#work_shop_order_list'
       get    '/teams'          => 'orders#work_teams'
@@ -84,7 +86,11 @@ Rails.application.routes.draw do
       delete '/work_shops'     => 'orders#delete_work_shop'
       patch  '/work_shops'     => 'orders#patch_work_shop'
       # WorkOrder actions
-      
+
+      # images
+      post   '/images'         => 'imageupload#upload'
+      delete '/images'         => 'imageupload#delete_image'
+            
       # Approval actions
       get '/approval_admin_list'   =>'approval#approval_admin_list'
       get '/approval_list'   =>'approval#approval_list'

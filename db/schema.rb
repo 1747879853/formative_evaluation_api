@@ -173,7 +173,6 @@ ActiveRecord::Schema.define(version: 2018_07_26_095042) do
     t.integer "parent_id", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["title"], name: "index_costs_on_title"
   end
 
   create_table "materials", force: :cascade do |t|
