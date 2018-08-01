@@ -90,6 +90,8 @@ ActiveRecord::Schema.define(version: 2018_07_26_095042) do
     t.integer "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "approval_admin_id"
+    t.index ["approval_admin_id"], name: "index_approvals_on_approval_admin_id"
   end
 
   create_table "auth_groups", force: :cascade do |t|
@@ -328,4 +330,5 @@ ActiveRecord::Schema.define(version: 2018_07_26_095042) do
     t.index ["work_shop_id"], name: "index_work_teams_on_work_shop_id"
   end
 
+  add_foreign_key "approvals", "approval_admins"
 end
