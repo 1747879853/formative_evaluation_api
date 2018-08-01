@@ -53,8 +53,20 @@ class Api::V1::UsersController < Api::V1::BaseController
     rescue Exception => e
       render json: { msg: e }, status: 500      
     end
-  end
+  end  
   
+  def patch_userpass
+
+    begin
+      user = User.find_by_email(params.require(:params)[:email])
+      if user.update(params.require(:params).permit(:password))
+        render json: { }
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500
+    end
+  end
+
 private
   
   # Setting up strict parameters for when we add account creation.

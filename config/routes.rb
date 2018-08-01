@@ -19,6 +19,7 @@ Rails.application.routes.draw do
       post   '/userList'       => 'users#post_userlist'
       patch  '/userList'       => 'users#patch_userlist'
       delete '/userList'       => 'users#delete_userlist'
+      patch  '/userpass'       => 'users#patch_userpass'
       # resources :users, only: [:index, :current, :create, :update, :destroy]
 
       # Authority actions
