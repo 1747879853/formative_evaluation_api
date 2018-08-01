@@ -54,12 +54,26 @@ class Api::V1::UsersController < Api::V1::BaseController
       render json: { msg: e }, status: 500      
     end
   end  
+
+  def get_userpass
+
+    begin
+      a = params[:password]
+      if current_user.authenticate(a)
+        render json: {'a': true} 
+      else
+        render json: {'a': false}
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500
+    end
+  end
   
   def patch_userpass
 
     begin
-      user = User.find_by_email(params.require(:params)[:email])
-      if user.update(params.require(:params).permit(:password))
+
+      if current_user and current_user.update(params.require(:params).permit(:password))
         render json: { }
       end
     rescue Exception => e
