@@ -25,3 +25,4 @@
 /db/migrate/*_create_approval2018*s.rb
 /db/migrate/*_create_approval_detail2018*s.rb
 
+/public/*
