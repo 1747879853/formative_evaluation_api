@@ -3,8 +3,6 @@ class Api::V1::UserTokenController < Knock::AuthTokenController
 
   def create
   	json = auth_token.as_json
-
-  	p json
   	h = {
   		"jwt": json["token"],
   		"auth_rules": entity.nil? ? [] : entity.auth_rules.active.select(:name).map(&:name),
