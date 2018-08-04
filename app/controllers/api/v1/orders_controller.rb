@@ -155,7 +155,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
   		  if not wst.save
   		  	msg ="分派失败！"
         else
-          wst.work_logs.create(work_order_id:params[:work_order_id],record_time:Time.now,description: User.find_by_id(wst.user_id).username+"分配工单:"+ params[:work_order_id].to_s+" 到"+  WorkShop.find_by_user_id(e).name+"车间") 
+          wst.work_logs.create(number: WorkOrder.find(params[:work_order_id]).number,get_user_id: e,user_id:current_user.id,work_order_id:params[:work_order_id],record_time:Time.now,description: User.find_by_id(wst.user_id).username+" 于 "+Time.now.strftime('%Y-%m-%d %H:%M:%S').to_s+" 分派工单: "+ params[:work_order_id].to_s++" 到"+  WorkShop.find_by_user_id(e).name+" 车间") 
   		  end
   		end
   	end
@@ -167,7 +167,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
 
 
   def work_shop_order_list 
-  	work_shop_order_list = WorkOrder.joins(work_shop_tasks: [work_shop: :user]).where("work_shops.user_id=?",current_user.id).select("work_orders.id as work_order_id,work_orders.title,work_orders.maker,work_orders.template_type,work_shops.name,work_shops.id as work_shop_id,users.username,users.id as user_id,work_orders.number ")
+  	work_shop_order_list = WorkOrder.joins(work_shop_tasks: [work_shop: :user]).where("work_shops.user_id=?",current_user.id).select("work_shop_tasks.id as wstid,work_orders.id as work_order_id,work_orders.title,work_orders.maker,work_orders.template_type,work_shops.name,work_shops.id as work_shop_id,users.username,users.id as user_id,work_orders.number ")
 
   	# work_shop_order_list = WorkOrder.joins(work_shop_tasks: [work_shop: :user]).select("work_orders.id as work_order_id,work_orders.title,work_orders.maker,work_orders.template_type,work_shops.name,work_shops.id as work_shop_id,users.username,users.id as user_id,work_orders.number ")
   	# data = []
@@ -184,7 +184,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
 
   def work_teams
 
-  	teams = WorkTeam.where(work_shop_id: params[:work_shop_id])
+  	teams = WorkTeam.where(work_shop_id: params[:work_shop_id]).where(status: 1)
   	render json:{
   		teams: teams
   	}
@@ -206,11 +206,12 @@ class Api::V1::OrdersController < Api::V1::BaseController
 	  		wtt.user_id = current_user.id
 	  		wtt.record_time = Time.now
 	  		wtt.number = params[:number]
+        wtt.work_shop_task_id = params[:wst_id]
 	  		wtt.status = 0
 	  		if not wtt.save
 	  			msg = "分派到班组失败！"
         else
-          wtt.work_logs.create(work_order_id:params[:work_order_id],record_time: Time.now,description: User.find_by_id(current_user.id).username+"分派"+Material.find_by_id(e).name+"到:"+WorkTeam.find_by_id( params[:work_team_id]).name+";数量："+params[:number].to_s+" ;")
+          wtt.work_logs.create(parent_id:wtt.work_shop_task_id,get_user_id: WorkTeam.find_by_id( params[:work_team_id]).user_id ,number:wtt.number,user_id:current_user.id,work_order_id:params[:work_order_id],record_time: Time.now,description: User.find_by_id(current_user.id).username+" 于 "+Time.now.strftime('%Y-%m-%d %H:%M:%S').to_s+" 分派 "+Material.find_by_id(e).name+" 到: "+WorkTeam.find_by_id( params[:work_team_id]).name+" ;数量："+params[:number].to_s+" ;")
 	  		end
 
 	  	end
@@ -272,11 +273,16 @@ class Api::V1::OrdersController < Api::V1::BaseController
 
   	wtt = WorkTeamTask.find_by(id: team_task_id)
   	wtt.passed_number =(wtt.passed_number ? wtt.passed_number : 0)+passed_num
+    if wtt.passed_number > wtt.number
+      render json:{
+        msg: "合格数量不可大于分配数量"
+      }else
     wl = WorkLog.where(owner_type:"WorkTeamTask").where(owner_id:team_task_id).first
     des = wl.description.split("|").count==1 ? wl.description.split("|") : wl.description.split("|")[0..-2]
   
     
     wl.description = des.join(",") + "| 已完成数量: "+wtt.passed_number.to_s+";  生产进度: " + helper.number_to_percentage(wtt.passed_number*100/wtt.number,precision: 2)
+    wl.passed_number = wtt.passed_number
     wl.save
   	wttd = WorkTeamTaskDetail.new
   	wttd.work_team_task_id = team_task_id
@@ -290,10 +296,11 @@ class Api::V1::OrdersController < Api::V1::BaseController
 	  else
 	  	msg = "保存失败"
 	  end
-	
+	 
   	render json:{
   		msg: msg
   	}
+  end
   end
 
 
@@ -375,7 +382,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
   end
 
  def checking_list
-    wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where.not(finished_number:nil).select("work_team_tasks.id as id,materials.id as mid,materials.work_order_id as wo_id, materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
+    wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).select("work_team_tasks.id as id,materials.id as mid,materials.work_order_id as wo_id, materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
     render json:{
       data: wtt
     }
@@ -479,6 +486,149 @@ class Api::V1::OrdersController < Api::V1::BaseController
     rescue Exception => e
       render json: { msg: e }, status: 500
     end
+  end
+
+  def work_logs
+    wl = WorkLog.all
+
+    render json:{
+      work_logs: wl
+    }
+  end
+
+  def work_log_tree
+    str_where = "1=1"
+    arr_where = []
+    if params[:client_name] and params[:client_name]!=""
+      str_where += " and title like ?"
+      arr_where<< "%"+params[:client_name] +"%"
+    end
+    if  params[:type_name]and params[:type_name]!=""
+      str_where += " and template_type like ?"
+      arr_where<< "%"+params[:type_name] +"%"
+    end
+    if params[:w_order_id]and params[:w_order_id]!=""
+      str_where += " and id = ? "
+      arr_where<< params[:w_order_id]
+    end
+
+   
+    if arr_where.length ==0
+    order_ids = WorkOrder.select("order_id").distinct
+    else
+      order_ids = WorkOrder.where(str_where,*arr_where).select("order_id").distinct
+    end
+    arr = []
+    order_ids.each do |e|
+      h = {}
+      order  = Order.find_by_id(e.order_id)
+      h[:title] = order.client_title + "  订单号："+ order.no
+      h[:expand] = true
+
+      wl = WorkOrder.where(order_id:e.order_id).select("id as work_order_id,title,template_type,record_time").distinct
+      h[:children] = []
+      wl.each do|f|
+        h1 = {}
+        h1[:title] ="工单号:" +f.work_order_id.to_s+"  "+f.record_time.strftime('%Y-%m-%d').to_s+"日  "+f.title+"    " +f.template_type+"  "
+        h1[:expand] = true
+        wst = WorkLog.where(owner_type: "WorkShopTask",work_order_id: f.work_order_id)
+
+        h1[:children] = []
+        wst.each do|g|
+
+          h2 = {}
+          h2[:title] = g.description
+          h2[:expand] = true
+          h2[:children] = WorkLog.where(owner_type:"WorkTeamTask",parent_id: g.owner_id).select("*,description as title")
+          h1[:children]<< h2
+        end
+         h[:children]<< h1
+      end
+      arr << h
+    end
+
+
+
+
+
+
+    # wl = WorkOrder.select("id as work_order_id,title,template_type,record_time").distinct
+    # arr = []
+    # wl.each do |e|
+    #   h ={}
+    #   h[:title] =e.record_time.strftime('%Y-%m-%d').to_s+"日  "+e.title+"  工单号:" +e.work_order_id.to_s+"    " +e.template_type+"  "
+    #   h[:expand] = true
+    #   wst = WorkLog.where(owner_type: "WorkShopTask",work_order_id: e.work_order_id)
+    #   h[:children] = []
+    #   wst.each do|f|
+
+    #    h1 = {}
+    #    h1[:title] = f.description
+    #    h1[:expand] = true
+    #    h1[:children] = WorkLog.where(owner_type:"WorkTeamTask",parent_id: f.owner_id).select("*,description as title")
+    #    h[:children]<< h1
+    #   end
+    #   arr<< h
+    # end
+
+    # wst = WorkLog.where(owner_type: "WorkShopTask")
+    # arr = []
+    # wst.each do|e|
+    #    h = {}
+      
+    #    h[:title] = e.description
+    #    h[:expand] = true
+    #    h[:children] = WorkLog.where(owner_type:"WorkTeamTask",parent_id: e.owner_id).select("*,description as title")
+    #    arr << h
+    # end
+
+    render json:{
+      data1: arr
+    }
+  end
+
+
+  def workshop_logs
+
+    work_logs = WorkLog.where(user_id:current_user.id)
+
+    render json:{
+      work_logs: work_logs
+    }
+  end
+
+
+  def xialiao_shoptasks
+    wst = WorkShopTask.joins(:work_shop).joins(work_order: :materials).joins(:user).where("work_shops.user_id=?",current_user.id).select("work_orders.id as id,materials.id as mid,materials.graph_no,materials.name as name,work_shops.name as shop_name,work_orders.number,materials.comment,users.username,work_shops.id as work_shop_id").order("work_shop_tasks.id asc")
+    render json:{
+      data: wst
+    }
+  end
+
+  def give_task_to_team
+    p params[:procedure]
+
+    wtt = WorkTeamTask.new
+    wtt.material_id = params[:mid]
+    wtt.work_team_id = params[:procedure].split(",").first
+    wtt.user_id = current_user.id
+    wtt.record_time = Time.now
+    wtt.number = params[:mnumber]
+    wtt.work_shop_task_id = params[:wst_id]
+    wtt.status = 0
+    wtt.current_position = params[:procedure].split(",").first
+    wtt.production_status = 1
+    wtt.process = params[:procedure]
+    p wtt
+    if wtt.save
+      msg = "分派成功"
+    else
+      msg = "分派失败"
+    end
+    render json:{
+      msg: msg
+    }
+
   end
 
 

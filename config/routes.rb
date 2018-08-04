@@ -76,6 +76,11 @@ Rails.application.routes.draw do
       get    '/order_process'  => 'orders#order_process'
       get    '/team_task_finish' => 'orders#team_task_finish'
       get    '/checking_list'  => 'orders#checking_list'
+      get    '/work_logs'      => 'orders#work_logs'
+      get    '/work_log_tree'  => 'orders#work_log_tree'
+      get    '/workshop_logs'  => 'orders#workshop_logs'
+      get    '/xialiao_shoptasks' => 'orders#xialiao_shoptasks'
+      post   '/give_task_to_team' => 'orders#give_task_to_team'
 
       get    '/work_teams'     => 'orders#get_work_team'
       post   '/work_teams'     => 'orders#post_work_team'

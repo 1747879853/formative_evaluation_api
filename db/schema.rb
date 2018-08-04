@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_26_095042) do
+ActiveRecord::Schema.define(version: 2018_08_04_082938) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -252,6 +252,11 @@ ActiveRecord::Schema.define(version: 2018_07_26_095042) do
     t.datetime "updated_at", null: false
     t.integer "work_order_id"
     t.integer "order_id"
+    t.integer "user_id"
+    t.decimal "passed_number", precision: 3, scale: 2
+    t.decimal "number", precision: 3, scale: 2
+    t.integer "get_user_id"
+    t.integer "parent_id"
     t.index ["owner_type", "owner_id"], name: "index_work_logs_on_owner_type_and_owner_id"
   end
 
@@ -314,8 +319,14 @@ ActiveRecord::Schema.define(version: 2018_07_26_095042) do
     t.integer "passed_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "work_shop_task_id"
+    t.integer "production_status", default: 0
+    t.string "current_position"
+    t.string "process"
+    t.string "finished_process"
     t.index ["material_id"], name: "index_work_team_tasks_on_material_id"
     t.index ["user_id"], name: "index_work_team_tasks_on_user_id"
+    t.index ["work_shop_task_id"], name: "index_work_team_tasks_on_work_shop_task_id"
     t.index ["work_team_id"], name: "index_work_team_tasks_on_work_team_id"
   end
 
