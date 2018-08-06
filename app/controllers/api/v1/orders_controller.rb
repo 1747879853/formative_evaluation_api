@@ -224,20 +224,30 @@ class Api::V1::OrdersController < Api::V1::BaseController
   end
 
   def work_team_task_list
-  	wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_teams.user_id=?",current_user.id).select("work_team_tasks.id as id,materials.id as mid,materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
+  	wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_teams.user_id=? and work_team_tasks.status = 0",current_user.id).select("work_team_tasks.work_team_id,work_team_tasks.process,work_team_tasks.id as id,materials.id as mid,materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
   	render json:{
   		data: wtt
   	}
   end
 
   def team_task_boms
-  	mid = params[:material_id]
-  	task_id = params[:task_id]
-  	team_task_boms = Bom.joins(material: :work_team_tasks).where("materials.id=? and work_team_tasks.id=? ",mid,task_id).select("boms.id as bom_id,boms.name,materials.name as m_name,work_team_tasks.number,boms.number*work_team_tasks.number as qty, boms.spec,boms.length,boms.width,boms.comment")
-   	render json:{
+
+  	mid = params[:material_id] if params[:material_id]
+    if params[:task_id]
+  	   task_id = params[:task_id] 
+  	   team_task_boms = Bom.joins(material: :work_team_tasks).where("materials.id=? and work_team_tasks.id=? ",mid,task_id).select("boms.id as bom_id,boms.name,materials.name as m_name,work_team_tasks.number,boms.number*work_team_tasks.number as qty, boms.spec,boms.length,boms.width,boms.comment")
+   	else
+       team_task_boms = Bom.joins(:material).where("materials.id=?  ",mid).select("boms.id as bom_id,boms.name,materials.name as m_name,materials.number,boms.number*materials.number as qty, boms.spec,boms.length,boms.width,boms.comment")
+
+    end
+
+    render json:{
    		boms: team_task_boms
    	}
   end
+
+
+
 
 
   def team_task_material_finished
@@ -382,9 +392,14 @@ class Api::V1::OrdersController < Api::V1::BaseController
   end
 
  def checking_list
-    wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).select("work_team_tasks.id as id,materials.id as mid,materials.work_order_id as wo_id, materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
+
+    count  = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_team_tasks.status=2").count
+    wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_team_tasks.status=2").select("work_team_tasks.work_team_id,work_team_tasks.process,work_team_tasks.id as id,materials.id as mid,materials.work_order_id as wo_id, materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc").page(params[:page]).per(3)
+    
     render json:{
+      count: count,
       data: wtt
+      
     }
   end
 
@@ -599,15 +614,15 @@ class Api::V1::OrdersController < Api::V1::BaseController
 
 
   def xialiao_shoptasks
-    wst = WorkShopTask.joins(:work_shop).joins(work_order: :materials).joins(:user).where("work_shops.user_id=?",current_user.id).select("work_orders.id as id,materials.id as mid,materials.graph_no,materials.name as name,work_shops.name as shop_name,work_orders.number,materials.comment,users.username,work_shops.id as work_shop_id").order("work_shop_tasks.id asc")
+    wst = WorkShopTask.joins(:work_shop).joins(work_order: :materials).joins(:user).where("work_shops.user_id=?",current_user.id).select("work_shop_tasks.id as wst_id,work_orders.id as id,materials.id as mid,materials.graph_no,materials.name as name,work_shops.name as shop_name,work_orders.number,materials.comment,users.username,work_shops.id as work_shop_id").order("work_shop_tasks.id asc")
     render json:{
       data: wst
     }
   end
 
   def give_task_to_team
-    p params[:procedure]
-
+    arr = []
+    params[:procedure].split(",").each {|e| arr << WorkTeam.find(e).name}
     wtt = WorkTeamTask.new
     wtt.material_id = params[:mid]
     wtt.work_team_id = params[:procedure].split(",").first
@@ -619,9 +634,11 @@ class Api::V1::OrdersController < Api::V1::BaseController
     wtt.current_position = params[:procedure].split(",").first
     wtt.production_status = 1
     wtt.process = params[:procedure]
-    p wtt
+    
     if wtt.save
       msg = "分派成功"
+      wtt.work_logs.create(parent_id:wtt.work_shop_task_id,get_user_id: WorkTeam.find_by_id(wtt.work_team_id).user_id ,number:wtt.number,user_id:current_user.id,work_order_id:params[:work_order_id],record_time: Time.now,description: User.find_by_id(current_user.id).username+" 于 "+Time.now.strftime('%Y-%m-%d %H:%M:%S').to_s+" 分派 "+Material.find_by_id(params[:mid]).name+" 到: "+arr.join(",")+" ;数量："+params[:mnumber].to_s+" ;")
+
     else
       msg = "分派失败"
     end
@@ -631,6 +648,39 @@ class Api::V1::OrdersController < Api::V1::BaseController
 
   end
 
+
+  def flow_finished
+   
+    wtt = WorkTeamTask.find_by_id(params[:team_task_id])
+    arr = wtt.process.split(',')
+    index = arr.index(wtt.current_position.to_s)
+    
+    if arr[index+1]
+      wtt.current_position = arr[index+1]
+      wtt.work_team_id = arr[index+1]
+      wtt.finished_process =  wtt.finished_process ?  wtt.finished_process.to_s+","+wtt.work_team_id.to_s : wtt.work_team_id.to_s
+      wtt.save
+      msg ="完成并转入下一道工序"
+    else
+      wtt.status =2
+      wtt.save
+      msg ="进入质检"
+
+    end
+
+  
+    render json:{
+      msg: msg
+    }
+  end
+
+  def zupin_finished
+
+    wtt  =  WorkTeamTask.find_by_id(params[:id])
+    wtt.status = 2
+    wtt.save
+    
+  end
 
   def helper
     @helper ||= Class.new do
