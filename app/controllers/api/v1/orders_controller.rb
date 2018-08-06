@@ -107,7 +107,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
   end
   
   def xialiao
-  	xialiao = WorkShop.where(dept_type: '下料')
+  	xialiao = WorkShop.where(dept_type: '下料',status: 1)
   	render json:{
   		manager: xialiao
   	}
@@ -115,7 +115,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
 
 
   def zupin
-  	zupin = WorkShop.where(dept_type: '组拼')
+  	zupin = WorkShop.where(dept_type: '组拼',status: 1)
   	render json:{
   		manager: zupin
   	}
