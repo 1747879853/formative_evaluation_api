@@ -119,6 +119,10 @@ Rails.application.routes.draw do
       get '/procedure_nodes'   =>'procedure#procedure_nodes'
       post '/procedure_create' =>'procedure#procedure_create'
 
+      # Vehicle actions
+      get  '/vehicleList'   =>'vehicle#get_vehiclelist'
+      post '/vehicleList'   =>'vehicle#post_vehiclelist'
+
     end
   end
 
