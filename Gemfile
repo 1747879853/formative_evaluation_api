@@ -51,6 +51,7 @@ gem 'jwt'
 
 gem 'acts_as_tree'
 gem 'paperclip'
+gem 'kaminari'
 
 group :development do
   gem 'capistrano', '~> 3.6'
