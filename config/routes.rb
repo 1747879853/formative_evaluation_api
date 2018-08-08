@@ -125,6 +125,10 @@ Rails.application.routes.draw do
       get  '/vehicleList'   =>'vehicle#get_vehiclelist'
       post '/vehicleList'   =>'vehicle#post_vehiclelist'
 
+      # Employee actions
+      get   '/attendanceList'   =>'employee#get_attendanceList'
+      post  '/attendanceList'   =>'employee#post_attendanceList'
+
     end
   end
 
