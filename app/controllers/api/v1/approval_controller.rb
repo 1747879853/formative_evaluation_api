@@ -107,6 +107,10 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 	  	ts = t.strftime('%Y%m%d%H%M%S')
 
 	  	begin
+	  		cmd_all_success = false
+	  		cmd1_success = false
+	  		cmd2_success = false
+	  		cmd3_success = false
 
 	  		para_admin_id = params[:approval_admin_id] 
   			para_name = params[:approval_admin_name]
@@ -165,8 +169,8 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 				app_field_str = ApprovalField.generateStr(app_field_name,app_field_ctl) + ApprovalField.solid_field_str()
 				console_cmd1 ="rails generate model " + apr.en_name_main + " " + app_field_str +'--no-assets --no-test-framework'
 
-				system(console_cmd1)
-
+				# system(console_cmd1)
+				console_cmd2 = nil
 				if params[:approval_detail_field_data].length >0
 					app_field_name_d = []
 					app_field_ctl_d = []
@@ -189,14 +193,60 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 					end
 					app_field_str_d = ApprovalField.generateStr(app_field_name_d,app_field_ctl_d,apr.en_name_main)
 					console_cmd2 ="rails generate model " + apr.en_name_detail + " " + app_field_str_d + '--no-assets --no-test-framework'
-					system(console_cmd2)
+					# system(console_cmd2)
 				else
 					apr.en_name_detail = nil  #if there's no detail table,let en_name_detail=nil
 					apr.save!
 				end
-				# open model file and add some has_many etc
 
-				system("rails db:migrate")
+				cmd1_ret = system(console_cmd1)
+				# p("cmd1_ret:",cmd1_ret)
+				if cmd1_ret
+					cmd1_success = true
+				else
+					cmd1_success = false
+				end
+
+				if cmd1_success && console_cmd2 
+					if system(console_cmd2)
+						cmd2_success = true
+					else
+						cmd2_success = false
+					end
+				end
+				
+				if cmd1_success && cmd2_success
+					if system("rails db:migrate")
+						cmd3_success = true
+					else
+						cmd3_success = false
+					end
+				end
+				# open model file and add some has_many etc,we do not do this at here,so there is no has_many and belongs_to.
+				if cmd3_success #means all command success
+					#move model files from app/models/generated models to lib/approvalmodel/
+					system("mv app/models/" + apr.en_name_main.underscore + ".rb" + " " + "lib/approvalmodel")
+					if console_cmd2
+						system("mv app/models/" + apr.en_name_detail.underscore + ".rb" + " " + "lib/approvalmodel")
+					end
+					cmd_all_success = true
+
+				elsif cmd2_success #means command3 failed,so delete command1 and command2 generated files and delete all newed records
+					system("rm app/models/" + apr.en_name_main.underscore + ".rb")
+					if console_cmd2
+						system("rm app/models/" + apr.en_name_detail.underscore + ".rb")
+					end
+					#delete all newed records
+					#here need to complete in the future???????????
+
+
+				elsif cmd1_success #means command2 and command3 failed,so delete command1 generated files
+					system("rm app/models/" + apr.en_name_main.underscore + ".rb")
+					#delete all newed records
+					#here need to complete in the future??????????
+				end
+
+						
 			else  #修改旧的审批
 				apr_admin = ApprovalAdmin.find_by(id: para_admin_id)
 		  		apr_admin.name = para_name
@@ -261,7 +311,7 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 				app_field_str = ApprovalField.generateStr(app_field_name,app_field_ctl) + ApprovalField.solid_field_str()
 				console_cmd1 ="rails generate model " + apr.en_name_main + " " + app_field_str +'--no-assets --no-test-framework'
 
-				system(console_cmd1)
+				# system(console_cmd1)
 
 				if params[:approval_detail_field_data].length >0
 					app_field_name_d = []
@@ -285,18 +335,68 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 					end
 					app_field_str_d = ApprovalField.generateStr(app_field_name_d,app_field_ctl_d,apr.en_name_main)
 					console_cmd2 ="rails generate model " + apr.en_name_detail + " " + app_field_str_d + '--no-assets --no-test-framework'
-					system(console_cmd2)
+					# system(console_cmd2)
 				else
 					apr.en_name_detail = nil  #if there's no detail table,let en_name_detail=nil
 					apr.save!
 				end
-				# open model file and add some has_many etc
 
-				system("rails db:migrate")
+				cmd1_ret = system(console_cmd1)
+				# p("cmd1_ret:",cmd1_ret)
+				if cmd1_ret
+					cmd1_success = true
+				else
+					cmd1_success = false
+				end
+
+				if cmd1_success && console_cmd2 
+					if system(console_cmd2)
+						cmd2_success = true
+					else
+						cmd2_success = false
+					end
+				end
+				
+				if cmd1_success && cmd2_success
+					if system("rails db:migrate")
+						cmd3_success = true
+					else
+						cmd3_success = false
+					end
+				end
+
+				# open model file and add some has_many etc,we do not do this at here,so there is no has_many and belongs_to.
+				if cmd3_success #means all command success
+					#move model files from app/models/generated models to lib/approvalmodel/
+					system("mv app/models/" + apr.en_name_main.underscore + ".rb" + " " + "lib/approvalmodel")
+					if console_cmd2
+						system("mv app/models/" + apr.en_name_detail.underscore + ".rb" + " " + "lib/approvalmodel")
+					end
+					cmd_all_success = true
+
+				elsif cmd2_success #means command3 failed,so delete command1 and command2 generated files and delete all newed records and restore all the modified data of ApprovalAdmin etc.
+					system("rm app/models/" + apr.en_name_main.underscore + ".rb")
+					if console_cmd2
+						system("rm app/models/" + apr.en_name_detail.underscore + ".rb")
+					end
+					# delete all newed records and restore all the modified data of ApprovalAdmin etc.
+					#here need to complete in the future???????????
+
+
+				elsif cmd1_success #means command2 and command3 failed,so delete command1 generated files
+					system("rm app/models/" + apr.en_name_main.underscore + ".rb")
+					#delete all newed records and restore all the modified data of ApprovalAdmin etc.
+					#here need to complete in the future???????????
+				end
+
 
 			end
 
-			render json:{msg: '保存成功',code: 1}
+			if cmd_all_success
+				render json:{msg: '保存成功',code: 1}
+			else
+				render json:{msg: '保存失败',code: 0}
+			end
 	  	rescue Exception => e
 	  		render json:{msg: '保存失败',code: 0}
 	  	end
