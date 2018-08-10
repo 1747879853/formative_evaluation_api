@@ -485,7 +485,7 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 			# m_hash["node_id_now"] = p_nodes.first.id
 			# m_hash["submit_to_user_id"] = sui
 			m_hash.delete("xxx")  #fuck rails parameters permit!
-		    mm = model_main.create(m_hash)
+		    mm = model_main.create!(m_hash)
 
 		    if d_hash_arr.length>0
 		    	main_key_id = app.en_name_main.downcase + '_id'
