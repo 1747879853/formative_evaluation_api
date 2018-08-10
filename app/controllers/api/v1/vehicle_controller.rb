@@ -13,10 +13,16 @@ class Api::V1::VehicleController < Api::V1::BaseController
   def post_vehiclelist
 
     begin
-      a = params.require(:params)[:s_time]
-      b = params.require(:params)[:e_time]
-      c = params.require(:params)[:carno]
-      car = RuihongCar.where('carno like ? and (out_time between ? and ? or in_time between ? and ?)',['%',c, '%'].join,a,b,a,b)
+      @s = params.require(:params)[:s_time]
+      @e = params.require(:params)[:e_time]
+      @c = params.require(:params)[:carno]
+      # car = RuihongCar.where('carno like ? and (out_time between ? and ? or in_time between ? and ?)',['%',c, '%'].join,a,b,a,b)
+      if @c != ""
+        car = RuihongCar.where(in_time: @s..@e).or(RuihongCar.where( out_time: @s..@e)).or(RuihongCar.where("carno LIKE ?","%#{@c}%")).order(:created_at)
+      else
+        car = RuihongCar.where(in_time: @s..@e).or(RuihongCar.where( out_time: @s..@e)).order(:created_at)
+      end
+      
       render json: car
     rescue Exception => e
       render json: { msg: e }, status: 500
@@ -25,3 +31,5 @@ class Api::V1::VehicleController < Api::V1::BaseController
   end
 
 end
+
+@vehicle_all = RuihongCar.where(in_time: @s..@e).or(RuihongCar.where( out_time: @s..@e)).order(:created_at)
