@@ -224,10 +224,22 @@ class Api::V1::OrdersController < Api::V1::BaseController
   end
 
   def work_team_task_list
-  	wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_teams.user_id=? and work_team_tasks.status = 0",current_user.id).select("work_team_tasks.work_team_id,work_team_tasks.process,work_team_tasks.id as id,materials.id as mid,materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
-  	render json:{
-  		data: wtt
-  	}
+
+
+    ws = WorkShop.find_by_dept_type("喷漆")
+    wt = WorkTeam.where(work_shop_id:ws.id,user_id:current_user.id).first
+      if wt
+        wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_team_tasks.paint=1 and work_team_tasks.number- COALESCE(work_team_tasks.passed_number,0)=0 and work_team_tasks.paint_team = ?",wt.id).select("work_team_tasks.work_team_id,work_team_tasks.process,work_team_tasks.id as id,materials.id as mid,materials.work_order_id as wo_id, materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
+        render json:{
+        data: wtt,
+        paint: true  
+        }
+      else
+  	    wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_teams.user_id=? and work_team_tasks.status = 0",current_user.id).select("work_team_tasks.work_team_id,work_team_tasks.process,work_team_tasks.id as id,materials.id as mid,materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
+  	    render json:{
+  		  data: wtt
+  	  }
+      end
   end
 
   def team_task_boms
@@ -678,8 +690,48 @@ class Api::V1::OrdersController < Api::V1::BaseController
 
     wtt  =  WorkTeamTask.find_by_id(params[:id])
     wtt.status = 2
+    wtt.paint = 1
     wtt.save
     
+  end
+
+  def paint_finished
+    wtt = WorkTeamTask.find_by_id(params[:id])
+    wtt.paint = 2 # 喷漆完成
+    if wtt.save
+      msg = "喷漆完成,可以出货"
+    else
+      msg = "提交失败"
+    end
+    render json:{
+      msg: msg
+    }
+  end
+
+  def painting_list
+    wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_team_tasks.paint=1 and work_team_tasks.number- COALESCE(work_team_tasks.passed_number,0)=0").select("work_team_tasks.work_team_id,work_team_tasks.process,work_team_tasks.id as id,materials.id as mid,materials.work_order_id as wo_id, materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
+    ws = WorkShop.where(dept_type:'喷漆').first  #因为只有一个
+    pt = WorkTeam.where(work_shop_id: ws.id,status: 1 )
+    render json:{
+      data: wtt,
+      teams: pt
+    }
+
+  end
+
+  def give_painting_team_task
+    wtt = WorkTeamTask.find_by_id(params[:task_id])
+    wtt.paint_team = params[:painting_team]
+    wtt.save
+  end
+
+  def painting_tasks
+    ws = WorkShop.find_by_dept_type("喷漆")
+    wt = WorkTeam.where(work_shop_id:ws.id,user_id:current_user.id).
+    wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_team_tasks.paint=1 and work_team_tasks.number- COALESCE(work_team_tasks.passed_number,0)=0 and work_team_tasks.painting_team = ?",wt.id).select("work_team_tasks.work_team_id,work_team_tasks.process,work_team_tasks.id as id,materials.id as mid,materials.work_order_id as wo_id, materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
+    render json:{
+      data: wtt   
+    }
   end
 
   def helper

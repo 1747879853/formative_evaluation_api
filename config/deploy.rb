@@ -25,7 +25,7 @@ set :deploy_to, "/var/www/wisdom_secretary_api"
 
 # Default value for linked_dirs is []
 # append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system"
-append :linked_dirs, "public/_attachment"
+append :linked_dirs, "public/_attachment", "lib/approvalmodel"
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }

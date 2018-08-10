@@ -83,6 +83,9 @@ Rails.application.routes.draw do
       post   '/give_task_to_team' => 'orders#give_task_to_team'
       post   '/flow_finished'  =>'orders#flow_finished'
       post   '/zupin_finished' => 'orders#zupin_finished'
+      get    '/painting_list'  => 'orders#painting_list'
+      post   '/give_painting_team_task' => 'orders#give_painting_team_task'
+      post   '/paint_finished' => 'orders#paint_finished'
 
       get    '/work_teams'     => 'orders#get_work_team'
       post   '/work_teams'     => 'orders#post_work_team'
