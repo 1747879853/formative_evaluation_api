@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_08_223945) do
+
+ActiveRecord::Schema.define(version: 2018_08_08_070459) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -787,6 +788,8 @@ ActiveRecord::Schema.define(version: 2018_08_08_223945) do
     t.string "current_position"
     t.string "process"
     t.string "finished_process"
+    t.integer "paint", default: 0
+    t.integer "paint_team"
     t.index ["material_id"], name: "index_work_team_tasks_on_material_id"
     t.index ["user_id"], name: "index_work_team_tasks_on_user_id"
     t.index ["work_shop_task_id"], name: "index_work_team_tasks_on_work_shop_task_id"

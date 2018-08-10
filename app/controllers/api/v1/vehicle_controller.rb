@@ -13,8 +13,8 @@ class Api::V1::VehicleController < Api::V1::BaseController
   def post_vehiclelist
 
     begin
-      a = params.require(:params)[:up_time]
-      b = params.require(:params)[:down_time]
+      a = params.require(:params)[:s_time]
+      b = params.require(:params)[:e_time]
       c = params.require(:params)[:carno]
       car = RuihongCar.where('carno like ? and (out_time between ? and ? or in_time between ? and ?)',['%',c, '%'].join,a,b,a,b)
       render json: car
