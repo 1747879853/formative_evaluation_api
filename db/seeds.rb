@@ -121,6 +121,12 @@ rule81 = AuthRule.find_or_create_by({ name: 'employee-information/attendance-rec
 rule81.parent = rule80
 rule81.save!
 
+rule90 = AuthRule.find_or_create_by({ name: 'vehicle-manage/index', title: '车辆管理'})
+rule90.save!
+rule91 = AuthRule.find_or_create_by({ name: 'vehicle-manage/vehicle-comeandgo-identify', title: '车辆进出识别'})
+rule91.parent = rule90
+rule91.save!
+
 group1 = AuthGroup.find_or_create_by({title: '超级管理员'})
 group1.save!
 group2 = AuthGroup.find_or_create_by({title: '总经理'})
@@ -198,6 +204,8 @@ group6.auth_rules.push rule73
 group6.auth_rules.push rule74
 group6.auth_rules.push rule80
 group6.auth_rules.push rule81
+group6.auth_rules.push rule90
+group6.auth_rules.push rule91
 
 group7.auth_rules.destroy_all
 group7.auth_rules.push rule10
