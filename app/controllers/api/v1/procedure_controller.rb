@@ -26,29 +26,27 @@ class Api::V1::ProcedureController < Api::V1::BaseController
     end
 
 	begin
-		tn = Time.now
-
-		app_admin = ApprovalAdmin.find_by(id: params[:approval_admin_id])
-    	app = app_admin.approvals.where(status: 1).first
-
-		old_proc = Procedure.where(status: 1).where(approval_id: app.id).first
-		if old_proc 
-			old_proc.status = 0
-			old_proc.stoped_time = tn
-			old_proc.save!
-		end
-
-		new_proc = Procedure.new
-		new_proc.approval_id = app.id
-		new_proc.status = 1
-		new_proc.created_time = tn
-		new_proc.stoped_time = nil
-		new_proc.save!
-
-
-
-	    nodes = params[:proc_nodes]
+		nodes = params[:proc_nodes]
 		if nodes.length > 0
+			tn = Time.now
+
+			app_admin = ApprovalAdmin.find_by(id: params[:approval_admin_id])
+	    	app = app_admin.approvals.where(status: 1).first
+
+			old_proc = Procedure.where(status: 1).where(approval_id: app.id).first
+			if old_proc 
+				old_proc.status = 0
+				old_proc.stoped_time = tn
+				old_proc.save!
+			end
+
+			new_proc = Procedure.new
+			new_proc.approval_id = app.id
+			new_proc.status = 1
+			new_proc.created_time = tn
+			new_proc.stoped_time = nil
+			new_proc.save!
+		   
 			nodes.each do |value|
 				pn = ProcedureNode.new
 				pn.name = value[:name]
