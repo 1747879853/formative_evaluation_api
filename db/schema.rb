@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-ActiveRecord::Schema.define(version: 2018_08_08_223945) do
+ActiveRecord::Schema.define(version: 2018_08_20_134808) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -259,6 +258,99 @@ ActiveRecord::Schema.define(version: 2018_08_08_223945) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "approval20180810154446s", force: :cascade do |t|
+    t.string "field0"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180810155115s", force: :cascade do |t|
+    t.string "field0"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180810161302s", force: :cascade do |t|
+    t.string "field0"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180810161608s", force: :cascade do |t|
+    t.string "field0"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180820100459s", force: :cascade do |t|
+    t.string "field0"
+    t.string "field1"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180820101041s", force: :cascade do |t|
+    t.string "field0"
+    t.string "field1"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval20180820214804s", force: :cascade do |t|
+    t.string "field0"
+    t.integer "approval_id"
+    t.string "approval_name"
+    t.integer "user_id"
+    t.string "no"
+    t.datetime "submit_time"
+    t.datetime "finish_time"
+    t.integer "procedure_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "approval_admins", force: :cascade do |t|
     t.string "name"
     t.string "comment"
@@ -293,6 +385,20 @@ ActiveRecord::Schema.define(version: 2018_08_08_223945) do
     t.string "field0"
     t.string "field1"
     t.integer "approval20180721065907_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval_detail20180820101041s", force: :cascade do |t|
+    t.string "field0"
+    t.integer "approval20180820101041_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "approval_detail20180820214804s", force: :cascade do |t|
+    t.string "field0"
+    t.integer "approval20180820214804_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -423,7 +529,7 @@ ActiveRecord::Schema.define(version: 2018_08_08_223945) do
     t.string "name", null: false
     t.text "thing"
     t.string "money", null: false
-    t.bigint "summary_id", null: false
+    t.string "summaries_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -433,6 +539,7 @@ ActiveRecord::Schema.define(version: 2018_08_08_223945) do
     t.integer "parent_id", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["title"], name: "index_costs_on_title"
   end
 
   create_table "employees", force: :cascade do |t|

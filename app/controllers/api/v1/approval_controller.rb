@@ -234,9 +234,13 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 				# open model file and add some has_many etc,we do not do this at here,so there is no has_many and belongs_to.
 				if cmd3_success #means all command success
 					#move model files from app/models/generated models to lib/approvalmodel/
-					system("mv app/models/" + apr.en_name_main.underscore + ".rb" + " " + "lib/approvalmodel")
+					if Rails.env.production?
+						system("mv app/models/" + apr.en_name_main.underscore + ".rb" + " " + "lib/approvalmodel")
+					end
 					if console_cmd2
-						system("mv app/models/" + apr.en_name_detail.underscore + ".rb" + " " + "lib/approvalmodel")
+						if Rails.env.production?
+							system("mv app/models/" + apr.en_name_detail.underscore + ".rb" + " " + "lib/approvalmodel")
+						end
 					end
 					cmd_all_success = true
 
@@ -392,9 +396,13 @@ class Api::V1::ApprovalController < Api::V1::BaseController
 				# open model file and add some has_many etc,we do not do this at here,so there is no has_many and belongs_to.
 				if cmd3_success #means all command success
 					#move model files from app/models/generated models to lib/approvalmodel/
-					system("mv app/models/" + apr.en_name_main.underscore + ".rb" + " " + "lib/approvalmodel")
+					if Rails.env.production?
+						system("mv app/models/" + apr.en_name_main.underscore + ".rb" + " " + "lib/approvalmodel")
+					end
 					if console_cmd2
-						system("mv app/models/" + apr.en_name_detail.underscore + ".rb" + " " + "lib/approvalmodel")
+						if Rails.env.production?
+							system("mv app/models/" + apr.en_name_detail.underscore + ".rb" + " " + "lib/approvalmodel")
+						end
 					end
 					cmd_all_success = true
 
