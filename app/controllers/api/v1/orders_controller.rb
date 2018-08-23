@@ -31,6 +31,87 @@ class Api::V1::OrdersController < Api::V1::BaseController
     end
   end
 
+  def upload_work_order
+    # {"file"=>#<ActionDispatch::Http::UploadedFile:0x00000005443ae0 @tempfile=#<Tempfile:/tmp/RackMultipart20180822-9479-8lm9n4.txt>, @original_filename="vue学习.txt", @content_type="text/plain", @headers="Content-Disposition: form-data; name=\"file\"; filename=\"vue\xE5\xAD\xA6\xE4\xB9\xA0.txt\"\r\nContent-Type: text/plain\r\n">, "orderId"=>"1"}
+
+    # order = Order.find_by_id(params[:orderId])
+    xls = Roo::Spreadsheet.open(params[:file].path)
+    ii = xls.sheet(0).first_row
+    last_row_num = xls.sheet(0).last_row
+    wo = nil
+    mat = nil
+    while ii <= last_row_num do
+      row_arr = xls.sheet(0).row(ii)
+      row_arr1 = row_arr.compact
+
+      str1 = row_arr1[0] ? row_arr1[0].gsub(/[[:space:]]+/, "") : ""
+      
+      if str1 == "工程名称"
+        row_arr2 = xls.sheet(0).row(ii+1).compact
+        row_arr3 = xls.sheet(0).row(ii+2).compact
+        row_arr4 = xls.sheet(0).row(ii+3).compact
+
+        wo = WorkOrder.new
+        wo.title = row_arr1[1]
+        wo.template_type = row_arr2[1]
+        wo.maker = row_arr3[1]
+        wo.number = row_arr4[1]        
+        wo.status = 1 #do not know how to set ????????
+        wo.order_id = params[:orderId]
+        wo.record_time = Time.now
+        wo.save!
+        ii = ii + 4
+        next
+      end
+      
+      if str1 == "图号"
+        row_arr2 = xls.sheet(0).row(ii+1).compact
+        row_arr3 = xls.sheet(0).row(ii+2).compact
+        row_arr4 = xls.sheet(0).row(ii+3).compact
+
+        mat = Material.new
+        mat.graph_no = row_arr1[1]
+        mat.name = row_arr2[1]
+        mat.number = row_arr3[1]
+        mat.comment = row_arr4[1]
+        mat.work_order_id = wo.id
+        mat.save!
+        ii = ii + 4
+        next
+      end
+      
+      
+      if str1 == "序号"
+        jj = ii + 1
+        bom_arr = xls.sheet(0).row(jj).compact
+        while bom_arr.length > 0
+          bom = Bom.new
+          bom.name   =  bom_arr[1]
+          bom.spec   =  bom_arr[2] +',' + bom_arr[3]
+          bom.length    = bom_arr[4]
+          bom.width     = bom_arr[5]
+          bom.number =  bom_arr[6]
+          bom.total  =  bom_arr[7]
+          bom.comment   = bom_arr[8]
+          bom.material_id = mat.id
+          bom.save!
+          jj = jj + 1
+          bom_arr = xls.sheet(0).row(jj).compact
+        end
+        ii = jj + 1
+        next
+      end
+
+      ii = ii + 1
+    end
+    render json:{
+      code: 1,
+      msg: "success",
+      # data: ApprovalAdmin.all.order('status DESC,created_time')
+    }
+
+  end
+
   def order_details
   	order = Order.find_by_id(params[:order_id])
   	work_orders = order.work_orders
@@ -64,7 +145,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
  		materials.each_with_index do |e,i|
  			material = {}
  			material[:name] = e.name
- 			material[:graph_no] = e.graph_no.split(',')
+ 			material[:graph_no] = e.graph_no ? e.graph_no.split(',') : ""
  			material[:number] = e.number
  			material[:comment] = e.comment
  			material[:children] = Bom.where(material_id: e.id)

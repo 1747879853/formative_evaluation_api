@@ -51,6 +51,7 @@ Rails.application.routes.draw do
       # Costdata actions
 
       # Order actions
+      post   '/upload_work_order'         => 'orders#upload_work_order'
       get    '/orders'         => 'orders#order_list'
       post   '/orders'         => 'orders#post_order'
       get    '/order_details'  => 'orders#order_details' 
