@@ -87,6 +87,7 @@ Rails.application.routes.draw do
       get    '/painting_list'  => 'orders#painting_list'
       post   '/give_painting_team_task' => 'orders#give_painting_team_task'
       post   '/paint_finished' => 'orders#paint_finished'
+      get    '/tree_grid_xialiao_task_list' => 'orders#tree_grid_xialiao_task_list'
 
       get    '/work_teams'     => 'orders#get_work_team'
       post   '/work_teams'     => 'orders#post_work_team'

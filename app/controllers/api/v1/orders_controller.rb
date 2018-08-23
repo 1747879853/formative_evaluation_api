@@ -228,6 +228,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
   		arr.each do |e|
   			wst = WorkShopTask.new
   		  wst.work_shop_id = WorkShop.find_by_user_id(e).id
+        wst.reciver = e
   		  wst.work_order_id = params[:work_order_id]
   		  wst.user_id = current_user.id
   		  wst.record_time = Time.now
@@ -812,6 +813,35 @@ class Api::V1::OrdersController < Api::V1::BaseController
     wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_team_tasks.paint=1 and work_team_tasks.number- COALESCE(work_team_tasks.passed_number,0)=0 and work_team_tasks.painting_team = ?",wt.id).select("work_team_tasks.work_team_id,work_team_tasks.process,work_team_tasks.id as id,materials.id as mid,materials.work_order_id as wo_id, materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
     render json:{
       data: wtt   
+    }
+  end
+
+
+  def tree_grid_xialiao_task_list
+    ary = []
+    wo = WorkOrder.joins(:work_shop_tasks).where("work_shop_tasks.reciver =?",3)
+    wo.each_with_index do|e,i|
+      h = {}
+      h[:id] = "w"+(i+1).to_s
+      h[:name] = e.template_type
+      h[:number] = e.number
+    
+      ms = Material.where(work_order_id:e.id)
+      h[:children] = []
+      ms.each_with_index do |f,z|
+       h1 = {}
+       h1[:id] = "m" + (z+1).to_s
+       h1[:name] = f["name"]
+       h1[:number] = f.number
+       h1[:comment] =f.comment
+       h1[:children] = Bom.where(material_id: f.id).select("id,spec,comment,name,length,width,number as num, total as number")
+       h[:children] << h1
+      end
+      ary << h
+    end
+
+    render json:{
+      data: ary
     }
   end
 
