@@ -845,6 +845,36 @@ class Api::V1::OrdersController < Api::V1::BaseController
     }
   end
 
+
+  def tree_shop_task
+    ary = []
+    wo = WorkOrder.joins(:work_shop_tasks).where("work_shop_tasks.reciver =?",3)
+    wo.each_with_index do|e,i|
+      h = {}
+      h[:id] = "w"+(i+1).to_s
+      h[:name] = e.template_type
+      h[:number] = e.number
+    
+      ms = Material.where(work_order_id:e.id)
+      h[:children] = []
+      ms.each_with_index do |f,z|
+       h1 = {}
+       h1[:id] = "m" + (z+1).to_s
+       h1[:name] = f["name"]
+       h1[:number] = f.number
+       h1[:comment] =f.comment
+       h1[:children] = Bom.where(material_id: f.id).select("id,spec,comment,name,length,width,number as num, total as number")
+       h[:children] << h1
+      end
+      ary << h
+    end
+
+    render json:{
+      data: ary
+    }
+    
+  end
+
   def helper
     @helper ||= Class.new do
       include ActionView::Helpers::NumberHelper
