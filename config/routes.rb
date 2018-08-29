@@ -90,6 +90,8 @@ Rails.application.routes.draw do
       get    '/tree_grid_xialiao_task_list' => 'orders#tree_grid_xialiao_task_list'
 
       get    '/tree_shop_task' => 'orders#tree_shop_task'
+      post   '/give_task_teamx'=> 'orders#give_task_teamx'
+
 
       get    '/work_teams'     => 'orders#get_work_team'
       post   '/work_teams'     => 'orders#post_work_team'

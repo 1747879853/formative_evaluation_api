@@ -863,7 +863,8 @@ class Api::V1::OrdersController < Api::V1::BaseController
        h1[:name] = f["name"]
        h1[:number] = f.number
        h1[:comment] =f.comment
-       h1[:children] = Bom.where(material_id: f.id).select("id,spec,comment,name,length,width,number as num, total as number")
+       h1[:children] = Bom.where(material_id: f.id).select("id,spec,comment,name,length,width,number as num, total as number,'' as give_number")
+       
        h[:children] << h1
       end
       ary << h
@@ -873,6 +874,10 @@ class Api::V1::OrdersController < Api::V1::BaseController
       data: ary
     }
     
+  end
+
+  def give_task_teamx
+    p params[:data]
   end
 
   def helper

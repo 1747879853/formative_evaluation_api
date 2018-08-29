@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_23_062747) do
+ActiveRecord::Schema.define(version: 2018_08_29_022729) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -470,6 +470,33 @@ ActiveRecord::Schema.define(version: 2018_08_23_062747) do
     t.string "status", default: "1", null: false
     t.index ["user_id"], name: "index_work_teams_on_user_id"
     t.index ["work_shop_id"], name: "index_work_teams_on_work_shop_id"
+  end
+
+  create_table "work_teamx_task_details", force: :cascade do |t|
+    t.bigint "work_teamx_task_id"
+    t.bigint "bom_id"
+    t.integer "number"
+    t.integer "finished_number"
+    t.integer "passed_number"
+    t.string "current_position"
+    t.string "process"
+    t.string "finished_process"
+    t.integer "status"
+    t.integer "repeat_number", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bom_id"], name: "index_work_teamx_task_details_on_bom_id"
+    t.index ["work_teamx_task_id"], name: "index_work_teamx_task_details_on_work_teamx_task_id"
+  end
+
+  create_table "work_teamx_tasks", force: :cascade do |t|
+    t.bigint "work_shop_tasks_id"
+    t.integer "assigner_id"
+    t.integer "type"
+    t.integer "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["work_shop_tasks_id"], name: "index_work_teamx_tasks_on_work_shop_tasks_id"
   end
 
   add_foreign_key "approvals", "approval_admins"

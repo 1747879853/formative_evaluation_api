@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  WorkShopTask: one
+  assigner_id: 1
+  type: 1
+  status: 1
+
+two:
+  WorkShopTask: two
+  assigner_id: 1
+  type: 1
+  status: 1
