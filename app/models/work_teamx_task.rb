@@ -1,3 +1,3 @@
 class WorkTeamxTask < ApplicationRecord
-  belongs_to :WorkShopTask
+  belongs_to :work_shop_task
 end

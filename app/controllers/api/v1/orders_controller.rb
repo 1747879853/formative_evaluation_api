@@ -848,23 +848,37 @@ class Api::V1::OrdersController < Api::V1::BaseController
 
   def tree_shop_task
     ary = []
-    wo = WorkOrder.joins(:work_shop_tasks).where("work_shop_tasks.reciver =?",3)
-    wo.each_with_index do|e,i|
+    wo = WorkOrder.joins(:work_shop_tasks).where("work_shop_tasks.reciver =?",3).select("work_orders.*,work_shop_tasks.id as wstid")
+    wo.each do|e|
       h = {}
-      h[:id] = "w"+(i+1).to_s
+      h[:id] = "w"+e.wstid.to_s
       h[:name] = e.template_type
       h[:number] = e.number
     
       ms = Material.where(work_order_id:e.id)
       h[:children] = []
-      ms.each_with_index do |f,z|
+      ms.each do |f|
        h1 = {}
-       h1[:id] = "m" + (z+1).to_s
+       h1[:id] = "m" + f.id.to_s
        h1[:name] = f["name"]
        h1[:number] = f.number
        h1[:comment] =f.comment
-       h1[:children] = Bom.where(material_id: f.id).select("id,spec,comment,name,length,width,number as num, total as number,'' as give_number")
-       
+       bo = Bom.where(material_id: f.id).where("COALESCE(boms.total,0)-boms.assign_number>0").select(" *,(COALESCE(total,0)-assign_number) as ok_number")
+       h1[:children] = []
+       bo.each do |g|
+        h2 = {}
+        h2[:id] = g.id
+        h2[:spec] = g.spec
+        h2[:comment] = g.comment
+        h2[:name] = g["name"]
+        h2[:length] = g["length"]
+        h2[:width] = g.width
+        h2[:number] = g.ok_number
+        h2[:give_number] = g.ok_number
+        h2[:wstid] = e.wstid
+        h1[:children] << h2
+       end
+        # p h1
        h[:children] << h1
       end
       ary << h
@@ -877,9 +891,37 @@ class Api::V1::OrdersController < Api::V1::BaseController
   end
 
   def give_task_teamx
-    p params[:data]
+    teamx_details = params[:data]
+   
+    ActiveRecord::Base.transaction do
+      wsxt = WorkTeamxTask.new
+      wsxt.work_shop_task_id = teamx_details[0][:wstid]
+      wsxt.assigner_id = current_user.id
+      wsxt.p_type = 1
+      wsxt.status = 1
+      wsxt.save
+
+      teamx_details.each do |e|
+        !e[:give_number] || e[:give_number]==0 ? next : e[:give_number]
+
+        wttd = WorkTeamxTaskDetail.new
+        wttd.work_teamx_task_id = wsxt.id
+        wttd.bom_id = e[:id]   
+        wttd.number = e[:give_number]
+        wttd.current_position = params[:procedure].split(",").first
+        wttd.process = params[:procedure]
+        wttd.save
+
+        bom =Bom.find_by_id(e[:id])
+        bom.assign_number += e[:give_number].to_i
+        bom.save
+          
+        
+      end
+    end
   end
 
+ 
   def helper
     @helper ||= Class.new do
       include ActionView::Helpers::NumberHelper

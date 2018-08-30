@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_29_022729) do
+ActiveRecord::Schema.define(version: 2018_08_30_083216) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -133,6 +133,8 @@ ActiveRecord::Schema.define(version: 2018_08_29_022729) do
     t.bigint "material_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "assign_number", default: 0
+    t.integer "passed_number", default: 0
     t.index ["material_id"], name: "index_boms_on_material_id"
   end
 
@@ -490,13 +492,13 @@ ActiveRecord::Schema.define(version: 2018_08_29_022729) do
   end
 
   create_table "work_teamx_tasks", force: :cascade do |t|
-    t.bigint "work_shop_tasks_id"
+    t.bigint "work_shop_task_id"
     t.integer "assigner_id"
-    t.integer "type"
+    t.integer "p_type"
     t.integer "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["work_shop_tasks_id"], name: "index_work_teamx_tasks_on_work_shop_tasks_id"
+    t.index ["work_shop_task_id"], name: "index_work_teamx_tasks_on_work_shop_task_id"
   end
 
   add_foreign_key "approvals", "approval_admins"
