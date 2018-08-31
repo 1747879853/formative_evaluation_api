@@ -308,20 +308,37 @@ class Api::V1::OrdersController < Api::V1::BaseController
   def work_team_task_list
 
 
-    ws = WorkShop.find_by_dept_type("喷漆")
-    wt = WorkTeam.where(work_shop_id:ws.id,user_id:current_user.id).first
-      if wt
-        wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_team_tasks.paint=1 and work_team_tasks.number- COALESCE(work_team_tasks.passed_number,0)=0 and work_team_tasks.paint_team = ?",wt.id).select("work_team_tasks.work_team_id,work_team_tasks.process,work_team_tasks.id as id,materials.id as mid,materials.work_order_id as wo_id, materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
-        render json:{
-        data: wtt,
-        paint: true  
-        }
-      else
-  	    wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_teams.user_id=? and work_team_tasks.status = 0",current_user.id).select("work_team_tasks.work_team_id,work_team_tasks.process,work_team_tasks.id as id,materials.id as mid,materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
-  	    render json:{
-  		  data: wtt
-  	  }
-      end
+    # ws = WorkShop.find_by_dept_type("喷漆")
+    # wt = WorkTeam.where(work_shop_id:ws.id,user_id:current_user.id).first
+    #   if wt
+    #     wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_team_tasks.paint=1 and work_team_tasks.number- COALESCE(work_team_tasks.passed_number,0)=0 and work_team_tasks.paint_team = ?",wt.id).select("work_team_tasks.work_team_id,work_team_tasks.process,work_team_tasks.id as id,materials.id as mid,materials.work_order_id as wo_id, materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
+    #     render json:{
+    #     data: wtt,
+    #     paint: true  
+    #     }
+    #   else
+  	 #    wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_teams.user_id=? and work_team_tasks.status = 0",current_user.id).select("work_team_tasks.work_team_id,work_team_tasks.process,work_team_tasks.id as id,materials.id as mid,materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
+  	 #    render json:{
+  		#   data: wtt
+  	 #  }
+    #   end
+
+
+    ws = WorkTeam.find_by_user_id(current_user.id).work_shop
+    wt = WorkTeam.find_by_user_id(current_user.id)
+    if ws && ws.dept_type =="下料"
+      wtxt = WorkTeamxTaskDetail.joins(work_teamx_task: [work_shop_task: :work_order]).joins(bom: :material).where(current_position: wt.id,status: 1).select("work_orders.template_type as  template_type, materials.id as mid,materials.name as m_name,boms.name as b_name,boms.spec,boms.width,boms.length,boms.comment,work_teamx_task_details.number,work_teamx_task_details.current_position,work_teamx_task_details.process,work_teamx_task_details.id as id,boms.id as bid")
+    elsif ws && ws.dept_type == "喷漆"
+      wtxt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_team_tasks.paint =1 and work_team_tasks.number- COALESCE(work_team_tasks.passed_number,0)=0 and work_team_tasks.paint_team = ?",10).select("work_team_tasks.work_team_id,work_team_tasks.process,work_team_tasks.id as id,materials.id as mid,materials.work_order_id as wo_id, materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
+    elsif ws && ws.dept_type =="组拼"
+      wtxt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_teams.user_id=? and work_team_tasks.status = 0",current_user.id).select("work_team_tasks.work_team_id,work_team_tasks.process,work_team_tasks.id as id,materials.id as mid,materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
+    end
+    render json:{
+      data: wtxt,
+      type: ws.dept_type,
+      team_name: wt.name
+    }
+
   end
 
   def team_task_boms
@@ -848,7 +865,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
 
   def tree_shop_task
     ary = []
-    wo = WorkOrder.joins(:work_shop_tasks).where("work_shop_tasks.reciver =?",3).select("work_orders.*,work_shop_tasks.id as wstid")
+    wo = WorkOrder.joins(:work_shop_tasks).where("work_shop_tasks.reciver =?",current_user.id).select("work_orders.*,work_shop_tasks.id as wstid")
     wo.each do|e|
       h = {}
       h[:id] = "w"+e.wstid.to_s
@@ -910,16 +927,49 @@ class Api::V1::OrdersController < Api::V1::BaseController
         wttd.number = e[:give_number]
         wttd.current_position = params[:procedure].split(",").first
         wttd.process = params[:procedure]
+        wttd.status = 1 # 下料
         wttd.save
 
         bom =Bom.find_by_id(e[:id])
         bom.assign_number += e[:give_number].to_i
+
         bom.save
           
         
       end
     end
   end
+
+  def xialiao_flow_finished
+   
+    wtt = WorkTeamxTaskDetail.find_by_id(params[:teamx_task_id])
+    arr = wtt.process.split(',')
+    index = arr.index(wtt.current_position.to_s)
+    
+    if arr[index+1]
+      wtt.current_position = arr[index+1]
+      wtt.finished_process =  wtt.finished_process ?  wtt.finished_process.to_s+","+wtt.current_position.to_s : wtt.current_position.to_s
+      wtt.save
+      msg ="完成并转入下一道工序"
+    else
+      wtt.status = 2
+      wtt.save
+      msg ="进入质检"
+
+    end
+
+    render json:{
+      msg: msg
+    }
+  end
+
+  def xialiao_checking_list
+    wtxt = WorkTeamxTaskDetail.joins(work_teamx_task: [work_shop_task: :work_order]).joins(bom: :material).where(status:  2).select("work_orders.template_type as  template_type, materials.id as mid,materials.name as m_name,boms.name as b_name,boms.spec,boms.width,boms.length,boms.comment,work_teamx_task_details.number,work_teamx_task_details.current_position,work_teamx_task_details.process,work_teamx_task_details.id as id,boms.id as bid")
+    render json:{
+      data: wtxt
+    }
+  end
+
 
  
   def helper
