@@ -94,7 +94,7 @@ Rails.application.routes.draw do
 
       post   'xialiao_flow_finished' => 'orders#xialiao_flow_finished'
       get    'xialiao_checking_list' => 'orders#xialiao_checking_list'
-
+      post   'xialiao_passed'  => 'orders#xialiao_passed'
 
       get    '/work_teams'     => 'orders#get_work_team'
       post   '/work_teams'     => 'orders#post_work_team'

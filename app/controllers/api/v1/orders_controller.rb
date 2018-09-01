@@ -215,18 +215,25 @@ class Api::V1::OrdersController < Api::V1::BaseController
   	# 	wst.save
 
   	arr =[]
-
-  	if params[:xialiao]!=""
+    comment = []
+  	if params[:xialiao]&&params[:xialiao]!=""
   	  arr << params[:xialiao]
+      comment <<'下料已分派'
   	end
 
-  	if params[:zupin]!=""
+  	if params[:zupin]&&params[:zupin]!="" 
   		arr << params[:zupin]
+      comment << '组拚已分派'
   	end
+
+
+    
   	msg = "分派成功！"
   	ActiveRecord::Base.transaction do
   		arr.each do |e|
   			wst = WorkShopTask.new
+
+
   		  wst.work_shop_id = WorkShop.find_by_user_id(e).id
         wst.reciver = e
   		  wst.work_order_id = params[:work_order_id]
@@ -241,7 +248,15 @@ class Api::V1::OrdersController < Api::V1::BaseController
   		  end
   		end
   	end
-
+    wo = WorkOrder.find(params[:work_order_id])
+    if wo.work_shop_tasks.size==2
+      wo.status = 2 # 分配完成
+      wo.comment =  wo.comment ?  wo.comment+comment.join(',') : ""+ comment.join(',')
+      wo.save
+    else
+      wo.comment =  wo.comment ?  wo.comment+comment.join(',') : ""+ comment.join(',')+","
+      wo.save
+    end
     render json:{
     	msg: msg
     }
@@ -249,7 +264,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
 
 
   def work_shop_order_list 
-  	work_shop_order_list = WorkOrder.joins(work_shop_tasks: [work_shop: :user]).where("work_shops.user_id=?",current_user.id).select("work_shop_tasks.id as wstid,work_orders.id as work_order_id,work_orders.title,work_orders.maker,work_orders.template_type,work_shops.name,work_shops.id as work_shop_id,users.username,users.id as user_id,work_orders.number ")
+  	work_shop_order_list = WorkOrder.joins(work_shop_tasks: [work_shop: :user]).where("work_shops.user_id=?",current_user.id).where("work_orders.number -COALESCE(work_shop_tasks.assign_number,0)<>0").select("work_orders.number -COALESCE(work_shop_tasks.assign_number,0) as w_number,work_shop_tasks.assign_number,work_shop_tasks.id as wstid,work_orders.id as work_order_id,work_orders.title,work_orders.maker,work_orders.template_type,work_shops.name,work_shops.id as work_shop_id,users.username,users.id as user_id,work_orders.number ")
 
   	# work_shop_order_list = WorkOrder.joins(work_shop_tasks: [work_shop: :user]).select("work_orders.id as work_order_id,work_orders.title,work_orders.maker,work_orders.template_type,work_shops.name,work_shops.id as work_shop_id,users.username,users.id as user_id,work_orders.number ")
   	# data = []
@@ -277,23 +292,26 @@ class Api::V1::OrdersController < Api::V1::BaseController
   def work_team_task_add
 
   	wo = WorkOrder.find(params[:work_order_id])
-  	materials_id = wo.materials.pluck(:id)
+  	materials = wo.materials.select(:id,:number)
   	# p materials_id
+    wst = WorkShopTask.find_by(id:params[:wst_id])
+    wst.assign_number += params[:number].to_i
+    wst.save
   	msg = "分派到班组成功！"
   	ActiveRecord::Base.transaction do
-	  	materials_id.each do |e|
+	  	materials.each do |e|
 	  		wtt = WorkTeamTask.new
 	  		wtt.work_team_id = params[:work_team_id]
-	  		wtt.material_id = e
+	  		wtt.material_id = e.id
 	  		wtt.user_id = current_user.id
 	  		wtt.record_time = Time.now
-	  		wtt.number = params[:number]
+	  		wtt.number = params[:number]*e.number/wo.number
         wtt.work_shop_task_id = params[:wst_id]
 	  		wtt.status = 0
 	  		if not wtt.save
 	  			msg = "分派到班组失败！"
         else
-          wtt.work_logs.create(parent_id:wtt.work_shop_task_id,get_user_id: WorkTeam.find_by_id( params[:work_team_id]).user_id ,number:wtt.number,user_id:current_user.id,work_order_id:params[:work_order_id],record_time: Time.now,description: User.find_by_id(current_user.id).username+" 于 "+Time.now.strftime('%Y-%m-%d %H:%M:%S').to_s+" 分派 "+Material.find_by_id(e).name+" 到: "+WorkTeam.find_by_id( params[:work_team_id]).name+" ;数量："+params[:number].to_s+" ;")
+          wtt.work_logs.create(parent_id:wtt.work_shop_task_id,get_user_id: WorkTeam.find_by_id( params[:work_team_id]).user_id ,number:wtt.number,user_id:current_user.id,work_order_id:params[:work_order_id],record_time: Time.now,description: User.find_by_id(current_user.id).username+" 于 "+Time.now.strftime('%Y-%m-%d %H:%M:%S').to_s+" 分派 "+Material.find_by_id(e.id).name+" 到: "+WorkTeam.find_by_id( params[:work_team_id]).name+" ;数量："+wtt.number.to_s+" ;")
 	  		end
 
 	  	end
@@ -319,7 +337,8 @@ class Api::V1::OrdersController < Api::V1::BaseController
     #   else
   	 #    wtt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_teams.user_id=? and work_team_tasks.status = 0",current_user.id).select("work_team_tasks.work_team_id,work_team_tasks.process,work_team_tasks.id as id,materials.id as mid,materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
   	 #    render json:{
-  		#   data: wtt
+  		#   data: wtt        this.$axios.post('/give_painting_team_task',{
+
   	 #  }
     #   end
 
@@ -329,9 +348,9 @@ class Api::V1::OrdersController < Api::V1::BaseController
     if ws && ws.dept_type =="下料"
       wtxt = WorkTeamxTaskDetail.joins(work_teamx_task: [work_shop_task: :work_order]).joins(bom: :material).where(current_position: wt.id,status: 1).select("work_orders.template_type as  template_type, materials.id as mid,materials.name as m_name,boms.name as b_name,boms.spec,boms.width,boms.length,boms.comment,work_teamx_task_details.number,work_teamx_task_details.current_position,work_teamx_task_details.process,work_teamx_task_details.id as id,boms.id as bid")
     elsif ws && ws.dept_type == "喷漆"
-      wtxt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_team_tasks.paint =1 and work_team_tasks.number- COALESCE(work_team_tasks.passed_number,0)=0 and work_team_tasks.paint_team = ?",10).select("work_team_tasks.work_team_id,work_team_tasks.process,work_team_tasks.id as id,materials.id as mid,materials.work_order_id as wo_id, materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
+      wtxt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_team_tasks.paint =2 and work_team_tasks.number- COALESCE(work_team_tasks.passed_number,0)=0 and work_team_tasks.paint_team = ?",10).select("work_team_tasks.work_team_id,work_team_tasks.process,work_team_tasks.id as id,materials.id as mid,materials.work_order_id as wo_id, materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
     elsif ws && ws.dept_type =="组拼"
-      wtxt = WorkTeamTask.joins(:work_team).joins(:material).joins(:user).where("work_teams.user_id=? and work_team_tasks.status = 0",current_user.id).select("work_team_tasks.work_team_id,work_team_tasks.process,work_team_tasks.id as id,materials.id as mid,materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username").order("work_team_tasks.id asc")
+      wtxt = WorkTeamTask.joins(:work_team).joins(material: :work_order).joins(:user).where("work_teams.user_id=? and work_team_tasks.status = 0 ",current_user.id).select("work_team_tasks.work_team_id,work_team_tasks.process,work_team_tasks.id as id,materials.id as mid,materials.graph_no,materials.name as name,work_teams.name as team_name,work_team_tasks.number as number,work_team_tasks.finished_number,work_team_tasks.passed_number,materials.comment,users.username ").order("work_team_tasks.id asc")
     end
     render json:{
       data: wtxt,
@@ -346,9 +365,9 @@ class Api::V1::OrdersController < Api::V1::BaseController
   	mid = params[:material_id] if params[:material_id]
     if params[:task_id]
   	   task_id = params[:task_id] 
-  	   team_task_boms = Bom.joins(material: :work_team_tasks).where("materials.id=? and work_team_tasks.id=? ",mid,task_id).select("boms.id as bom_id,boms.name,materials.name as m_name,work_team_tasks.number,boms.number*work_team_tasks.number as qty, boms.spec,boms.length,boms.width,boms.comment")
+  	   team_task_boms = Bom.joins(material: :work_team_tasks).where("materials.id=? and work_team_tasks.id=? ",mid,task_id).select("boms.id as bom_id,boms.name,materials.name as m_name,work_team_tasks.number,boms.total/boms.number*work_team_tasks.number as qty, boms.spec,boms.length,boms.width,boms.comment,boms.passed_number")
    	else
-       team_task_boms = Bom.joins(:material).where("materials.id=?  ",mid).select("boms.id as bom_id,boms.name,materials.name as m_name,materials.number,boms.number*materials.number as qty, boms.spec,boms.length,boms.width,boms.comment")
+       team_task_boms = Bom.joins(:material).where("materials.id=?  ",mid).select("boms.id as bom_id,boms.name,materials.name as m_name,materials.number,boms.total/boms.number*materials.number as qty, boms.spec,boms.length,boms.width,boms.comment,boms.passed_number")
 
     end
 
@@ -648,7 +667,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
     order_ids.each do |e|
       h = {}
       order  = Order.find_by_id(e.order_id)
-      h[:title] = order.client_title + "  订单号："+ order.no
+      h[:title] = (order ? order.client_title : "" ) + "  订单号："+ order.no
       h[:expand] = true
 
       wl = WorkOrder.where(order_id:e.order_id).select("id as work_order_id,title,template_type,record_time").distinct
@@ -821,6 +840,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
   def give_painting_team_task
     wtt = WorkTeamTask.find_by_id(params[:task_id])
     wtt.paint_team = params[:painting_team]
+    wtt.paint = 2
     wtt.save
   end
 
@@ -836,7 +856,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
 
   def tree_grid_xialiao_task_list
     ary = []
-    wo = WorkOrder.joins(:work_shop_tasks).where("work_shop_tasks.reciver =?",3)
+    wo = WorkOrder.joins(:work_shop_tasks).where("work_shop_tasks.reciver =?",current_user.id)
     wo.each_with_index do|e,i|
       h = {}
       h[:id] = "w"+(i+1).to_s
@@ -964,12 +984,26 @@ class Api::V1::OrdersController < Api::V1::BaseController
   end
 
   def xialiao_checking_list
-    wtxt = WorkTeamxTaskDetail.joins(work_teamx_task: [work_shop_task: :work_order]).joins(bom: :material).where(status:  2).select("work_orders.template_type as  template_type, materials.id as mid,materials.name as m_name,boms.name as b_name,boms.spec,boms.width,boms.length,boms.comment,work_teamx_task_details.number,work_teamx_task_details.current_position,work_teamx_task_details.process,work_teamx_task_details.id as id,boms.id as bid")
+    wtxt = WorkTeamxTaskDetail.joins(work_teamx_task: [work_shop_task: :work_order]).joins(bom: :material).where(status:  2).where("work_teamx_task_details.number-COALESCE(work_teamx_task_details.passed_number,0)<>0").select("work_orders.template_type as  template_type, materials.id as mid,materials.name as m_name,boms.name as b_name,boms.spec,boms.width,boms.length,boms.comment,work_teamx_task_details.number,work_teamx_task_details.current_position,work_teamx_task_details.process,work_teamx_task_details.id as id,boms.id as bid,work_teamx_task_details.passed_number")
     render json:{
       data: wtxt
     }
   end
+  def xialiao_passed
+    passed_number = params[:passed_number]
+    teamx_id = params[:teamx_id]
+    bom_id = params[:bom_id]
 
+    txd = WorkTeamxTaskDetail.find(teamx_id)
+    txd.passed_number += passed_number.to_i
+    bo = Bom.find(bom_id)
+    bo.passed_number += passed_number.to_i
+    ActiveRecord::Base.transaction do
+     
+      txd.save
+      bo.save
+    end
+  end
 
  
   def helper

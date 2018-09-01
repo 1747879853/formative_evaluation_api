@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_30_083216) do
+ActiveRecord::Schema.define(version: 2018_09_01_080045) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -400,6 +400,7 @@ ActiveRecord::Schema.define(version: 2018_08_30_083216) do
     t.datetime "record_time"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "comment"
     t.index ["order_id"], name: "index_work_orders_on_order_id"
   end
 
@@ -412,6 +413,7 @@ ActiveRecord::Schema.define(version: 2018_08_30_083216) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "reciver"
+    t.integer "assign_number", default: 0
     t.index ["user_id"], name: "index_work_shop_tasks_on_user_id"
     t.index ["work_order_id"], name: "index_work_shop_tasks_on_work_order_id"
     t.index ["work_shop_id"], name: "index_work_shop_tasks_on_work_shop_id"
