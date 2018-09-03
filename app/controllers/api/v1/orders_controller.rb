@@ -984,7 +984,7 @@ class Api::V1::OrdersController < Api::V1::BaseController
   end
 
   def xialiao_checking_list
-    wtxt = WorkTeamxTaskDetail.joins(work_teamx_task: [work_shop_task: :work_order]).joins(bom: :material).where(status:  2).where("work_teamx_task_details.number-COALESCE(work_teamx_task_details.passed_number,0)<>0").select("work_orders.template_type as  template_type, materials.id as mid,materials.name as m_name,boms.name as b_name,boms.spec,boms.width,boms.length,boms.comment,work_teamx_task_details.number,work_teamx_task_details.current_position,work_teamx_task_details.process,work_teamx_task_details.id as id,boms.id as bid,work_teamx_task_details.passed_number")
+    wtxt = WorkTeamxTaskDetail.joins(work_teamx_task: [work_shop_task: :work_order]).joins(bom: :material).where(status:  2).where("work_teamx_task_details.number-COALESCE(work_teamx_task_details.passed_number,0)<>0").select("work_orders.template_type as  template_type, materials.id as mid,materials.name as m_name,boms.name as b_name,boms.spec,boms.width,boms.length,boms.comment,work_teamx_task_details.number,work_teamx_task_details.current_position,work_teamx_task_details.process,work_teamx_task_details.id as id,boms.id as bid,work_teamx_task_details.passed_number").order("id")
     render json:{
       data: wtxt
     }
@@ -995,9 +995,9 @@ class Api::V1::OrdersController < Api::V1::BaseController
     bom_id = params[:bom_id]
 
     txd = WorkTeamxTaskDetail.find(teamx_id)
-    txd.passed_number += passed_number.to_i
+    txd.passed_number = txd.passed_number ?  txd.passed_number+passed_number.to_i : passed_number.to_i
     bo = Bom.find(bom_id)
-    bo.passed_number += passed_number.to_i
+    bo.passed_number = bo.passed_number ? bo.passed_number+passed_number.to_i : passed_number.to_i
     ActiveRecord::Base.transaction do
      
       txd.save
