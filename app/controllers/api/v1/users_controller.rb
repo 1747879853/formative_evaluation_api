@@ -8,6 +8,11 @@ class Api::V1::UsersController < Api::V1::BaseController
   def get_userlist
     render json: User.where(status: 1).all
   end
+
+  # get users_id_user_name
+  def users_id_user_name
+    render json: User.where(status: 1).all.select(:id,:username).as_json
+  end
   
   # Call this method to check if the user is logged-in.
   # If the user is logged-in we will return the user's information.
