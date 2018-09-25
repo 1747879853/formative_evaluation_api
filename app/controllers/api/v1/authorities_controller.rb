@@ -8,7 +8,6 @@ class Api::V1::AuthoritiesController < Api::V1::BaseController
   end
 
   def post_rulelist
-
     begin
       authrule = AuthRule.new(authrule_params)
       if authrule.save!
@@ -46,7 +45,9 @@ class Api::V1::AuthoritiesController < Api::V1::BaseController
   def get_grouplist
     # unauthorized and return unless Auth.check('Admin/Authority/list', current_user)
 
-    render  json:{'a': AuthGroup.where(status: 1).all ,'b': AuthRule.where(parent_id: 0).all}
+    render  json:
+      {'a': AuthGroup.where(status: 1).all ,
+      'b': AuthRule.where(parent_id: 0).all}
   end
 
   def get_user_group_list

@@ -16,10 +16,10 @@ class Api::V1::SummaryController < Api::V1::BaseController
         "flag": 1,
         "date": summary.date,
         "address": summary.address,
-       "workcontent": summary.workcontent,
+        "workcontent": summary.workcontent,
         "transport": summary.transport,
         "explain": summary.explain,
-        "costdata": Costdata.where(:summary_id => summary.id)
+        "costdata": summary.costdatas
       }         
     end
   end

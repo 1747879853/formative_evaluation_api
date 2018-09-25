@@ -46,6 +46,14 @@ Rails.application.routes.draw do
       delete '/costList'       =>  'cost#delete_costlist'
       patch  '/costList'       =>  'cost#patch_costlist'
 
+      # job item content(jic) actions
+      
+      get    '/get_current_user_jic'       =>  'job_item_content#get_current_user_jic'
+      get    '/jicList'       =>  'job_item_content#get_jic_list'
+      post   '/jicList'       =>  'job_item_content#post_jic_list'
+      delete '/jicList'       =>  'job_item_content#delete_jic_list'
+      patch  '/jicList'       =>  'job_item_content#patch_jic_list'
+
       # Work actions
       get    '/workList'       =>  'summary#get_summary'
       get    '/get_summary_by_id' => 'summary#get_summary_by_id'
