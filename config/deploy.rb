@@ -8,7 +8,7 @@ set :repo_url, 'ssh://passenger@127.0.0.1/home/passenger/wisdom_secretary_api.gi
 ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name
-set :deploy_to, "/var/www/wisdom_secretary_api"
+# set :deploy_to, "/var/www/wisdom_secretary_api"
 
 # Default value for :format is :airbrussh.
 # set :format, :airbrussh
