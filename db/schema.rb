@@ -175,6 +175,7 @@ ActiveRecord::Schema.define(version: 2018_09_03_134944) do
     t.integer "parent_id", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["title"], name: "index_costs_on_title"
   end
 
   create_table "employees", force: :cascade do |t|
