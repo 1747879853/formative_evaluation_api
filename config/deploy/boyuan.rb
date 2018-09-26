@@ -8,7 +8,8 @@
 # server "db.example.com", user: "deploy", roles: %w{db}
 server '114.118.17.4', user: 'passenger', roles: %w{web app db}, my_property: :my_value
 
-set :deploy_to, "/var/www/wisdom_secretary_api"
+set :deploy_to, "/var/www/boyuan_wisdom_secretary_api"
+set :rails_env, 'production' # even though doc says only need to do this if it's different
 
 # role-based syntax
 # ==================
