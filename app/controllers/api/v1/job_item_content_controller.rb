@@ -32,15 +32,11 @@ class Api::V1::JobItemContentController < Api::V1::BaseController
 
   def post_jic_list
     unauthorized and return unless Auth.check('daily-summary/post_jic_list', current_user)
-    p "11111111111111"
   	begin
       if jic_params["jic_id"] == 0
         cost = JobItemContent.new(jic_params)
       else
         cost = JobItemContent.find_by(id: jic_params["jic_id"])
-        p "11111111111"
-        p cost
-        p jic_params["item_title"]
         cost.item_title = jic_params["item_title"]
         cost.item_weight = jic_params["item_weight"]
         cost.item_stds = jic_params["item_stds"]
