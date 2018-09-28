@@ -2,7 +2,7 @@ class Api::V1::JobItemContentController < Api::V1::BaseController
   # before_action :authorize
   
   def get_jic_list
-    unauthorized and return unless Auth.check('job_evaluation/get_jic_list', current_user)
+    unauthorized and return unless Auth.check('daily-summary/get_jic_list', current_user)
     # costs = AuthGroup.where(status: 1).all
     # JobItemContent.where(parent_id: 0)
     ags = AuthGroup.joins("LEFT JOIN job_item_contents ON auth_groups.id = job_item_contents.auth_group_id").where(status: 1).order("job_item_contents.created_at").select("auth_groups.id, auth_groups.title,job_item_contents.id as jic_id, job_item_contents.item_title as item_title, job_item_contents.item_weight as item_weight, job_item_contents.item_stds as item_stds, job_item_contents.item_cnts as item_cnts")
@@ -31,9 +31,22 @@ class Api::V1::JobItemContentController < Api::V1::BaseController
   end
 
   def post_jic_list
-    unauthorized and return unless Auth.check('job_evaluation/post_jic_list', current_user)
+    unauthorized and return unless Auth.check('daily-summary/post_jic_list', current_user)
+    p "11111111111111"
   	begin
-      cost = JobItemContent.new(jic_params)
+      if jic_params["jic_id"] == 0
+        cost = JobItemContent.new(jic_params)
+      else
+        cost = JobItemContent.find_by(id: jic_params["jic_id"])
+        p "11111111111"
+        p cost
+        p jic_params["item_title"]
+        cost.item_title = jic_params["item_title"]
+        cost.item_weight = jic_params["item_weight"]
+        cost.item_stds = jic_params["item_stds"]
+        cost.item_cnts = jic_params["item_cnts"]
+
+      end
       if cost.save!
         render json: cost
       end
@@ -45,7 +58,7 @@ class Api::V1::JobItemContentController < Api::V1::BaseController
 
 
   def delete_jic_list
-    unauthorized and return unless Auth.check('job_evaluation/delete_jic_list', current_user)
+    unauthorized and return unless Auth.check('daily-summary/delete_jic_list', current_user)
 
     begin
       cost = JobItemContent.find(params.require(:params)[:jic_id])
@@ -58,7 +71,7 @@ class Api::V1::JobItemContentController < Api::V1::BaseController
   end
 
   def patch_jic_list
-    unauthorized and return unless Auth.check('job_evaluation/patch_jic_list', current_user)
+    unauthorized and return unless Auth.check('daily-summary/patch_jic_list', current_user)
 
     begin
       cost = Cost.find(params.require(:params)[:id])
@@ -73,7 +86,7 @@ class Api::V1::JobItemContentController < Api::V1::BaseController
   private
 
   def jic_params
-    params.require(:params).permit(:auth_group_id,:item_title,:item_weight,:item_stds,:item_cnts)
+    params.require(:params).permit(:auth_group_id,:jic_id,:item_title,:item_weight,:item_stds,:item_cnts)
   end
 
 end

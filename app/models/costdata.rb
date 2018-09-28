@@ -1,15 +1,16 @@
 class Costdata < ApplicationRecord
   belongs_to :summary
 
-  validates_presence_of     :money
-  validates_presence_of     :name
+  # validates_presence_of     :money
+  # validates_presence_of     :names
 
-  def as_json(options = {})
+	def as_json(options = {})
 		h = {}	
 		h[:id] = self.id
-		h[:name] = self.name
+		h[:names] = self.names
 		h[:thing] = self.thing
 		h[:money] = self.money
+		h[:costids] = self.costids
 		h
 	end
 end

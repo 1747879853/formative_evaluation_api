@@ -528,13 +528,13 @@ ActiveRecord::Schema.define(version: 2018_09_25_064206) do
   end
 
   create_table "costdata", force: :cascade do |t|
-    t.string "name", null: false
+    t.string "names", null: false
     t.text "thing"
     t.integer "money", null: false
     t.string "summary_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "item_third_id"
+    t.string "costids"
   end
 
   create_table "costs", force: :cascade do |t|

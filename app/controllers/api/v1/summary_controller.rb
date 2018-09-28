@@ -12,11 +12,31 @@ class Api::V1::SummaryController < Api::V1::BaseController
         "flag":0
       }   
     else
+      # workcontent: "19;内容1-质量:1,内容1-时间:2,|20;内容1-时间:3,内容2-质量:4,|"
+      
+      workcnt_format_arr = []
+      summary.workcontent.split('|').each do |item,indexi|
+        
+          workcnt_format = ""
+          cnts = item.split(';')
+          jic = JobItemContent.find_by(id: cnts[0])
+          workcnt_format = workcnt_format +  (jic ? jic.item_title : "")
+          workcnt_format = workcnt_format + '&nbsp;&nbsp;&nbsp'
+          cnts[1].split(',').each do |cnt,indexj|
+              
+              
+              workcnt_format = workcnt_format + cnt;
+              workcnt_format = workcnt_format + '&nbsp;&nbsp;&nbsp'
+          end
+          workcnt_format_arr << workcnt_format
+        
+      end
       render json: {
         "flag": 1,
         "date": summary.date,
         "address": summary.address,
         "workcontent": summary.workcontent,
+        "workcontentformat": workcnt_format_arr,
         "transport": summary.transport,
         "explain": summary.explain,
         "costdata": summary.costdatas
@@ -101,9 +121,9 @@ class Api::V1::SummaryController < Api::V1::BaseController
     end    
   end
 
-  # add summary
-  def post_summary
-    unauthorized and return unless Auth.check('daily_summary/post_summary', current_user)
+  # save summary
+  def save_summary
+    unauthorized and return unless Auth.check('daily_summary/save_summary', current_user)
     # user = User.find(current_user.id)
   	begin
       summary = Summary.new
@@ -115,21 +135,26 @@ class Api::V1::SummaryController < Api::V1::BaseController
       summary.user_id = current_user.id
       summary.save!
 
-      nodes = params.require(:params)[:costdata]
-      if nodes.length > 0
-        nodes.each do |value|
+      costs = params.require(:params)[:costdata]
+      if costs.length > 0
+        costs.each do |value|
           pn = Costdata.new
-          pn.name = value[:name]
+          pn.names = value[:names]
           pn.thing = value[:thing]
           pn.money = value[:money]
           pn.summary_id = summary.id
+          pn.costids = value[:costids]
           pn.save!
         end
       end
+      
+      render json: {}
+      
   	rescue Exception => e
       render json: { msg: e }, status: 500
     end   
   end
+
 
   def delete_summary
     unauthorized and return unless Auth.check('daily_summary/delete_summary', current_user)
