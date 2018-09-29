@@ -1,7 +1,10 @@
 class RenameColumnOfCostdatas < ActiveRecord::Migration[5.2]
   def change
 
-    rename_column :costdata, :summaries_id, :summary_id
+    remove_column :costdata, :summaries_id
+    # add_column :costdata, :summary_id, :bigint
+    add_reference :costdata, :summary, index: true
+
     rename_column :costdata, :name, :names
     add_column :costdata, :costids, :string
 

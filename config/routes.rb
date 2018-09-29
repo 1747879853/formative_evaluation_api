@@ -16,7 +16,7 @@ Rails.application.routes.draw do
       # User actions
       get    '/userList'       => 'users#get_userlist'
       get    '/users/current'  => 'users#current'
-      get    '/users_id_user_name' => 'users#users_id_user_name'
+      get    '/sub_user_list' => 'users#sub_user_list'
       post   '/userList'       => 'users#post_userlist'
       patch  '/userList'       => 'users#patch_userlist'
       delete '/userList'       => 'users#delete_userlist'
@@ -56,12 +56,12 @@ Rails.application.routes.draw do
 
       # Work actions
       get    '/getSummary'       =>  'summary#get_summary'
-      get    '/get_summary_by_id' => 'summary#get_summary_by_id'
+      get    '/cost_detail' => 'summary#cost_detail'
       get    '/get_summaries'      =>  'summary#get_summaries'
       get    '/get_summaries_s'      =>  'summary#get_summaries_s'
       # get    '/get_summaries_total' =>  'summary#get_summaries_total'
-      get    '/get_costdata_by_userid_and_summaryDate' => 'costdata#get_costdata_by_userid_and_summaryDate'
-      get    '/get_costdata_by_userid_and_summaryDate_s' => 'costdata#get_costdata_by_userid_and_summaryDate_s'
+      get    '/costdata_query' => 'costdata#costdata_query'
+      get    '/costdata_query_s' => 'costdata#costdata_query_s'
       post   '/saveSummary'       =>  'summary#save_summary'
 
 

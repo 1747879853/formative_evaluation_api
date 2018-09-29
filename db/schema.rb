@@ -531,10 +531,11 @@ ActiveRecord::Schema.define(version: 2018_09_25_064206) do
     t.string "names", null: false
     t.text "thing"
     t.integer "money", null: false
-    t.string "summary_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "summary_id"
     t.string "costids"
+    t.index ["summary_id"], name: "index_costdata_on_summary_id"
   end
 
   create_table "costs", force: :cascade do |t|

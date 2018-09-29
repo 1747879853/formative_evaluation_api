@@ -44,9 +44,10 @@ class Api::V1::SummaryController < Api::V1::BaseController
     end
   end
   
-  def get_summary_by_id
-    unauthorized and return unless Auth.check('daily_summary/query_summarries', current_user)
-    render json: { summary: Summary.find_by_id(params.require(:id)),costdata: Costdata.where({summary_id: params.require(:id)}).all.select("name,thing,money")}
+  def cost_detail
+    unauthorized and return unless Auth.check('daily_summary/cost_detail', current_user)
+
+    render json: { costdata: Costdata.where({summary_id: params.require(:id)}).all}
   end
 
   # def get_summaries_total
@@ -65,18 +66,26 @@ class Api::V1::SummaryController < Api::V1::BaseController
   # end
   
   def get_summaries
-    unauthorized and return unless Auth.check('daily_summary/query_summarries', current_user)
+    unauthorized and return unless Auth.check('daily_summary/get_summaries', current_user)
     begin
       limit = params.require(:limit)
       offset = params.require(:offset)
       # Summary.where({user_id: 2,date: '2018-08-31'..'2018-09-06'}).all.select("id,date,workcontent")
       # summaries = Summary.where({user_id: params.require(:userid),date: params.require(:date)[0]..params.require(:date)[1]}).all
       sql = ActiveRecord::Base.connection()
-      if params.require(:userid).to_i() == -1
+      # query summaries of current_user's all subornate users 
+      if params.require(:userid).to_i() == 0
+        # ????????????????here need modify in the future
+        
+        # user_arr = current_user.subordinates.map(&:id)
+        # total = Summary.where(user_id: user_arr).where(date: params.require(:date)[0]..params.require(:date)[1]).count
+
         total = sql.select_value "select count(*) from summaries where summaries.date between '"+params.require(:date)[0].to_s()+"' and '"+params.require(:date)[1].to_s()+"'"
+
         summaries = sql.select_all "select temp.id,temp.username as name,temp.date,temp.workcontent,SUM(temp.money) as money from (select summaries.id,users.username,summaries.date,summaries.workcontent,costdata.money from summaries left join costdata on costdata.summary_id = summaries.id inner join users on users.id = summaries.user_id where summaries.date between '"+ params.require(:date)[0].to_s() +"' and '"+ params.require(:date)[1].to_s() +"') as temp GROUP BY temp.date,temp.username,temp.workcontent,temp.id limit "+limit.to_s()+" offset "+offset.to_s()
       else
         total = sql.select_value "select count(*) from summaries inner join users on users.id = summaries.user_id where users.id = "+params.require(:userid).to_s()+" and summaries.date between '"+params.require(:date)[0].to_s()+"' and '"+params.require(:date)[1].to_s()+"'"
+
         summaries = sql.select_all "select temp.id,temp.username as name,temp.date,temp.workcontent,SUM(temp.money) as money from (select summaries.id,users.username,summaries.date,summaries.workcontent,costdata.money from summaries left join costdata on costdata.summary_id = summaries.id inner join users on users.id = summaries.user_id where users.id = "+ params.require(:userid) +" and summaries.date between '"+ params.require(:date)[0].to_s() +"' and '"+ params.require(:date)[1].to_s() +"') as temp GROUP BY temp.date,temp.username,temp.workcontent,temp.id limit "+limit.to_s()+" offset "+offset.to_s()
       end
       if summaries.length > 0
@@ -89,24 +98,24 @@ class Api::V1::SummaryController < Api::V1::BaseController
 
   # get_summaries_s just different from get_summaries by date
   def get_summaries_s
-    unauthorized and return unless Auth.check('daily_summary/query_summarries', current_user)
+    unauthorized and return unless Auth.check('daily_summary/get_summaries_s', current_user)
     begin
-      @date  = 1.month
+      @date  = 7.days
+      
       limit = params.require(:limit)
       offset = params.require(:offset)
+      
       if params.require(:date).to_i() == 1 
         @date = 1.month
       elsif params.require(:date).to_i() == 3
-        @date = 3.month
+        @date = 3.months
       elsif params.require(:date).to_i() == 6
-        @date = 6.month
-      else
-        @date = 7.day          
+        @date = 6.months
       end 
       # Summary.where({user_id: 2,date: '2018-08-31'..'2018-09-06'}).all.select("id,date,workcontent")
       # summaries = Summary.where({user_id: params.require(:userid),date: params.require(:date)[0]..params.require(:date)[1]}).all
       sql = ActiveRecord::Base.connection()
-      if params.require(:userid).to_i() == -1
+      if params.require(:userid).to_i() == 0
         total = sql.select_value "select count(*) from summaries where summaries.date between '"+(Time.now - @date).strftime("%Y-%m-%d") +"' and '"+ Time.now.strftime("%Y-%m-%d")+"'"
         summaries = sql.select_all "select temp.id,temp.username as name,temp.date,temp.workcontent,SUM(temp.money) as money from (select summaries.id,users.username,summaries.date,summaries.workcontent,costdata.money from summaries left join costdata on costdata.summary_id = summaries.id inner join users on users.id = summaries.user_id where summaries.date between '"+ (Time.now - @date).strftime("%Y-%m-%d") +"' and '"+ Time.now.strftime("%Y-%m-%d") +"') as temp GROUP BY temp.date,temp.username,temp.workcontent,temp.id limit "+limit.to_s()+" offset "+offset.to_s()
       else
