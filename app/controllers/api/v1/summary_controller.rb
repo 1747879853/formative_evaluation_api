@@ -12,35 +12,8 @@ class Api::V1::SummaryController < Api::V1::BaseController
         "flag":0
       }   
     else
-      # workcontent: "19;内容1-质量:1,内容1-时间:2,|20;内容1-时间:3,内容2-质量:4,|"
-      
-      workcnt_format_arr = []
-      summary.workcontent.split('|').each do |item,indexi|
-        
-          workcnt_format = ""
-          cnts = item.split(';')
-          jic = JobItemContent.find_by(id: cnts[0])
-          workcnt_format = workcnt_format +  (jic ? jic.item_title : "")
-          workcnt_format = workcnt_format + '&nbsp;&nbsp;&nbsp'
-          cnts[1].split(',').each do |cnt,indexj|
-              
-              
-              workcnt_format = workcnt_format + cnt;
-              workcnt_format = workcnt_format + '&nbsp;&nbsp;&nbsp'
-          end
-          workcnt_format_arr << workcnt_format
-        
-      end
-      render json: {
-        "flag": 1,
-        "date": summary.date,
-        "address": summary.address,
-        "workcontent": summary.workcontent,
-        "workcontentformat": workcnt_format_arr,
-        "transport": summary.transport,
-        "explain": summary.explain,
-        "costdata": summary.costdatas
-      }         
+
+      render json: summary      
     end
   end
   
@@ -88,9 +61,14 @@ class Api::V1::SummaryController < Api::V1::BaseController
 
         summaries = sql.select_all "select temp.id,temp.username as name,temp.date,temp.workcontent,SUM(temp.money) as money from (select summaries.id,users.username,summaries.date,summaries.workcontent,costdata.money from summaries left join costdata on costdata.summary_id = summaries.id inner join users on users.id = summaries.user_id where users.id = "+ params.require(:userid) +" and summaries.date between '"+ params.require(:date)[0].to_s() +"' and '"+ params.require(:date)[1].to_s() +"') as temp GROUP BY temp.date,temp.username,temp.workcontent,temp.id limit "+limit.to_s()+" offset "+offset.to_s()
       end
-      if summaries.length > 0
-        render json: {total: total,summaries: summaries.as_json}
+      
+      summ_json = summaries.as_json
+      
+      summ_json.each do |ss|
+        ss["workcontentformat"] = Summary.work_cnt_fmt(ss["workcontent"])
       end
+
+      render json: {total: total,summaries: summ_json}
     rescue Exception => e
       render json: { msg: e }, status: 500
     end    
@@ -178,14 +156,5 @@ class Api::V1::SummaryController < Api::V1::BaseController
     end
   end
 
-
-
-
-
-
- # private
- #  def worklist_params
- #  	params.require(:params).permit(:date,:address,:workcontent,:transport,:explain)
- #  end
 
 end
