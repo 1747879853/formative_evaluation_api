@@ -13,8 +13,24 @@
 		h[:transport] = self.transport
 		h[:explain] = self.explain
 		h[:costdata] = self.costdatas
-		h[:workcontentformat] = wcf
+		h[:workcontentformat] = wcf_str
 		h
+	end
+
+	def wcf_str
+		wf = ""
+      	self.workcontent.split('|').each do |item,indexi|
+			cnts = item.split(';')
+			jic = JobItemContent.find_by(id: cnts[0])
+			wf = wf +  (jic ? jic.item_title : "")
+			wf = wf + '&nbsp;&nbsp;&nbsp'
+			cnts[1].split(',').each do |cnt,indexj|
+			  wf = wf + cnt;
+			  wf = wf + '&nbsp;&nbsp;&nbsp'
+			end
+			wf=wf+'</br>'
+      	end
+      	return wf
 	end
 
 	def wcf

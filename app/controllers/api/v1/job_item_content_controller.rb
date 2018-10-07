@@ -1,5 +1,7 @@
 class Api::V1::JobItemContentController < Api::V1::BaseController
   # before_action :authorize
+
+
   
   def get_jic_list
     unauthorized and return unless Auth.check('daily-summary/get_jic_list', current_user)

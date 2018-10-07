@@ -64,6 +64,11 @@ Rails.application.routes.draw do
       get    '/costdata_query_s' => 'costdata#costdata_query_s'
       post   '/saveSummary'       =>  'summary#save_summary'
 
+      #summary evalustion
+      get '/get_evaluation_jics' => 'summary_evaluation#get_evaluation_jics'
+      get '/get_summaries_scores' => 'summary_evaluation#get_summaries_scores'
+      get '/save_evaluation' => 'summary_evaluation#save_evaluation'
+
 
       # Costdata actions
 
