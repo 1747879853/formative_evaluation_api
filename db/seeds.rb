@@ -90,6 +90,9 @@ rule52.save!
 rule53 = AuthRule.find_or_create_by({ name: 'system-manage/user-authority-groups', title: '用户权限分配'})
 rule53.parent = rule50
 rule53.save!
+rule54 = AuthRule.find_or_create_by({ name: 'system-manage/menu-manage', title: '菜单管理'})
+rule54.parent = rule50
+rule54.save!
 
 rule60 = AuthRule.find_or_create_by({ name: 'daily-summary/index', title: '日清总结'})
 rule60.save!
