@@ -28,8 +28,7 @@ class Api::V1::SummaryEvaluationController < Api::V1::BaseController
       summ_json = summaries.as_json
       
       summ_json_ids = summ_json.collect{|e| e["id"]}
-      ss_arr = SummaryScore.where(id: summ_json_ids)
-      
+      ss_arr = SummaryScore.where(summary_id: summ_json_ids).map(&:summary_id)
       summ_json.each do |ss|
         ss["workcontentformat"] = Summary.work_cnt_fmt(ss["workcontent"])
         ss["evaluated"] = ss_arr.include?(ss["id"]) 
@@ -43,7 +42,7 @@ class Api::V1::SummaryEvaluationController < Api::V1::BaseController
   end
   def get_evaluation_jics
     unauthorized and return unless Auth.check('daily-summary/get_evaluation_jics', current_user)
-
+# {"workcnt"=>"19;内容1-质量:55,|", "userid"=>"11", "summaryid"=>"30"}
       ids_arr = []
       params.require(:workcnt).split('|').each do |item|
         ids_arr << item.split(';')[0].to_i
@@ -52,7 +51,7 @@ class Api::V1::SummaryEvaluationController < Api::V1::BaseController
       uid  = params.require(:userid) 
       sid = params.require(:summaryid)
 
-      jics = JobItemContent.joins("left join summary_scores on summary_scores.job_item_content_id = job_item_contents.id left join users on summary_scores.user_id = users.id ").where(id: ids_arr).select("job_item_contents.id,job_item_contents.auth_group_id,  job_item_contents.item_title, job_item_contents.item_weight, job_item_contents.item_stds, job_item_contents.item_cnts, summary_scores.id as summary_score_id, summary_scores.score_time, users.username, summary_scores.score, summary_scores.score_total")
+      jics = JobItemContent.joins("left join summary_scores on summary_scores.job_item_content_id = job_item_contents.id and summary_scores.summary_id = #{sid} left join users on summary_scores.user_id = users.id ").where(id: ids_arr).select("job_item_contents.id,job_item_contents.auth_group_id,  job_item_contents.item_title, job_item_contents.item_weight, job_item_contents.item_stds, job_item_contents.item_cnts, summary_scores.id as summary_score_id, summary_scores.score_time, users.username, summary_scores.score, summary_scores.score_total")
       role_name = AuthGroup.find(jics.first.auth_group_id).title
       
       # agsarr = []
@@ -88,6 +87,7 @@ class Api::V1::SummaryEvaluationController < Api::V1::BaseController
         ss.score_total = ss.score_total + ee["proportion"].to_f*ee["score"].to_f
         ss.score =ss.score + ee["score"].to_s + ','
       end
+      ss.score = ss.score.chop  #delete the last character
       ss.save!
     end
 
