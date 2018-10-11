@@ -24,6 +24,15 @@ Rails.application.routes.draw do
       patch  '/userpass'       => 'users#patch_userpass'
       # resources :users, only: [:index, :current, :create, :update, :destroy]
 
+      # Organization actions
+      get    '/organization'   =>  'organization#get_organization'
+      post   '/organization'   =>  'organization#post_organization'
+      patch  '/organization'   =>  'organization#patch_organization'
+      delete '/organization'   =>  'organization#delete_organization'
+      get    '/organization_user'   =>  'organization#get_organization_user'
+      post   '/organization_user'   =>  'organization#post_organization_user'
+      delete '/organization_user'   =>  'organization#delete_organization_user'
+
       # Authority actions
       get    '/authRuleList'   =>  'authorities#get_rulelist'
       post   '/authRuleList'   =>  'authorities#post_rulelist'

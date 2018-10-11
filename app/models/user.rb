@@ -7,6 +7,8 @@ class User < ApplicationRecord
   has_many :approval_current_nodes
   has_many :boms_approvals
   has_many :summaries
+  has_many :organizations_users
+  has_many :organizations, through: :organizations_users
 
   # Necessary to authenticate.
   has_secure_password
