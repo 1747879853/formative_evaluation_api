@@ -12,4 +12,8 @@ class Organization < ApplicationRecord
 	h[:children] = self.children if self.children
 	h
 	end
+
+  def leaders
+    User.where(id: self.organizations_users.where(leader: true).map(&:user_id))
+  end
 end

@@ -43,4 +43,15 @@ class User < ApplicationRecord
     h
   end
 
+  def subordinate_persons  #all persons of the user's direct subordinate organizations
+      sub_persons=[]
+      self.organizations.each do |org|
+        org.children.each do |oorg|
+          sub_persons << oorg.leaders.to_ary   #ActiveRecord::Associations::CollectionProxy convert to array
+        end
+      end
+      sub_persons = sub_persons.flatten#need to sort by name????? 
+      
+  end
+
 end
