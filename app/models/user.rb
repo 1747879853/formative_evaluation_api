@@ -54,4 +54,15 @@ class User < ApplicationRecord
       
   end
 
+  def all_subordinate_persons_me  #all persons of the current user's  subordinate and current_user himself
+      sub_persons=[self]
+      self.organizations.each do |org|
+        org.children.each do |sub_org|
+          sub_persons << sub_org.users.to_ary   
+        end
+      end
+      sub_persons = sub_persons.flatten#need to sort by name????? 
+      
+  end
+
 end

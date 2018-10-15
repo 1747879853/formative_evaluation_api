@@ -9,9 +9,14 @@ class Api::V1::UsersController < Api::V1::BaseController
     render json: User.where(status: 1).all
   end
 
-  # get sub_user_list,return all the direct subordinate users of current_user 
-  def sub_user_list
+  # get first_subuser_list,return all the first subordinate users of current_user 
+  def first_subuser_list
     render json: current_user.subordinate_persons
+  end
+
+  # return all the first subordinate users of current_user 
+  def all_subuser_me_list
+    render json: current_user.all_subordinate_persons_me
   end
   
   # Call this method to check if the user is logged-in.

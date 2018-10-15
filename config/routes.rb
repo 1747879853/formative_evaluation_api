@@ -16,7 +16,8 @@ Rails.application.routes.draw do
       # User actions
       get    '/userList'       => 'users#get_userlist'
       get    '/users/current'  => 'users#current'
-      get    '/sub_user_list' => 'users#sub_user_list'
+      get    '/first_subuser_list' => 'users#first_subuser_list'
+      get    '/all_subuser_me_list' => 'users#all_subuser_me_list'
       post   '/userList'       => 'users#post_userlist'
       patch  '/userList'       => 'users#patch_userlist'
       delete '/userList'       => 'users#delete_userlist'
