@@ -16,4 +16,9 @@ class Organization < ApplicationRecord
   def leaders
     User.where(id: self.organizations_users.where(leader: true).map(&:user_id))
   end
+
+  def notleaders
+    User.where(id: self.organizations_users.where(leader: false).map(&:user_id))
+  end
+
 end
