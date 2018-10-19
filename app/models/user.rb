@@ -47,14 +47,16 @@ class User < ApplicationRecord
       sub_persons=[]
 
       self.organizations.each do |org|
+
         if org.children.length > 0
           org.children.each do |oorg|
             sub_persons << oorg.leaders.to_ary   #ActiveRecord::Associations::CollectionProxy convert to array
           end
-        else
+        elsif (org.leaders.include? self)
           sub_persons << org.notleaders.to_ary
         end
       end
+
       sub_persons = sub_persons.flatten#need to sort by name????? 
       
   end
@@ -66,7 +68,7 @@ class User < ApplicationRecord
           org.children.each do |sub_org|
             sub_persons << sub_org.users.to_ary   
           end
-        else
+        elsif (org.leaders.include? self)
           sub_persons << org.notleaders.to_ary
         end
       end
