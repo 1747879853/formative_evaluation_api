@@ -57,7 +57,7 @@ class Api::V1::ProcedureController < Api::V1::BaseController
 				pn.save!
 			end
 		end
-
+		system("touch tmp/restart.txt")  #make the models that constructed for the approval can use
 		render json:{msg: '保存成功',code: 1}
 	rescue Exception => e
 		render json:{msg: '保存失败',code: 0}
