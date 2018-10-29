@@ -84,8 +84,8 @@ test:
 #
 production:
   <<: *default
-  database: wisdom_secretary_api
-  username: wisdomsecretary
+  database: oil_well_monitoring_system_api
+  username: oil_well_monitoring_system_api
   password: <%= ENV['APP_DATABASE_PASSWORD'] %>
   host: 127.0.0.1
   # pool: 100
