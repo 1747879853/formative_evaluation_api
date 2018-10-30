@@ -84,9 +84,9 @@ test:
 #
 production:
   <<: *default
-  database: oil_well_monitoring_system_api
-  username: oil_well_monitoring_system_api
+  database: sdwtpmscalcdb
+  username: sdwelltek
   password: <%= ENV['APP_DATABASE_PASSWORD'] %>
-  host: 127.0.0.1
+  host: 101.200.196.105
   # pool: 100
   # password: dongying0546***+-
