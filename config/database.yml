@@ -86,7 +86,7 @@ production:
   <<: *default
   database: sdwtpmscalcdb
   username: sdwelltek
-  password: <%= ENV['APP_DATABASE_PASSWORD'] %>
+  password: <%= ENV['OIL_DATABASE_PASSWORD'] %>
   host: 101.200.196.105
   # pool: 100
   # password: dongying0546***+-
