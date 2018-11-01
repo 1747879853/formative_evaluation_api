@@ -173,6 +173,13 @@ Rails.application.routes.draw do
       get   '/attendanceList'   =>'employee#get_attendanceList'
       post  '/attendanceList'   =>'employee#post_attendanceList'
 
+      #region actions
+      get '/region_list' =>'region#region_list'
+      post '/save_region' =>'region#save_region'
+      post '/save_subregion' =>'region#save_subregion'
+      post '/delete_region' =>'region#delete_region'
+      post '/patch_region' =>'region#patch_region'
+
     end
   end
 

@@ -2,6 +2,9 @@ class User < ApplicationRecord
   has_and_belongs_to_many :auth_groups
   has_many :auth_rules, through: :auth_groups
 
+  has_many :region_users
+  has_many :regions, through: :region_users
+
   # Necessary to authenticate.
   has_secure_password
   
