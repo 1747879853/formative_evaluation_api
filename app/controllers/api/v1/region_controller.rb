@@ -2,7 +2,7 @@ class Api::V1::RegionController < Api::V1::BaseController
   def region_list    
     unauthorized and return unless Auth.check('region-manage/region', current_user)
 
-    render json: Region.all
+    render json: Region.where(parent_id: 0).all
   end
   def save_region
     unauthorized and return unless Auth.check('region-manage/region', current_user)
