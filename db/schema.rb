@@ -10,48 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_01_010333) do
+ActiveRecord::Schema.define(version: 2018_11_04_123528) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "approval20180913054730s", force: :cascade do |t|
-    t.integer "approval_id"
-    t.string "approval_name"
-    t.integer "user_id"
-    t.string "no"
-    t.datetime "submit_time"
-    t.datetime "finish_time"
-    t.integer "procedure_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "approval20180913054804s", force: :cascade do |t|
-    t.string "field0"
-    t.integer "approval_id"
-    t.string "approval_name"
-    t.integer "user_id"
-    t.string "no"
-    t.datetime "submit_time"
-    t.datetime "finish_time"
-    t.integer "procedure_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "approval20180913054909s", force: :cascade do |t|
-    t.string "field0"
-    t.integer "approval_id"
-    t.string "approval_name"
-    t.integer "user_id"
-    t.string "no"
-    t.datetime "submit_time"
-    t.datetime "finish_time"
-    t.integer "procedure_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
 
   create_table "approval_admins", force: :cascade do |t|
     t.string "name"
@@ -73,13 +35,6 @@ ActiveRecord::Schema.define(version: 2018_11_01_010333) do
     t.index ["owner_type", "owner_id"], name: "index_approval_current_nodes_on_owner_type_and_owner_id"
     t.index ["procedure_node_id"], name: "index_approval_current_nodes_on_procedure_node_id"
     t.index ["user_id"], name: "index_approval_current_nodes_on_user_id"
-  end
-
-  create_table "approval_detail20180913054804s", force: :cascade do |t|
-    t.string "field0"
-    t.integer "approval20180913054804_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "approval_detail_fields", force: :cascade do |t|
@@ -207,14 +162,12 @@ ActiveRecord::Schema.define(version: 2018_11_01_010333) do
   end
 
   create_table "costdata", force: :cascade do |t|
-    t.string "names", null: false
+    t.string "name", null: false
     t.text "thing"
     t.integer "money", null: false
+    t.bigint "summary_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "summary_id"
-    t.string "costids"
-    t.index ["summary_id"], name: "index_costdata_on_summary_id"
   end
 
   create_table "costs", force: :cascade do |t|
@@ -314,17 +267,6 @@ ActiveRecord::Schema.define(version: 2018_11_01_010333) do
     t.string "photo"
   end
 
-  create_table "job_item_contents", force: :cascade do |t|
-    t.bigint "auth_group_id"
-    t.string "item_title"
-    t.decimal "item_weight", precision: 8, scale: 2
-    t.string "item_stds"
-    t.string "item_cnts"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["auth_group_id"], name: "index_job_item_contents_on_auth_group_id"
-  end
-
   create_table "local_depart_records", force: :cascade do |t|
     t.string "depart_id"
     t.string "inside_id"
@@ -371,21 +313,6 @@ ActiveRecord::Schema.define(version: 2018_11_01_010333) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "organizations", force: :cascade do |t|
-    t.string "name"
-    t.integer "parent_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "organizations_users", force: :cascade do |t|
-    t.integer "organization_id"
-    t.integer "user_id"
-    t.boolean "leader", default: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "procedure_nodes", force: :cascade do |t|
     t.bigint "procedure_id"
     t.string "name"
@@ -419,7 +346,7 @@ ActiveRecord::Schema.define(version: 2018_11_01_010333) do
   end
 
   create_table "regions", force: :cascade do |t|
-    t.string "name"
+    t.string "title"
     t.integer "parent_id", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -446,18 +373,6 @@ ActiveRecord::Schema.define(version: 2018_11_01_010333) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "summary_scores", force: :cascade do |t|
-    t.bigint "summary_id"
-    t.datetime "score_time"
-    t.bigint "user_id"
-    t.bigint "job_item_content_id"
-    t.string "score"
-    t.decimal "score_total"
-    t.index ["job_item_content_id"], name: "index_summary_scores_on_job_item_content_id"
-    t.index ["summary_id"], name: "index_summary_scores_on_summary_id"
-    t.index ["user_id"], name: "index_summary_scores_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

@@ -7,7 +7,7 @@ class CreateRegions < ActiveRecord::Migration[5.2]
     end
     create_table :region_users do |t|    	
     	t.belongs_to :user, index: true
-      	t.belongs_to :region, index: true
+      t.belongs_to :region, index: true
     	t.timestamps
     end
   end

@@ -1,13 +1,13 @@
 class Api::V1::RegionController < Api::V1::BaseController
   def region_list    
     unauthorized and return unless Auth.check('region-manage/region', current_user)
-
     render json: Region.where(parent_id: 0).all
   end
+  
   def save_region
     unauthorized and return unless Auth.check('region-manage/region', current_user)
     r = Region.new
-    r.name = params.require(:params)[:title]
+    r.title = params.require(:params)[:title]
     r.save!
     render json: r
   end
@@ -15,7 +15,7 @@ class Api::V1::RegionController < Api::V1::BaseController
   def save_subregion
     unauthorized and return unless Auth.check('region-manage/region', current_user)
     r = Region.new
-    r.name = params.require(:params)[:title]
+    r.title = params.require(:params)[:title]
     r.parent_id = params.require(:params)[:parent_id]
     r.save!
     render json: r
@@ -41,7 +41,7 @@ class Api::V1::RegionController < Api::V1::BaseController
     begin
       r = Region.find(params.require(:params)[:id])
 
-      r.name = params.require(:params)[:title]
+      r.title = params.require(:params)[:title]
       r.save!
       render json: r
     

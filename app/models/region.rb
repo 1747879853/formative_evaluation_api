@@ -10,8 +10,9 @@ class Region < ApplicationRecord
   def as_json(options = {})
 	h = {}	
 	h[:id] = self.id
-	h[:name] = self.name
+	h[:title] = self.title
 	h[:parent_id] = self.parent_id
+	h[:expand] = true
 	h[:children] = self.children if self.children
 	h
   end

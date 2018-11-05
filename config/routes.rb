@@ -180,6 +180,9 @@ Rails.application.routes.draw do
       post '/delete_region' =>'region#delete_region'
       post '/patch_region' =>'region#patch_region'
 
+      #region_user actions
+      get '/region_userlist' =>'region_users#get_region_userlist'
+      post '/region_userlist' =>'region_users#post_region_userlist'
     end
   end
 
