@@ -23,9 +23,13 @@ default: &default
 
 development:
   <<: *default
-  database: app_development
-  host: db
-  username: postgres
+  # database: app_development
+  # host: db
+  # username: postgres
+  database: sdwtpmscalcdb
+  username: sdwelltek
+  password: sdqufu0537***+-
+  host: 101.200.196.105
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
