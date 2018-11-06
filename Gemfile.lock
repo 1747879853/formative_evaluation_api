@@ -76,6 +76,8 @@ GEM
     case_transform (0.2)
       activesupport
     climate_control (0.2.0)
+    composite_primary_keys (11.0.3)
+      activerecord (~> 5.2.0)
     concurrent-ruby (1.0.5)
     crass (1.0.4)
     erubi (1.7.1)
@@ -218,6 +220,7 @@ DEPENDENCIES
   capistrano-passenger
   capistrano-rails (~> 1.1)
   capistrano-rvm
+  composite_primary_keys (~> 11.0)
   jwt
   kaminari
   knock

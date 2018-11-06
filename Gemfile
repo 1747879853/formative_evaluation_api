@@ -62,3 +62,5 @@ group :development do
   gem 'capistrano-rvm'
   gem 'capistrano-passenger'
 end
+
+gem 'composite_primary_keys', '~> 11.0'
