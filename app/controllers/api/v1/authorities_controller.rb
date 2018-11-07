@@ -82,7 +82,7 @@ class Api::V1::AuthoritiesController < Api::V1::BaseController
 
     begin
       authgroup = AuthGroup.find(params.require(:params)[:group_id])
-      authgroup.auth_rules.destroy_all
+      authgroup.auth_rules.delete_all
       a = params.require(:params)[:id]
       authgroup.auth_rules.push AuthRule.where(id: a).all
       render json: authgroup
@@ -102,7 +102,7 @@ class Api::V1::AuthoritiesController < Api::V1::BaseController
 
     begin
       authuser = User.find(params.require(:params)[:user_id])
-      authuser.auth_groups.destroy_all
+      authuser.auth_groups.delete_all
       a = params.require(:params)[:id]
       authuser.auth_groups.push AuthGroup.where(id: a).all
       render json: authuser
