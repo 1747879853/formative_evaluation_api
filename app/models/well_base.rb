@@ -307,6 +307,10 @@ class WellBase < ActiveRecord::Base
   has_many :electric_pump_well_alarm_lasts, through: :electric_pump_well_base2
    # added for electric pump well in old system
 
+  # region well
+  has_many :region_well_bases
+  has_many :regions, through: :region_well_bases
+  
  #.limit return a array of objects
   def latest_graph n
   	self.well_w_graph.order('record_time desc').limit n
