@@ -79,7 +79,6 @@ class Api::V1::AuthoritiesController < Api::V1::BaseController
   end
 
   def patch_grouplist
-
     begin
       authgroup = AuthGroup.find(params.require(:params)[:group_id])
       authgroup.auth_rules.destroy_all

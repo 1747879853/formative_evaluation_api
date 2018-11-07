@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_04_123528) do
+ActiveRecord::Schema.define(version: 2018_11_06_072254) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -748,6 +748,15 @@ ActiveRecord::Schema.define(version: 2018_11_04_123528) do
     t.index ["user_id"], name: "index_region_users_on_user_id"
   end
 
+  create_table "region_well_bases", force: :cascade do |t|
+    t.string "well_id"
+    t.bigint "region_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["region_id"], name: "index_region_well_bases_on_region_id"
+    t.index ["well_id"], name: "index_region_well_bases_on_well_id"
+  end
+
   create_table "regions", force: :cascade do |t|
     t.string "title"
     t.integer "parent_id", default: 0
@@ -1028,7 +1037,7 @@ ActiveRecord::Schema.define(version: 2018_11_04_123528) do
     t.string "email"
     t.string "password_digest"
     t.datetime "last_login"
-    t.string "status"
+    t.string "status", default: "1"
   end
 
   create_table "users_roles", id: false, force: :cascade do |t|

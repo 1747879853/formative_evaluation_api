@@ -6,7 +6,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   
   # Should work if the current_user is authenticated.
   def get_userlist
-    render json: User.where(status: 1).all
+    render json: User.where(status: '1').where("username is not null").all
   end
 
   # get first_subuser_list,return all the first subordinate users of current_user 

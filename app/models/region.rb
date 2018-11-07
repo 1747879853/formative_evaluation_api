@@ -3,6 +3,9 @@ class Region < ApplicationRecord
   has_many :region_users
   has_many :users, through: :region_users
 
+  has_many :region_well_bases
+  has_many :well_bases, through: :region_well_bases
+
   acts_as_tree
 
   
