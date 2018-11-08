@@ -185,11 +185,11 @@ Rails.application.routes.draw do
       post '/region_userlist' =>'region_users#post_region_userlist'
 
       # wellbase actions
-      get '/wellList' =>'well_base#get_wellList'
+      get '/wellList' =>'well_bases#get_wellList'
 
       #region_well_base actions
-      get '/region_wellBases' =>'region_well_bases#get_region_welllist'
-      post '/region_wellBases' =>'region_well_bases#post_region_welllist'
+      get '/region_wellBases' =>'region_wells#get_region_welllist'
+      post '/region_wellBases' =>'region_wells#post_region_welllist'
     end
   end
 
