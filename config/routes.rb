@@ -185,8 +185,8 @@ Rails.application.routes.draw do
       post '/region_userlist' =>'region_users#post_region_userlist'
 
       # wellbase actions
-      get '/wellList' =>'well_base#get_wellList'
-      get '/well_list' => 'well_base#get_vux_well_list'
+      get '/wellList' =>'well_bases#get_wellList'
+      get '/well_list' => 'well_bases#get_vux_well_list'
 
       #wellalarm actions
       get '/alarm_list' => 'well_alarm#get_alarm_list'
