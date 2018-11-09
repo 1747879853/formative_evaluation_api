@@ -186,6 +186,13 @@ Rails.application.routes.draw do
 
       # wellbase actions
       get '/wellList' =>'well_base#get_wellList'
+      get '/well_list' => 'well_base#get_vux_well_list'
+
+      #wellalarm actions
+      get '/alarm_list' => 'well_alarm#get_alarm_list'
+
+      #wellwgraph actions
+      get '/wgs' => 'well_wgraph#get_wgs'
 
       #region_well_base actions
       get '/region_wellBases' =>'region_well_bases#get_region_welllist'

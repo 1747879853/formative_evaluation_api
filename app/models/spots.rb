@@ -648,4 +648,20 @@ module Spots
   def png_filename
     "#{self.well_id}_#{self.record_time.strftime('%Y_%m_%d_%H')}.png"
   end
+
+  def as_json(options = {})
+    {
+      well_name: self.well_id,
+      record_time: self.record_time.strftime('%Y-%m-%d %H:%M:%S').to_s,
+      spots: self.spots,
+      stroke_length: self.stroke_length,
+      stroke_times: self.stroke_times,
+      min_load: self.min_load,
+      max_load: self.max_load,
+      diagram_area: self.diagram_area,
+      rod_power: self.rod_power,
+      calc_status: self.calc_status,
+    }
+  end
+
 end
