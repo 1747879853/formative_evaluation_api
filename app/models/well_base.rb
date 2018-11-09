@@ -308,8 +308,8 @@ class WellBase < ActiveRecord::Base
    # added for electric pump well in old system
 
   # region well
-  has_many :region_well_bases
-  has_many :regions, through: :region_well_bases
+  has_many :region_wells,foreign_key: "well_id",primary_key: "well_id",:dependent => :destroy
+  has_many :regions, through: :region_wells
   
  #.limit return a array of objects
   def latest_graph n

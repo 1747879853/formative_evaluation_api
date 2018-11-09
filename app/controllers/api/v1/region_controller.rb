@@ -23,12 +23,12 @@ class Api::V1::RegionController < Api::V1::BaseController
 
   def delete_region
     unauthorized and return unless Auth.check('region-manage/region', current_user)
-
     begin
       r = Region.find(params.require(:params)[:id])
       if r 
         # ?????????????should delete all the associated users and oils
-        r.delete       
+        Region.where(parent_id: params.require(:params)[:id]).all.destroy_all
+        r.destroy
       end
       render json: { }
     rescue Exception => e

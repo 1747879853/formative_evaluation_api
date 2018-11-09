@@ -195,8 +195,8 @@ Rails.application.routes.draw do
       get '/wgs' => 'well_wgraph#get_wgs'
 
       #region_well_base actions
-      get '/region_wellBases' =>'region_well_bases#get_region_welllist'
-      post '/region_wellBases' =>'region_well_bases#post_region_welllist'
+      get '/region_wellBases' =>'region_wells#get_region_welllist'
+      post '/region_wellBases' =>'region_wells#post_region_welllist'
     end
   end
 
