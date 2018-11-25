@@ -186,6 +186,7 @@ Rails.application.routes.draw do
 
       # wellbase actions
       get '/wellList' =>'well_bases#get_wellList'
+      # get '/wellListSelect' => 'well_bases#get_wellListSelect'
       get '/well_list' => 'well_bases#get_vux_well_list'
 
       #wellalarm actions

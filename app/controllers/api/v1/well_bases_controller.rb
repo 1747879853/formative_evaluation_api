@@ -3,6 +3,10 @@ class Api::V1::WellBasesController < Api::V1::BaseController
 		render json: WellBase.where(show_status: 1).all
 	end
 
+  # def get_wellListSelect
+  #
+  # end
+
 	def get_vux_well_list
 		render json: WellBase.select(:well_id, :well_name).where(show_status: 1).all
 	end
