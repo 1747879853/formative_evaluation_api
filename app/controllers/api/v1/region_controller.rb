@@ -18,6 +18,7 @@ class Api::V1::RegionController < Api::V1::BaseController
     r.title = params.require(:params)[:title]
     r.parent_id = params.require(:params)[:parent_id]
     r.save!
+    RegionWell.where(:region_id => params.require(:params)[:parent_id]).all.destroy_all
     render json: r
   end
 
