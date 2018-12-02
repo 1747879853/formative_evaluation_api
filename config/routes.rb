@@ -187,12 +187,16 @@ Rails.application.routes.draw do
       # wellbase actions
       get '/wellList' =>'well_bases#get_wellList'
       # get '/wellListSelect' => 'well_bases#get_wellListSelect'
-      get '/well_list' => 'well_bases#get_vux_well_list'
-      get '/yesterday_output' => 'well_bases#get_yesterday_output'
-      get '/daily_well' => 'well_bases#get_daily_well'
+      get '/well_list' => 'well_bases#get_vux_well_list'      
+      get '/daily_well' => 'well_bases#get_vux_daily_well'      
+
+      # output actions
+      get '/yesterday_output' => 'output#get_vux_yesterday_output'
+      get '/output_list' => 'output#get_vux_output_list'
 
       #wellalarm actions
       get '/alarm_list' => 'well_alarm#get_alarm_list'
+      get '/alarm' => 'well_alarm#get_vux_alarm'
 
       #wellwgraph actions
       get '/wgs' => 'well_wgraph#get_wgs'
