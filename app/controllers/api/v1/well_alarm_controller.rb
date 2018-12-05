@@ -7,7 +7,7 @@ class Api::V1::WellAlarmController < Api::V1::BaseController
 	end
 
 	def get_vux_alarm
-		a=WellAlarm.select(:well_id, :record_time, :alarm_type_id).where("well_id = ?",params[:id]).order("record_time desc").first(7)
+		a=WellAlarm.select(:well_id, :record_time, :alarm_type_id).where("well_id = ? and record_time > ?",params[:id],Time.now.beginning_of_day-7.day).order("record_time desc").all
 		b = Array.new
 		a.each do |i|
 	  		b.push(AlarmType.get_alarm_type_string_by_id(i.alarm_type_id))
