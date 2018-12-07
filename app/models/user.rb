@@ -36,7 +36,7 @@ class User < ApplicationRecord
   end
 
   def as_json(options = {})
-    h = super(options)  
+    h = super(options)
     h[:checked_id] = auth_groups.map(&:id)
     h
   end

@@ -79,7 +79,6 @@ Rails.application.routes.draw do
       get '/get_summaries_scores' => 'summary_evaluation#get_summaries_scores'
       get '/save_evaluation' => 'summary_evaluation#save_evaluation'
 
-
       # Costdata actions
 
       # Order actions
@@ -186,8 +185,9 @@ Rails.application.routes.draw do
 
       # wellbase actions
       get '/wellList' =>'well_bases#get_wellList'
-      # get '/wellListSelect' => 'well_bases#get_wellListSelect'
+      get '/well_list_select' => 'well_bases#get_well_list_select'
       get '/well_list' => 'well_bases#get_vux_well_list'
+      get '/well_names'=> 'well_bases#get_well_names'
 
       #wellalarm actions
       get '/alarm_list' => 'well_alarm#get_alarm_list'
@@ -198,6 +198,14 @@ Rails.application.routes.draw do
       #region_well_base actions
       get '/region_wellBases' =>'region_wells#get_region_welllist'
       post '/region_wellBases' =>'region_wells#post_region_welllist'
+
+      #sensor_types actions
+      get '/sensor_type_list' => 'sensor_types#get_sensor_typelist'
+
+      #well_types actions
+      get '/well_type_list' => 'well_types#get_well_typelist'
+
+      #start
     end
   end
 
