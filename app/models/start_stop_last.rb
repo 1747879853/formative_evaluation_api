@@ -23,4 +23,5 @@ class StartStopLast < ApplicationRecord
   #   end
   #   return flag
   # end
+
 end
