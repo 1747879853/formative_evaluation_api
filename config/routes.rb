@@ -185,11 +185,9 @@ Rails.application.routes.draw do
 
       # wellbase actions
       get '/wellList' =>'well_bases#get_wellList'
-<<<<<<< HEAD
       get '/well_list_select' => 'well_bases#get_well_list_select'
       get '/well_list' => 'well_bases#get_vux_well_list'
       get '/well_names'=> 'well_bases#get_well_names'
-=======
       # get '/wellListSelect' => 'well_bases#get_wellListSelect'
       get '/well_list' => 'well_bases#get_vux_well_list'      
       get '/daily_well' => 'well_bases#get_vux_daily_well'      
@@ -197,7 +195,6 @@ Rails.application.routes.draw do
       # output actions
       get '/yesterday_output' => 'output#get_vux_yesterday_output'
       get '/output_list' => 'output#get_vux_output_list'
->>>>>>> 86d61b717234a02dc290ecafea8495138ec62d60
 
       #wellalarm actions
       get '/alarm_list' => 'well_alarm#get_alarm_list'
