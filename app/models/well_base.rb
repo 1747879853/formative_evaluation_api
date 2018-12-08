@@ -355,4 +355,5 @@ class WellBase < ActiveRecord::Base
   def well_bases
     [self]
   end
+
 end
