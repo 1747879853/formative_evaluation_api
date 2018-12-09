@@ -310,7 +310,8 @@ class WellBase < ActiveRecord::Base
   # region well
   has_many :region_wells,foreign_key: "well_id",primary_key: "well_id",:dependent => :destroy
   has_many :regions, through: :region_wells
-  
+
+
  #.limit return a array of objects
   def latest_graph n
   	self.well_w_graph.order('record_time desc').limit n
@@ -355,5 +356,4 @@ class WellBase < ActiveRecord::Base
   def well_bases
     [self]
   end
-
 end

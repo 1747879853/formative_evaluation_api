@@ -122,37 +122,74 @@ class Api::V1::WellBasesController < Api::V1::BaseController
 		case params["case_station"]
 		when "2" # 油井类型排序
 			if params["descOrasc"] == "asc"
-				wellbases = WellBase.select(:well_id,:well_name).where("well_id in (?)",wellbase_ids).order(:well_type_id).limit(params["page_size"]).offset(((params["current_page"]).to_i-1)*(params["page_size"]).to_i).as_json
+				well_ids = WellBase.select(:well_id,:well_name).where("well_id in (?)",wellbase_ids).order(:well_type_id).map{|p| p.well_id}
 			else
-				wellbases = WellBase.select(:well_id,:well_name).where("well_id in (?)",wellbase_ids).order(well_type_id: :desc).limit(params["page_size"]).offset(((params["current_page"]).to_i-1)*(params["page_size"]).to_i).as_json
+				well_ids = WellBase.select(:well_id,:well_name).where("well_id in (?)",wellbase_ids).order(well_type_id: :desc).map{|p| p.well_id}
 			end
+			wellbase_id_list = well_ids[((params["current_page"]).to_i-1)*(params["page_size"]).to_i,((params["current_page"]).to_i-1)*(params["page_size"]).to_i+(params["page_size"].to_i)]
 		when "3" # 产液量排序 最新产液量：select * from daily_output_lasts ;
-			if params["descOrasc"] == "asc"
-				# wellbases =
-			else
-
+			daily_output_all_ids = DailyOutputLast.all.map{|p| p.well_id}
+			if params["descOrasc"] == "asc" #从小到大
+				# 在头部
+				other_ids = wellbase_ids - daily_output_all_ids
+				wellbases_other_ids = wellbase_ids - other_ids
+				wellbases_other_ids_sorted = DailyOutputLast.where("well_id in (?)",wellbases_other_ids).order(:average_weight).map{|x| x.well_id}
+				well_ids = other_ids+wellbases_other_ids_sorted
+				# wellbases = WellBase.select(:well_id,:well_name).where("well_id in (?)",well_ids).limit(params["page_size"]).offset(((params["current_page"]).to_i-1)*(params["page_size"]).to_i).as_json
+				# wellbase_id_list = well_ids[((params["current_page"]).to_i-1)*(params["page_size"]).to_i,((params["current_page"]).to_i-1)*(params["page_size"]).to_i+(params["page_size"].to_i)]
+			else #从大到小
+				# 在尾部
+				other_ids = wellbase_ids - daily_output_all_ids
+				wellbases_other_ids = wellbase_ids - other_ids
+				wellbases_other_ids_sorted = DailyOutputLast.where("well_id in (?)",wellbases_other_ids).order(average_weight: :desc).map{|x| x.well_id}
+				well_ids = wellbases_other_ids_sorted+other_ids
+				# wellbases = WellBase.select(:well_id,:well_name).where("well_id in (?)",well_ids).limit(params["page_size"]).offset(((params["current_page"]).to_i-1)*(params["page_size"]).to_i).as_json
 			end
+			wellbase_id_list = well_ids[((params["current_page"]).to_i-1)*(params["page_size"]).to_i,((params["current_page"]).to_i-1)*(params["page_size"]).to_i+(params["page_size"].to_i)]
 		else # 开停机状态排序    开停机状态：select * from start_stop_lasts order by record_time desc;
-			if params["descOrasc"] == "asc"
-
-			else
-
+			start_stop_last_all_ids = StartStopLast.all.map{|p| p.well_id}
+			if params["descOrasc"] == "desc" #从大到小
+				# 在头部
+				other_ids = wellbase_ids - start_stop_last_all_ids
+				wellbases_other_ids = wellbase_ids - other_ids
+				wellbases_other_ids_sorted = StartStopLast.where("well_id in (?)",wellbases_other_ids).order("work_type_id desc,record_time asc").map{|x| x.well_id}
+				well_ids = other_ids+wellbases_other_ids_sorted
+				# wellbases = WellBase.select(:well_id,:well_name).where("well_id in (?)",well_ids).limit(params["page_size"]).offset(((params["current_page"]).to_i-1)*(params["page_size"]).to_i).as_json
+			else #从小到大
+				# 在尾部
+				other_ids = wellbase_ids - start_stop_last_all_ids
+				wellbases_other_ids = wellbase_ids - other_ids
+				wellbases_other_ids_sorted = StartStopLast.where("well_id in (?)",wellbases_other_ids).order("work_type_id asc,record_time asc").map{|x| x.well_id}
+				well_ids = wellbases_other_ids_sorted+other_ids
+				# wellbases = WellBase.select(:well_id,:well_name).where("well_id in (?)",well_ids).limit(params["page_size"]).offset(((params["current_page"]).to_i-1)*(params["page_size"]).to_i).as_json
 			end
+			wellbase_id_list = well_ids[((params["current_page"]).to_i-1)*(params["page_size"]).to_i,((params["current_page"]).to_i-1)*(params["page_size"]).to_i+(params["page_size"].to_i)]
 		end
+		wellbases = []
 
-		wellbases.each do |i|
+		wellbase_id_list.each do |i|
+			h = {}
+			h["well_id"] = i
+			h["well_name"] = i
 			# 传感器类型
-			foo = ActiveRecord::Base.connection.execute("select string_agg(foo.name,',') from (select well_sensor_relations.well_id,well_sensor_relations.sensor_type_id,sensor_types.name from well_sensor_relations left join sensor_types on sensor_types.id = well_sensor_relations.sensor_type_id where well_sensor_relations.well_id = '"+i["well_id"]+"') as foo")
-			i["sensor"] = foo[0]["string_agg"]
+			foo = ActiveRecord::Base.connection.execute("select string_agg(foo.name,',') from (select well_sensor_relations.well_id,well_sensor_relations.sensor_type_id,sensor_types.name from well_sensor_relations left join sensor_types on sensor_types.id = well_sensor_relations.sensor_type_id where well_sensor_relations.well_id = '"+i+"') as foo")
+			h["sensor"] = foo[0]["string_agg"]
 			# 开停机状态
-			startStopLast = StartStopLast.where(well_id: i["well_id"]).as_json
+			startStopLast = StartStopLast.where(well_id: i).as_json
 			if startStopLast.length>0
-				i["isStart"] = startStopLast[0][:status]
+				h["isStart"] = startStopLast[0][:status]
 			else
-				i["isStart"] = -2
+				h["isStart"] = -2
 			end
 
 		  # 产液量
+			s = DailyOutputLast.where(well_id: i).as_json
+			if s.length == 1
+				h["flulidProduction"]=s[0][:daily_output_avg].to_f
+			else
+				h["flulidProduction"]=0
+			end
+			wellbases.append(h)
 		end
 		render json: {"wells":wellbases,"length":wellbases_length}
 	end
