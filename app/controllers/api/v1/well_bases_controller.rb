@@ -126,7 +126,7 @@ class Api::V1::WellBasesController < Api::V1::BaseController
 			else
 				well_ids = WellBase.select(:well_id,:well_name).where("well_id in (?)",wellbase_ids).order(well_type_id: :desc).map{|p| p.well_id}
 			end
-			wellbase_id_list = well_ids[((params["current_page"]).to_i-1)*(params["page_size"]).to_i,((params["current_page"]).to_i-1)*(params["page_size"]).to_i+(params["page_size"].to_i)]
+			wellbase_id_list = well_ids[((params["current_page"]).to_i-1)*(params["page_size"]).to_i,params["page_size"].to_i]
 		when "3" # 产液量排序 最新产液量：select * from daily_output_lasts ;
 			daily_output_all_ids = DailyOutputLast.all.map{|p| p.well_id}
 			if params["descOrasc"] == "asc" #从小到大
@@ -145,7 +145,7 @@ class Api::V1::WellBasesController < Api::V1::BaseController
 				well_ids = wellbases_other_ids_sorted+other_ids
 				# wellbases = WellBase.select(:well_id,:well_name).where("well_id in (?)",well_ids).limit(params["page_size"]).offset(((params["current_page"]).to_i-1)*(params["page_size"]).to_i).as_json
 			end
-			wellbase_id_list = well_ids[((params["current_page"]).to_i-1)*(params["page_size"]).to_i,((params["current_page"]).to_i-1)*(params["page_size"]).to_i+(params["page_size"].to_i)]
+			wellbase_id_list = well_ids[((params["current_page"]).to_i-1)*(params["page_size"]).to_i,params["page_size"].to_i]
 		else # 开停机状态排序    开停机状态：select * from start_stop_lasts order by record_time desc;
 			start_stop_last_all_ids = StartStopLast.all.map{|p| p.well_id}
 			if params["descOrasc"] == "desc" #从大到小
@@ -163,7 +163,7 @@ class Api::V1::WellBasesController < Api::V1::BaseController
 				well_ids = wellbases_other_ids_sorted+other_ids
 				# wellbases = WellBase.select(:well_id,:well_name).where("well_id in (?)",well_ids).limit(params["page_size"]).offset(((params["current_page"]).to_i-1)*(params["page_size"]).to_i).as_json
 			end
-			wellbase_id_list = well_ids[((params["current_page"]).to_i-1)*(params["page_size"]).to_i,((params["current_page"]).to_i-1)*(params["page_size"]).to_i+(params["page_size"].to_i)]
+			wellbase_id_list = well_ids[((params["current_page"]).to_i-1)*(params["page_size"]).to_i,params["page_size"].to_i]
 		end
 		wellbases = []
 
