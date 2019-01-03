@@ -68,12 +68,12 @@ class Api::V1::WellBasesController < Api::V1::BaseController
 		if params["is_sensor_type_box"] == "true" or params["is_sensor_type_box"] == "false"
 			if params["is_sensor_type_box"] == "true"
 				# 这个条件是或还是且？且
-				id_sensor_type = WellSensorRelation.select("distinct well_id").map{|p| p.well_id}
+				id_sensor_type = WellDataRelation.select("distinct well_id").map{|p| p.well_id}
 				params["sensor_types"].each do |x|
-				  id_sensor_type = id_sensor_type&WellSensorRelation.select("distinct well_id").where(sensor_type_id: x).map{|p| p.well_id}
+				  id_sensor_type = id_sensor_type&WellDataRelation.select("distinct well_id").where(data_type: x).map{|p| p.well_id}
 				end
 			elsif params["is_sensor_type_box"] == "false"
-				id_sensor_type = WellSensorRelation.where(sensor_type_id: params["sensor_types"]).map{|p| p.well_id}
+				id_sensor_type = WellDataRelation.where(data_type: params["sensor_types"]).map{|p| p.well_id}
 			end
 			if id_status.nil?
 				id_status = id_sensor_type
@@ -172,7 +172,7 @@ class Api::V1::WellBasesController < Api::V1::BaseController
 			h["well_id"] = i
 			h["well_name"] = i
 			# 传感器类型
-			foo = ActiveRecord::Base.connection.execute("select string_agg(foo.name,',') from (select well_sensor_relations.well_id,well_sensor_relations.sensor_type_id,sensor_types.name from well_sensor_relations left join sensor_types on sensor_types.id = well_sensor_relations.sensor_type_id where well_sensor_relations.well_id = '"+i+"') as foo")
+			foo = ActiveRecord::Base.connection.execute("select string_agg(foo.name,',') from (select well_data_relations.well_id,well_data_relations.data_type,data_types.name from well_data_relations left join data_types on data_types.id = well_data_relations.data_type where well_data_relations.well_id = '"+i+"') as foo")
 			h["sensor"] = foo[0]["string_agg"]
 			# 开停机状态
 			startStopLast = StartStopLast.where(well_id: i).as_json
@@ -200,7 +200,14 @@ class Api::V1::WellBasesController < Api::V1::BaseController
     # }
     # render json: h
     render json: WellBase.select("well_id,well_name").all
-  end
+	end
+
+	def get_sensor_well_region_list
+		# datatype = DataType.order(:id).all
+		# welltype = WellType.all
+		# region = Region.where(parent_id: 0).all
+		render json: {'datatypes': DataType.order(:id).all,'welltypes'=> WellType.all, 'regions'=> Region.where(parent_id: 0).all}
+	end
 
 	def get_vux_well_list
 		render json: WellBase.select(:well_id, :well_name).where(show_status: 1).all

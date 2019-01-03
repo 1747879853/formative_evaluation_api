@@ -208,11 +208,12 @@ Rails.application.routes.draw do
       post '/region_wellBases' =>'region_wells#post_region_welllist'
 
       #sensor_types actions
-      get '/sensor_type_list' => 'sensor_types#get_sensor_typelist'
+      get '/sensor_type_list' => 'data_types#get_sensor_typelist'
 
       #well_types actions
       get '/well_type_list' => 'well_types#get_well_typelist'
 
+      get '/sensor_well_region_list' => 'well_bases#get_sensor_well_region_list'
       #start
     end
   end
