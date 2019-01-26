@@ -6,9 +6,9 @@
 # server "example.com", user: "deploy", roles: %w{app db web}, my_property: :my_value
 # server "example.com", user: "deploy", roles: %w{app web}, other_property: :other_value
 # server "db.example.com", user: "deploy", roles: %w{db}
-server '114.118.17.4', user: 'passenger', roles: %w{web app db}, my_property: :my_value
+server '47.100.174.14', user: 'root', roles: %w{web app db}, my_property: :my_value
 
-set :deploy_to, "/var/www/oil_well_monitoring_system_api"
+set :deploy_to, "/var/www/formative_evaluation_api"
 
 # role-based syntax
 # ==================

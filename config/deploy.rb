@@ -1,8 +1,8 @@
 # config valid for current version and patch releases of Capistrano
 lock "~> 3.11.0"
 
-set :application, "oil_well_monitoring_system_api"
-set :repo_url, 'ssh://passenger@127.0.0.1/home/passenger/oil_well_monitoring_system_api.git'
+set :application, "formative_evaluation_api"
+set :repo_url, 'ssh://root@127.0.0.1/root/formative_evaluation_api.git'
 
 # Default branch is :master
 ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
@@ -41,7 +41,8 @@ append :linked_dirs, "public/_attachment", "lib/approvalmodel"
 
 # rvm setting
 set :rvm_ruby_version, '2.3.1'
-
+set :rvm_type, :user
+set :rvm_custom_path, '/usr/share/rvm'
 set :passenger_restart_with_touch, true
 
 namespace :deploy do

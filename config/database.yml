@@ -23,13 +23,14 @@ default: &default
 
 development:
   <<: *default
-  # database: app_development
-  # host: db
-  # username: postgres
-  database: sdwtpmscalcdb
-  username: sdwelltek
-  password: sdqufu0537***+-
-  host: 101.200.196.105
+  database: formative_evaluation
+  host: db
+  username: huangll
+  password: hll123456
+  # database: formative_evaluation
+  # username: sdwelltek
+  # password: sdqufu0537***+-
+  # host: 101.200.196.105
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -88,9 +89,9 @@ test:
 #
 production:
   <<: *default
-  database: sdwtpmscalcdb
-  username: sdwelltek
-  password: sdqufu0537***+-
-  host: 101.200.196.105
+  database: formative_evaluation
+  username: huangll
+  password: hll123456
+  host: 127.0.0.1
   # pool: 100
   # password: dongying0546***+-
