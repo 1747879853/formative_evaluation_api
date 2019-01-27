@@ -10,6 +10,7 @@
 # supermessi.password = 'da42busay,'
 # supermessi.save!
 
+User.delete_all
 dev = User.find_or_create_by({username: 'dev', email: 'dev@welltek.com'})
 dev.password = 'password'
 dev.save!
@@ -58,6 +59,9 @@ AuthRule.delete_all
 rule10 = AuthRule.find_or_create_by({ name: 'Admin/index', title: '后台首页'})
 rule10.save!
 
+
+rule20 = AuthRule.find_or_create_by({ name: 'input_class_grade/index', title: '课堂成绩录入'})
+rule20.save!
 # rule20 = AuthRule.find_or_create_by({ name: 'roduction-manag/index', title: '生产管理'})
 # rule20.save!
 # rule21 = AuthRule.find_or_create_by({ name: 'production-manage/order-manage', title: '订单'})
@@ -73,6 +77,9 @@ rule10.save!
 # rule24.parent = rule20
 # rule24.save!
 
+
+rule30 = AuthRule.find_or_create_by({ name: 'student_grade/index', title: '学生成绩查看'})
+rule30.save!
 # rule30 = AuthRule.find_or_create_by({ name: 'approval/index', title: '审批管理'})
 # rule30.save!
 
@@ -103,20 +110,44 @@ rule54.save!
 # rule62.parent = rule60
 # rule62.save!
 
-# rule70 = AuthRule.find_or_create_by({ name: 'users-manage/index', title: '用户管理'})
-# rule70.save!
-# rule71 = AuthRule.find_or_create_by({ name: 'users-manage/user', title: '用户'})
-# rule71.parent = rule70
-# rule71.save!
-# rule72 = AuthRule.find_or_create_by({ name: 'users-manage/organization', title: '组织管理'})
-# rule72.parent = rule70
-# rule72.save!
-# rule73 = AuthRule.find_or_create_by({ name: 'users-manage/workshop-maintenance', title: '车间维护'})
-# rule73.parent = rule70
-# rule73.save!
-# rule74 = AuthRule.find_or_create_by({ name: 'users-manage/workteam-maintenance', title: '班组维护'})
-# rule74.parent = rule70
-# rule74.save!
+rule60 = AuthRule.find_or_create_by({ name: 'resource-manage/index', title: '教学资源管理'})
+rule60.save!
+rule61 = AuthRule.find_or_create_by({ name: 'resource-manage/class', title: '班级管理'})
+rule61.parent = rule60
+rule61.save!
+rule62 = AuthRule.find_or_create_by({ name: 'resource-manage/class-student', title: '班级-学生管理'})
+rule62.parent = rule60
+rule62.save!
+rule63 = AuthRule.find_or_create_by({ name: 'resource-manage/course', title: '课程管理'})
+rule63.parent = rule60
+rule63.save!
+rule64 = AuthRule.find_or_create_by({ name: 'resource-manage/evaluation', title: '评价指标管理'})
+rule64.parent = rule60
+rule64.save!
+rule65 = AuthRule.find_or_create_by({ name: 'resource-manage/class-course', title: '班级课程分配'})
+rule65.parent = rule60
+rule65.save!
+rule66 = AuthRule.find_or_create_by({ name: 'resource-manage/course-evaluation', title: '课程评价指标分配'})
+rule66.parent = rule60
+rule66.save!
+rule67 = AuthRule.find_or_create_by({ name: 'resource-manage/teacher-course', title: '教师课程分配'})
+rule67.parent = rule60
+rule67.save!
+rule68 = AuthRule.find_or_create_by({ name: 'resource-manage/teacher-class-course', title: '教师班级课程管理'})
+rule68.parent = rule60
+rule68.save!
+
+rule70 = AuthRule.find_or_create_by({ name: 'users-manage/index', title: '用户管理'})
+rule70.save!
+rule71 = AuthRule.find_or_create_by({ name: 'users-manage/teacher', title: '教师信息管理'})
+rule71.parent = rule70
+rule71.save!
+rule72 = AuthRule.find_or_create_by({ name: 'users-manage/student', title: '学生信息管理'})
+rule72.parent = rule70
+rule72.save!
+rule73 = AuthRule.find_or_create_by({ name: 'users-manage/organization', title: '组织管理'})
+rule73.parent = rule70
+rule73.save!
 
 # rule80 = AuthRule.find_or_create_by({ name: 'employee-information/index', title: '员工信息'})
 # rule80.save!
@@ -130,6 +161,7 @@ rule54.save!
 # rule91.parent = rule90
 # rule91.save!
 
+AuthGroup.delete_all
 group1 = AuthGroup.find_or_create_by({title: '超级管理员'})
 group1.save!
 # group2 = AuthGroup.find_or_create_by({title: '总经理'})
@@ -148,17 +180,29 @@ group6.save!
 
 group1.auth_rules.destroy_all
 group1.auth_rules.push rule10
+group1.auth_rules.push rule20
+group1.auth_rules.push rule30
 # group1.auth_rules.push rule30
 # group1.auth_rules.push rule40
-# group1.auth_rules.push rule50
+group1.auth_rules.push rule50
 group1.auth_rules.push rule51
 group1.auth_rules.push rule52
 group1.auth_rules.push rule53
+
+group1.auth_rules.push rule60
+group1.auth_rules.push rule61
+group1.auth_rules.push rule62
+group1.auth_rules.push rule63
+group1.auth_rules.push rule64
+group1.auth_rules.push rule65
+group1.auth_rules.push rule66
+group1.auth_rules.push rule67
+group1.auth_rules.push rule68
 # group1.auth_rules.push rule61
-# group1.auth_rules.push rule70
-# group1.auth_rules.push rule71
-# group1.auth_rules.push rule72
-# group1.auth_rules.push rule73
+group1.auth_rules.push rule70
+group1.auth_rules.push rule71
+group1.auth_rules.push rule72
+group1.auth_rules.push rule73
 # group1.auth_rules.push rule74
 
 # group2.auth_rules.destroy_all
@@ -186,25 +230,32 @@ group1.auth_rules.push rule53
 
 group6.auth_rules.destroy_all
 group6.auth_rules.push rule10
-# group6.auth_rules.push rule20
+group6.auth_rules.push rule20
 # group6.auth_rules.push rule21
 # group6.auth_rules.push rule22
 # group6.auth_rules.push rule23
 # group6.auth_rules.push rule24
-# group6.auth_rules.push rule30
+group6.auth_rules.push rule30
 # group6.auth_rules.push rule40
 group6.auth_rules.push rule50
 group6.auth_rules.push rule51
 group6.auth_rules.push rule52
 group6.auth_rules.push rule53
 group6.auth_rules.push rule54
-# group6.auth_rules.push rule60
-# group6.auth_rules.push rule61
-# group6.auth_rules.push rule62
-# group6.auth_rules.push rule70
-# group6.auth_rules.push rule71
-# group6.auth_rules.push rule72
-# group6.auth_rules.push rule73
+
+group6.auth_rules.push rule60
+group6.auth_rules.push rule61
+group6.auth_rules.push rule62
+group6.auth_rules.push rule63
+group6.auth_rules.push rule64
+group6.auth_rules.push rule65
+group6.auth_rules.push rule66
+group6.auth_rules.push rule67
+group6.auth_rules.push rule68
+group6.auth_rules.push rule70
+group6.auth_rules.push rule71
+group6.auth_rules.push rule72
+group6.auth_rules.push rule73
 # group6.auth_rules.push rule74
 # group6.auth_rules.push rule80
 # group6.auth_rules.push rule81
@@ -242,8 +293,8 @@ group6.auth_rules.push rule54
 # checking_user1.auth_groups.destroy_all
 # checking_user1.auth_groups.push group7
 
-# dev.auth_groups.destroy_all
-# dev.auth_groups.push group6
+dev.auth_groups.destroy_all
+dev.auth_groups.push group6
 
 # order = Order.find_or_create_by(id: 1)
 # order.no = '1271115636988060'
