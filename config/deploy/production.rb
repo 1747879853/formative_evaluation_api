@@ -6,7 +6,7 @@
 # server "example.com", user: "deploy", roles: %w{app db web}, my_property: :my_value
 # server "example.com", user: "deploy", roles: %w{app web}, other_property: :other_value
 # server "db.example.com", user: "deploy", roles: %w{db}
-server '47.100.174.14', user: 'root', roles: %w{web app db}, my_property: :my_value
+server '47.100.174.14', user: 'passenger', roles: %w{web app db}, my_property: :my_value
 
 set :deploy_to, "/var/www/formative_evaluation_api"
 

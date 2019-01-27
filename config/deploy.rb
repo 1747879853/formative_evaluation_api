@@ -2,7 +2,7 @@
 lock "~> 3.11.0"
 
 set :application, "formative_evaluation_api"
-set :repo_url, 'ssh://root@127.0.0.1/root/formative_evaluation_api.git'
+set :repo_url, 'ssh://passenger@127.0.0.1/home/passenger/formative_evaluation_api.git'
 
 # Default branch is :master
 ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
