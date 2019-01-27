@@ -10,9 +10,9 @@
 # supermessi.password = 'da42busay,'
 # supermessi.save!
 
-# dev = User.find_or_create_by({username: 'dev', email: 'dev@welltek.com'})
-# dev.password = 'password'
-# dev.save!
+dev = User.find_or_create_by({username: 'dev', email: 'dev@welltek.com'})
+dev.password = 'password'
+dev.save!
 
 # workshop_user1 = User.find_or_create_by({username: 'xialiaozhuren1',email: 'xialiaozhuren1'})
 # workshop_user1.password = 'password'
@@ -58,26 +58,26 @@ AuthRule.delete_all
 rule10 = AuthRule.find_or_create_by({ name: 'Admin/index', title: '后台首页'})
 rule10.save!
 
-rule20 = AuthRule.find_or_create_by({ name: 'roduction-manag/index', title: '生产管理'})
-rule20.save!
-rule21 = AuthRule.find_or_create_by({ name: 'production-manage/order-manage', title: '订单'})
-rule21.parent = rule20
-rule21.save!
-rule22 = AuthRule.find_or_create_by({ name: 'production-manage/order-workshop', title: '车间'})
-rule22.parent = rule20
-rule22.save!
-rule23 = AuthRule.find_or_create_by({ name: 'production-manage/order-team', title: '班组'})
-rule23.parent = rule20
-rule23.save!
-rule24 = AuthRule.find_or_create_by({ name: 'production-manage/quality-checking', title: '质检'})
-rule24.parent = rule20
-rule24.save!
+# rule20 = AuthRule.find_or_create_by({ name: 'roduction-manag/index', title: '生产管理'})
+# rule20.save!
+# rule21 = AuthRule.find_or_create_by({ name: 'production-manage/order-manage', title: '订单'})
+# rule21.parent = rule20
+# rule21.save!
+# rule22 = AuthRule.find_or_create_by({ name: 'production-manage/order-workshop', title: '车间'})
+# rule22.parent = rule20
+# rule22.save!
+# rule23 = AuthRule.find_or_create_by({ name: 'production-manage/order-team', title: '班组'})
+# rule23.parent = rule20
+# rule23.save!
+# rule24 = AuthRule.find_or_create_by({ name: 'production-manage/quality-checking', title: '质检'})
+# rule24.parent = rule20
+# rule24.save!
 
-rule30 = AuthRule.find_or_create_by({ name: 'approval/index', title: '审批管理'})
-rule30.save!
+# rule30 = AuthRule.find_or_create_by({ name: 'approval/index', title: '审批管理'})
+# rule30.save!
 
-rule40 = AuthRule.find_or_create_by({ name: 'my-approval/index', title: '审批'})
-rule40.save!
+# rule40 = AuthRule.find_or_create_by({ name: 'my-approval/index', title: '审批'})
+# rule40.save!
 
 rule50 = AuthRule.find_or_create_by({ name: 'system-manage/index', title: '系统管理'})
 rule50.save!
@@ -94,125 +94,126 @@ rule54 = AuthRule.find_or_create_by({ name: 'system-manage/menu-manage', title: 
 rule54.parent = rule50
 rule54.save!
 
-rule60 = AuthRule.find_or_create_by({ name: 'daily-summary/index', title: '日清总结'})
-rule60.save!
-rule61 = AuthRule.find_or_create_by({ name: 'daily-summary/cost', title: '花费科目'})
-rule61.parent = rule60
-rule61.save!
-rule62 = AuthRule.find_or_create_by({ name: 'daily-summary/daily-work', title: '工作日报'})
-rule62.parent = rule60
-rule62.save!
+# rule60 = AuthRule.find_or_create_by({ name: 'daily-summary/index', title: '日清总结'})
+# rule60.save!
+# rule61 = AuthRule.find_or_create_by({ name: 'daily-summary/cost', title: '花费科目'})
+# rule61.parent = rule60
+# rule61.save!
+# rule62 = AuthRule.find_or_create_by({ name: 'daily-summary/daily-work', title: '工作日报'})
+# rule62.parent = rule60
+# rule62.save!
 
-rule70 = AuthRule.find_or_create_by({ name: 'users-manage/index', title: '用户管理'})
-rule70.save!
-rule71 = AuthRule.find_or_create_by({ name: 'users-manage/user', title: '用户'})
-rule71.parent = rule70
-rule71.save!
-rule72 = AuthRule.find_or_create_by({ name: 'users-manage/organization', title: '组织管理'})
-rule72.parent = rule70
-rule72.save!
-rule73 = AuthRule.find_or_create_by({ name: 'users-manage/workshop-maintenance', title: '车间维护'})
-rule73.parent = rule70
-rule73.save!
-rule74 = AuthRule.find_or_create_by({ name: 'users-manage/workteam-maintenance', title: '班组维护'})
-rule74.parent = rule70
-rule74.save!
+# rule70 = AuthRule.find_or_create_by({ name: 'users-manage/index', title: '用户管理'})
+# rule70.save!
+# rule71 = AuthRule.find_or_create_by({ name: 'users-manage/user', title: '用户'})
+# rule71.parent = rule70
+# rule71.save!
+# rule72 = AuthRule.find_or_create_by({ name: 'users-manage/organization', title: '组织管理'})
+# rule72.parent = rule70
+# rule72.save!
+# rule73 = AuthRule.find_or_create_by({ name: 'users-manage/workshop-maintenance', title: '车间维护'})
+# rule73.parent = rule70
+# rule73.save!
+# rule74 = AuthRule.find_or_create_by({ name: 'users-manage/workteam-maintenance', title: '班组维护'})
+# rule74.parent = rule70
+# rule74.save!
 
-rule80 = AuthRule.find_or_create_by({ name: 'employee-information/index', title: '员工信息'})
-rule80.save!
-rule81 = AuthRule.find_or_create_by({ name: 'employee-information/attendance-record', title: '考勤记录'})
-rule81.parent = rule80
-rule81.save!
+# rule80 = AuthRule.find_or_create_by({ name: 'employee-information/index', title: '员工信息'})
+# rule80.save!
+# rule81 = AuthRule.find_or_create_by({ name: 'employee-information/attendance-record', title: '考勤记录'})
+# rule81.parent = rule80
+# rule81.save!
 
-rule90 = AuthRule.find_or_create_by({ name: 'vehicle-manage/index', title: '车辆管理'})
-rule90.save!
-rule91 = AuthRule.find_or_create_by({ name: 'vehicle-manage/vehicle-comeandgo-identify', title: '车辆进出识别'})
-rule91.parent = rule90
-rule91.save!
+# rule90 = AuthRule.find_or_create_by({ name: 'vehicle-manage/index', title: '车辆管理'})
+# rule90.save!
+# rule91 = AuthRule.find_or_create_by({ name: 'vehicle-manage/vehicle-comeandgo-identify', title: '车辆进出识别'})
+# rule91.parent = rule90
+# rule91.save!
 
 group1 = AuthGroup.find_or_create_by({title: '超级管理员'})
 group1.save!
-group2 = AuthGroup.find_or_create_by({title: '总经理'})
-group2.save!
-group3 = AuthGroup.find_or_create_by({title: '生产经理'})
-group3.save!
-group4 = AuthGroup.find_or_create_by({title: '车间主任'})
-group4.save!
-group5 = AuthGroup.find_or_create_by({title: '班组长'})
-group5.save!
+# group2 = AuthGroup.find_or_create_by({title: '总经理'})
+# group2.save!
+# group3 = AuthGroup.find_or_create_by({title: '生产经理'})
+# group3.save!
+# group4 = AuthGroup.find_or_create_by({title: '车间主任'})
+# group4.save!
+# group5 = AuthGroup.find_or_create_by({title: '班组长'})
+# group5.save!
 
 group6 = AuthGroup.find_or_create_by({title: '开发者'})
 group6.save!
-group7 = AuthGroup.find_or_create_by({title: '质检员'})
-group7.save!
+# group7 = AuthGroup.find_or_create_by({title: '质检员'})
+# group7.save!
 
 group1.auth_rules.destroy_all
 group1.auth_rules.push rule10
-group1.auth_rules.push rule30
-group1.auth_rules.push rule40
+# group1.auth_rules.push rule30
+# group1.auth_rules.push rule40
 # group1.auth_rules.push rule50
 group1.auth_rules.push rule51
 group1.auth_rules.push rule52
 group1.auth_rules.push rule53
-group1.auth_rules.push rule61
+# group1.auth_rules.push rule61
 # group1.auth_rules.push rule70
-group1.auth_rules.push rule71
-group1.auth_rules.push rule72
-group1.auth_rules.push rule73
-group1.auth_rules.push rule74
+# group1.auth_rules.push rule71
+# group1.auth_rules.push rule72
+# group1.auth_rules.push rule73
+# group1.auth_rules.push rule74
 
-group2.auth_rules.destroy_all
-group2.auth_rules.push rule10
+# group2.auth_rules.destroy_all
+# group2.auth_rules.push rule10
 # group2.auth_rules.push rule20
-group2.auth_rules.push rule21
+# group2.auth_rules.push rule21
 # group2.auth_rules.push rule80
-group2.auth_rules.push rule81
+# group2.auth_rules.push rule81
 
-group3.auth_rules.destroy_all
-group3.auth_rules.push rule10
+# group3.auth_rules.destroy_all
+# group3.auth_rules.push rule10
 # group3.auth_rules.push rule20
-group3.auth_rules.push rule21
+# group3.auth_rules.push rule21
 
-group4.auth_rules.destroy_all
-group4.auth_rules.push rule10
+# group4.auth_rules.destroy_all
+# group4.auth_rules.push rule10
 # group4.auth_rules.push rule20
-group4.auth_rules.push rule22
+# group4.auth_rules.push rule22
 
-group5.auth_rules.destroy_all
-group5.auth_rules.push rule10
+# group5.auth_rules.destroy_all
+# group5.auth_rules.push rule10
 # group5.auth_rules.push rule20
-group5.auth_rules.push rule23
+# group5.auth_rules.push rule23
 # group5.auth_rules.push rule24
 
 group6.auth_rules.destroy_all
 group6.auth_rules.push rule10
-group6.auth_rules.push rule20
-group6.auth_rules.push rule21
-group6.auth_rules.push rule22
-group6.auth_rules.push rule23
-group6.auth_rules.push rule24
-group6.auth_rules.push rule30
-group6.auth_rules.push rule40
+# group6.auth_rules.push rule20
+# group6.auth_rules.push rule21
+# group6.auth_rules.push rule22
+# group6.auth_rules.push rule23
+# group6.auth_rules.push rule24
+# group6.auth_rules.push rule30
+# group6.auth_rules.push rule40
 group6.auth_rules.push rule50
 group6.auth_rules.push rule51
 group6.auth_rules.push rule52
 group6.auth_rules.push rule53
-group6.auth_rules.push rule60
-group6.auth_rules.push rule61
-group6.auth_rules.push rule62
-group6.auth_rules.push rule70
-group6.auth_rules.push rule71
-group6.auth_rules.push rule72
-group6.auth_rules.push rule73
-group6.auth_rules.push rule74
-group6.auth_rules.push rule80
-group6.auth_rules.push rule81
-group6.auth_rules.push rule90
-group6.auth_rules.push rule91
+group6.auth_rules.push rule54
+# group6.auth_rules.push rule60
+# group6.auth_rules.push rule61
+# group6.auth_rules.push rule62
+# group6.auth_rules.push rule70
+# group6.auth_rules.push rule71
+# group6.auth_rules.push rule72
+# group6.auth_rules.push rule73
+# group6.auth_rules.push rule74
+# group6.auth_rules.push rule80
+# group6.auth_rules.push rule81
+# group6.auth_rules.push rule90
+# group6.auth_rules.push rule91
 
-group7.auth_rules.destroy_all
-group7.auth_rules.push rule10
-group7.auth_rules.push rule24
+# group7.auth_rules.destroy_all
+# group7.auth_rules.push rule10
+# group7.auth_rules.push rule24
 
 # supermessi.auth_groups.destroy_all
 # supermessi.auth_groups.push group1
