@@ -1,7 +1,6 @@
 class AuthGroup < ApplicationRecord
   has_and_belongs_to_many :auth_rules
   has_and_belongs_to_many :users
-  has_many :job_item_contents
 
   validates_presence_of     :title
   validates_uniqueness_of   :title
