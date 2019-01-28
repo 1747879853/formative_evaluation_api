@@ -11,9 +11,15 @@
 # supermessi.save!
 
 User.delete_all
-dev = User.find_or_create_by({username: 'dev', email: 'dev@welltek.com'})
+dev = User.find_or_create_by({username: 'dev', email: 'dev'})
 dev.password = 'password'
 dev.save!
+student = User.find_or_create_by({username: 'student', email: 'student'})
+student.password = 'password'
+student.save!
+teacher = User.find_or_create_by({username: 'teacher', email: 'teacher'})
+teacher.password = 'password'
+teacher.save!
 
 # workshop_user1 = User.find_or_create_by({username: 'xialiaozhuren1',email: 'xialiaozhuren1'})
 # workshop_user1.password = 'password'
@@ -164,6 +170,10 @@ rule73.save!
 AuthGroup.delete_all
 group1 = AuthGroup.find_or_create_by({title: '超级管理员'})
 group1.save!
+group2 = AuthGroup.find_or_create_by({title: '老师'})
+group2.save!
+group3 = AuthGroup.find_or_create_by({title: '学生'})
+group3.save!
 # group2 = AuthGroup.find_or_create_by({title: '总经理'})
 # group2.save!
 # group3 = AuthGroup.find_or_create_by({title: '生产经理'})
@@ -205,6 +215,11 @@ group1.auth_rules.push rule72
 group1.auth_rules.push rule73
 # group1.auth_rules.push rule74
 
+group2.auth_rules.push rule10
+group2.auth_rules.push rule20
+
+group3.auth_rules.push rule10
+group3.auth_rules.push rule30
 # group2.auth_rules.destroy_all
 # group2.auth_rules.push rule10
 # group2.auth_rules.push rule20
@@ -296,6 +311,11 @@ group6.auth_rules.push rule73
 dev.auth_groups.destroy_all
 dev.auth_groups.push group6
 
+student.auth_groups.destroy_all
+student.auth_groups.push group3
+
+teacher.auth_groups.destroy_all
+teacher.auth_groups.push group2
 # order = Order.find_or_create_by(id: 1)
 # order.no = '1271115636988060'
 # order.title = 'xxxxxx'
