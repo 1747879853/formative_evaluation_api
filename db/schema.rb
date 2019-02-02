@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_21_075120) do
+ActiveRecord::Schema.define(version: 2019_02_01_120217) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,53 @@ ActiveRecord::Schema.define(version: 2018_07_21_075120) do
     t.index ["name"], name: "index_auth_rules_on_name"
   end
 
+  create_table "class_rooms", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "year", null: false
+    t.string "clno", null: false
+    t.integer "status", default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "courses", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "cno", null: false
+    t.integer "status", default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "evaluations", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "types", null: false
+    t.string "eno", null: false
+    t.integer "status", default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "students", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "email", null: false
+    t.string "sno", null: false
+    t.string "tel", default: "", null: false
+    t.integer "class_room_id", default: 0, null: false
+    t.string "status", default: "1", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "teachers", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "email", null: false
+    t.string "tno", null: false
+    t.string "tel", default: "", null: false
+    t.string "status", default: "1", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "username", null: false
     t.string "email", null: false
@@ -53,6 +100,8 @@ ActiveRecord::Schema.define(version: 2018_07_21_075120) do
     t.datetime "updated_at", null: false
     t.string "tel", default: "", null: false
     t.string "status", default: "1", null: false
+    t.integer "owner_id", default: 0, null: false
+    t.string "owner_type", default: "0", null: false
     t.index ["email"], name: "index_users_on_email"
   end
 
