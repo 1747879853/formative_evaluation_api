@@ -135,9 +135,6 @@ rule71.save!
 rule72 = AuthRule.find_or_create_by({ name: 'users-manage/student', title: '学生信息管理'})
 rule72.parent = rule70
 rule72.save!
-rule73 = AuthRule.find_or_create_by({ name: 'users-manage/organization', title: '组织管理'})
-rule73.parent = rule70
-rule73.save!
 
 AuthGroup.delete_all
 group1 = AuthGroup.find_or_create_by({title: '超级管理员'})
@@ -173,7 +170,6 @@ group1.auth_rules.push rule68
 group1.auth_rules.push rule70
 group1.auth_rules.push rule71
 group1.auth_rules.push rule72
-group1.auth_rules.push rule73
 
 
 group2.auth_rules.push rule10
@@ -207,7 +203,6 @@ group6.auth_rules.push rule68
 group6.auth_rules.push rule70
 group6.auth_rules.push rule71
 group6.auth_rules.push rule72
-group6.auth_rules.push rule73
 
 user4.auth_groups.destroy_all
 user4.auth_groups.push group6

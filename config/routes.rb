@@ -46,6 +46,31 @@ Rails.application.routes.draw do
       post       '/teacherList'    =>  'teachers#post_teacherlist'
       patch      '/teacherList'    =>  'teachers#patch_teacherlist'
       delete     '/teacherList'    =>  'teachers#delete_teacherlist'
+
+      # Student actions
+      get        '/studentList'    =>  'students#get_studentlist'
+      post       '/studentList'    =>  'students#post_studentlist'
+      patch      '/studentList'    =>  'students#patch_studentlist'
+      delete     '/studentList'    =>  'students#delete_studentlist'
+      post       '/manystudent'    =>  'students#post_manystudent'
+
+      # ClassRoom actions
+      get        '/classroomList'    =>  'class_rooms#get_classroomlist'
+      post       '/classroomList'    =>  'class_rooms#post_classroomlist'
+      patch      '/classroomList'    =>  'class_rooms#patch_classroomlist'
+      delete     '/classroomList'    =>  'class_rooms#delete_classroomlist'
+
+      # Course actions
+      get        '/courseList'    =>  'courses#get_courselist'
+      post       '/courseList'    =>  'courses#post_courselist'
+      patch      '/courseList'    =>  'courses#patch_courselist'
+      delete     '/courseList'    =>  'courses#delete_courselist'
+
+      # Evaluation actions
+      get        '/evaluationList'    =>  'evaluations#get_evaluationlist'
+      post       '/evaluationList'    =>  'evaluations#post_evaluationlist'
+      patch      '/evaluationList'    =>  'evaluations#patch_evaluationlist'
+      delete     '/evaluationList'    =>  'evaluations#delete_evaluationlist'
     end
   end
 
