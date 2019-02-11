@@ -1,16 +1,13 @@
 class Course < ApplicationRecord
+  has_and_belongs_to_many :class_rooms
+  has_and_belongs_to_many :evaluations
+  has_and_belongs_to_many :teachers
 
- #  def as_json(options = {})
-	# 	h = {}	
-	# 	h[:id] = self.id
-	# 	h[:title] = self.title
- #    h[:name] = self.title
- #    h[:authority] = self.name
- #    h[:condition] = self.condition
- #    h[:status] = self.status == 1 ? '激活' : '停用'
-	# 	h[:expand] = true
-	# 	h[:checked] = false
-	# 	h[:children] = self.children if self.children
-	# 	h
-	# end
+  def as_json(options = {})
+	h = super(options)	
+	h[:title] = self.name
+	h[:checked] = false
+	h[:checked_id] = evaluations.map(&:id)
+	h
+  end
 end

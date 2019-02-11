@@ -12,6 +12,8 @@ class2 = ClassRoom.find_or_create_by({name: '英语2班',year: '2016',clno: '102
 class2.save!
 class3 = ClassRoom.find_or_create_by({name: '英语3班',year: '2016',clno: '103'})
 class3.save!
+class4 = ClassRoom.find_or_create_by({name: '',year: '',clno: '',status: 0})
+class4.save!
 
 Course.delete_all
 course1 = Course.find_or_create_by({name: '英语1',cno: '01'})
@@ -21,6 +23,15 @@ course2.save!
 course3 = Course.find_or_create_by({name: '英语3',cno: '03'})
 course3.save!
 
+class1.courses.destroy_all
+class1.courses.push course1
+
+class2.courses.destroy_all
+class2.courses.push course2
+
+class3.courses.destroy_all
+class3.courses.push course3
+
 Evaluation.delete_all
 evaluation1 = Evaluation.find_or_create_by({name: '评价指标1',eno: '01',types: 'input'})
 evaluation1.save!
@@ -29,19 +40,39 @@ evaluation2.save!
 evaluation3 = Evaluation.find_or_create_by({name: '评价指标3',eno: '03',types: 'input'})
 evaluation3.save!
 
+course1.evaluations.destroy_all
+course1.evaluations.push evaluation1
+course1.evaluations.push evaluation2
+
+course2.evaluations.destroy_all
+course2.evaluations.push evaluation2
+course2.evaluations.push evaluation3
+
+course3.evaluations.destroy_all
+course3.evaluations.push evaluation1
+course3.evaluations.push evaluation3
+
 Student.delete_all
-hll = Student.find_or_create_by({name: 'hll', email: 'hll',sno: '2016101001',tel: '15066666666'})
+hll = Student.find_or_create_by({name: 'hll', email: 'hll',year: '2016',sno: '2016101001',tel: '15066666666'})
 hll.class_room_id = class1.id
 hll.save!
-cj = Student.find_or_create_by({name: 'cj', email: 'cj',sno: '2016102001',tel: '15066666666'})
+cj = Student.find_or_create_by({name: 'cj', email: 'cj',year: '2016',sno: '2016102001',tel: '15066666666'})
 cj.class_room_id = class2.id
 cj.save!
 
 Teacher.delete_all
-yyk = Teacher.find_or_create_by({name: 'yyk', email: 'yyk',tno: '2016001',tel: '15066666666'})
+yyk = Teacher.find_or_create_by({name: 'yyk', email: 'yyk',year: '2016',tno: '2016001',tel: '15066666666'})
 yyk.save!
-dev = Teacher.find_or_create_by({name: 'dev', email: 'dev',tno: '2016002',tel: '15066666666'})
+dev = Teacher.find_or_create_by({name: 'dev', email: 'dev',year: '2016',tno: '2016002',tel: '15066666666'})
 dev.save!
+
+yyk.courses.destroy_all
+yyk.courses.push course1
+yyk.courses.push course2
+
+dev.courses.destroy_all
+dev.courses.push course2
+dev.courses.push course3
 
 User.delete_all
 user1 = User.new

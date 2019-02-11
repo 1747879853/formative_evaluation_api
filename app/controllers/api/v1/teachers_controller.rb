@@ -56,6 +56,23 @@ class Api::V1::TeachersController < Api::V1::BaseController
   end
 
   def teacher_params
-    params.require(:params).permit(:name, :email, :tel, :status, :tno)
+    params.require(:params).permit(:name, :email, :tel, :year, :status, :tno)
   end
+
+  def get_teachercourselist
+    render json: { 'a': Teacher.select("id,name").where(status: '1').where("name is not null").all, 'b': Course.select("id,name").where(status: '1').where("name is not null").all}
+  end
+
+  def patch_teachercourselist
+    begin
+      teacher = Teacher.find(params.require(:params)[:id])
+      teacher.courses.delete_all
+      a = params.require(:params)[:checked_id]
+      teacher.courses.push Course.where(id: a).all
+      render json: teacher    
+    rescue Exception => e
+      render json: { msg: e }, status: 500
+    end
+  end
+
 end

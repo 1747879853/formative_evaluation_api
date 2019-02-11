@@ -42,4 +42,21 @@ class Api::V1::CoursesController < Api::V1::BaseController
   def course_params
     params.require(:params).permit(:name, :cno, :status)
   end
+
+  def get_courseevallist
+    render json: { 'a': Course.select("id,name").where(status: '1').where("name is not null").all, 'b': Evaluation.select("id,name").where(status: '1').where("name is not null").all}
+  end
+
+  def patch_courseevallist
+    begin
+      course = Course.find(params.require(:params)[:id])
+      course.evaluations.delete_all
+      a = params.require(:params)[:checked_id]
+      course.evaluations.push Evaluation.where(id: a).all
+      render json: course    
+    rescue Exception => e
+      render json: { msg: e }, status: 500
+    end
+  end
+
 end

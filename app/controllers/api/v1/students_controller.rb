@@ -1,7 +1,7 @@
 class Api::V1::StudentsController < Api::V1::BaseController
   
   def get_studentlist
-    render json: {'a': Student.joins(:class_room).select("students.id,students.name,students.email,students.sno,students.tel,students.status,students.class_room_id,class_rooms.name classname").where(status: 1),'b': ClassRoom.select("id,name")}
+    render json: {'a': Student.joins(:class_room).select("students.id,students.name,students.year,students.email,students.sno,students.tel,students.status,students.class_room_id,class_rooms.name classname").where(status: 1),'b': ClassRoom.select("id,name").where(status: 1)}
   end
 
   def post_studentlist
@@ -15,7 +15,7 @@ class Api::V1::StudentsController < Api::V1::BaseController
         user.email = student.email
         user.tel = student.tel
         user.save!
-        render json: Student.joins(:class_room).select("students.id,students.name,students.email,students.sno,students.tel,students.status,students.class_room_id,class_rooms.name classname").where(id: student.id)
+        render json: Student.joins(:class_room).select("students.id,students.name,students.year,students.email,students.sno,students.tel,students.status,students.class_room_id,class_rooms.name classname").where(id: student.id)
       end
     rescue Exception => e
       render json: { msg: e }, status: 500
@@ -33,7 +33,7 @@ class Api::V1::StudentsController < Api::V1::BaseController
         user.email = student.email
         user.tel = student.tel
         user.save!
-        render json: Student.joins(:class_room).select("students.id,students.name,students.email,students.sno,students.tel,students.status,students.class_room_id,class_rooms.name classname").where(id: student.id)
+        render json: Student.joins(:class_room).select("students.id,students.name,students.year,students.email,students.sno,students.tel,students.status,students.class_room_id,class_rooms.name classname").where(id: student.id)
       end
     rescue Exception => e
       render json: { msg: e }, status: 500
@@ -59,7 +59,7 @@ class Api::V1::StudentsController < Api::V1::BaseController
     begin
       studentList = params.require(:params)
       studentList.length.times do |i|
-        student = Student.new(studentList[i].permit(:name, :email, :tel, :status, :sno, :class_room_id))
+        student = Student.new(studentList[i].permit(:name, :email, :tel, :year, :status, :sno, :class_room_id))
         if student.save!
           user = User.new
           user.password='password'
@@ -70,13 +70,45 @@ class Api::V1::StudentsController < Api::V1::BaseController
           user.save!
         end
       end
-      render json: Student.joins(:class_room).select("students.id,students.name,students.email,students.sno,students.tel,students.status,students.class_room_id,class_rooms.name classname").where(status: 1)
+      render json: Student.joins(:class_room).select("students.id,students.name,students.year,students.email,students.sno,students.tel,students.status,students.class_room_id,class_rooms.name classname").where(status: 1)
+    rescue Exception => e
+      render json: { msg: e }, status: 500      
+    end
+  end
+
+  def get_classstu
+    begin
+      render json: Student.select("id,name,year,sno").where(status: 1).where(class_room_id: params.require(:params)[:id])
+    rescue Exception => e
+      render json: { msg: e }, status: 500      
+    end
+  end
+
+  def post_classstu
+    begin
+      student_id = Student.where(sno: params.require(:params)[:stuid]).ids
+      student = Student.find(student_id[0])
+      if student.update(:class_room_id => params.require(:params)[:id])
+        render json: {}
+      end
+    rescue Exception => e
+      render json: { msg: e }, status: 500      
+    end
+  end
+
+  def delete_classstu
+    begin
+      student = Student.find(params.require(:params)[:stuid])
+      class_id = ClassRoom.where(name:"",year:"",clno:"").ids[0]
+      if student.update(:class_room_id => class_id)
+        render json: Student.select("id,name,year,sno").where(status: 1).where(class_room_id: params.require(:params)[:id])
+      end
     rescue Exception => e
       render json: { msg: e }, status: 500      
     end
   end
 
   def student_params
-    params.require(:params).permit(:name, :email, :tel, :status, :sno, :class_room_id)
+    params.require(:params).permit(:name, :email, :tel, :year, :status, :sno, :class_room_id)
   end
 end
