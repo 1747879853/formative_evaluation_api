@@ -4,7 +4,8 @@ class ClassRoom < ApplicationRecord
 
   def as_json(options = {})
 	h = super(options)
-	# h[:checked] = false
+	h[:checked] = false
+	h[:title] = self.name
 	h[:checked_id] = courses.map(&:id)
 	h
   end

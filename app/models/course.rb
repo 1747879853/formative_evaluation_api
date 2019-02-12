@@ -8,6 +8,7 @@ class Course < ApplicationRecord
 	h[:title] = self.name
 	h[:checked] = false
 	h[:checked_id] = evaluations.map(&:id)
+	h[:classname] = ''
 	h
   end
 end

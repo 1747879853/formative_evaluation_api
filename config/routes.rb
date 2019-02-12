@@ -50,6 +50,10 @@ Rails.application.routes.draw do
       get        '/teachercourseList'  =>  'teachers#get_teachercourselist'
       patch      '/teachercourseList'  =>  'teachers#patch_teachercourselist'
 
+      get        '/termList'        =>  'teachers#get_termlist'
+      post       '/tccList'         =>  'teachers#post_tcclist'
+      patch      '/tccList'         =>  'teachers#patch_tcclist'
+
       # Student actions
       get        '/studentList'    =>  'students#get_studentlist'
       post       '/studentList'    =>  'students#post_studentlist'

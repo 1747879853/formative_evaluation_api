@@ -40,6 +40,6 @@ class Api::V1::EvaluationsController < Api::V1::BaseController
   end
 
   def evaluation_params
-    params.require(:params).permit(:name, :eno, :types, :status)
+    params.require(:params).permit(:name, :eno, :types, :status, :description)
   end
 end

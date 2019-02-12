@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_11_035303) do
+ActiveRecord::Schema.define(version: 2019_02_12_090852) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,6 +82,7 @@ ActiveRecord::Schema.define(version: 2019_02_11_035303) do
     t.integer "status", default: 1, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "description", default: ""
   end
 
   create_table "students", force: :cascade do |t|
@@ -105,6 +106,16 @@ ActiveRecord::Schema.define(version: 2019_02_11_035303) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "year", default: "0", null: false
+  end
+
+  create_table "teachers_classes_courses", force: :cascade do |t|
+    t.bigint "teachers_id"
+    t.bigint "class_rooms_id"
+    t.bigint "courses_id"
+    t.string "term", default: "", null: false
+    t.index ["class_rooms_id"], name: "index_teachers_classes_courses_on_class_rooms_id"
+    t.index ["courses_id"], name: "index_teachers_classes_courses_on_courses_id"
+    t.index ["teachers_id"], name: "index_teachers_classes_courses_on_teachers_id"
   end
 
   create_table "users", force: :cascade do |t|

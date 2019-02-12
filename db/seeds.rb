@@ -33,12 +33,14 @@ class3.courses.destroy_all
 class3.courses.push course3
 
 Evaluation.delete_all
-evaluation1 = Evaluation.find_or_create_by({name: '评价指标1',eno: '01',types: 'input'})
+evaluation1 = Evaluation.find_or_create_by({name: '评价指标1',eno: '01',types: 'input',description: 'input some string or number'})
 evaluation1.save!
-evaluation2 = Evaluation.find_or_create_by({name: '评价指标2',eno: '02',types: 'option'})
+evaluation2 = Evaluation.find_or_create_by({name: '评价指标2',eno: '02',types: 'option',description: 'A@B@C@D'})
 evaluation2.save!
-evaluation3 = Evaluation.find_or_create_by({name: '评价指标3',eno: '03',types: 'input'})
+evaluation3 = Evaluation.find_or_create_by({name: '评价指标3',eno: '03',types: 'input',description: 'input some string or number'})
 evaluation3.save!
+evaluation4 = Evaluation.find_or_create_by({name: '评价指标4',eno: '04',types: 'option',description: 'Excellent@Good@Average@Fair@Poor@Fail'})
+evaluation4.save!
 
 course1.evaluations.destroy_all
 course1.evaluations.push evaluation1
@@ -103,6 +105,37 @@ user4.username = dev.name
 user4.email = dev.email
 user4.tel = dev.tel
 user4.save!
+
+TeachersClassesCourse.delete_all
+
+tcc1 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class1.id,courses_id:course1.id,term:'2018秋季学期'})
+tcc1.save!
+tcc2 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class1.id,courses_id:course2.id,term:'2018秋季学期'})
+tcc2.save!
+tcc3 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class2.id,courses_id:course3.id,term:'2018秋季学期'})
+tcc3.save!
+
+tcc4 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class2.id,courses_id:course1.id,term:'2018秋季学期'})
+tcc4.save!
+tcc5 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class2.id,courses_id:course2.id,term:'2018秋季学期'})
+tcc5.save!
+tcc6 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class3.id,courses_id:course1.id,term:'2018秋季学期'})
+tcc6.save!
+
+tcc7 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class1.id,courses_id:course3.id,term:'2019春季学期'})
+tcc7.save!
+tcc8 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class1.id,courses_id:course2.id,term:'2019春季学期'})
+tcc8.save!
+tcc9 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class2.id,courses_id:course1.id,term:'2019春季学期'})
+tcc9.save!
+
+tcc10 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class2.id,courses_id:course3.id,term:'2019春季学期'})
+tcc10.save!
+tcc11 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class2.id,courses_id:course2.id,term:'2019春季学期'})
+tcc11.save!
+tcc12 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class3.id,courses_id:course3.id,term:'2019春季学期'})
+tcc12.save!
+
 
 AuthRule.delete_all
 rule10 = AuthRule.find_or_create_by({ name: 'Admin/index', title: '后台首页'})
