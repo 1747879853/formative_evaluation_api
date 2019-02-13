@@ -33,13 +33,13 @@ class3.courses.destroy_all
 class3.courses.push course3
 
 Evaluation.delete_all
-evaluation1 = Evaluation.find_or_create_by({name: '评价指标1',eno: '01',types: 'input',description: 'input some string or number'})
+evaluation1 = Evaluation.find_or_create_by({name: '评价指标1',eno: 'e01',types: 'input',description: 'input some string or number'})
 evaluation1.save!
-evaluation2 = Evaluation.find_or_create_by({name: '评价指标2',eno: '02',types: 'option',description: 'A@B@C@D'})
+evaluation2 = Evaluation.find_or_create_by({name: '评价指标2',eno: 'e02',types: 'option',description: 'A@B@C@D'})
 evaluation2.save!
-evaluation3 = Evaluation.find_or_create_by({name: '评价指标3',eno: '03',types: 'input',description: 'input some string or number'})
+evaluation3 = Evaluation.find_or_create_by({name: '评价指标3',eno: 'e03',types: 'input',description: 'input some string or number'})
 evaluation3.save!
-evaluation4 = Evaluation.find_or_create_by({name: '评价指标4',eno: '04',types: 'option',description: 'Excellent@Good@Average@Fair@Poor@Fail'})
+evaluation4 = Evaluation.find_or_create_by({name: '评价指标4',eno: 'e04',types: 'option',description: 'Excellent@Good@Average@Fair@Poor@Fail'})
 evaluation4.save!
 
 course1.evaluations.destroy_all
@@ -49,6 +49,7 @@ course1.evaluations.push evaluation2
 course2.evaluations.destroy_all
 course2.evaluations.push evaluation2
 course2.evaluations.push evaluation3
+course2.evaluations.push evaluation4
 
 course3.evaluations.destroy_all
 course3.evaluations.push evaluation1
@@ -61,6 +62,29 @@ hll.save!
 cj = Student.find_or_create_by({name: 'cj', email: 'cj',year: '2016',sno: '2016102001',tel: '15066666666'})
 cj.class_room_id = class2.id
 cj.save!
+
+Grade.delete_all
+g1 = Grade.find_or_create_by({students_id: hll.id, evaluations_id: evaluation2.id,courses_id: course2.id,grade:'A'})
+g1.save!
+g2 = Grade.find_or_create_by({students_id: hll.id, evaluations_id: evaluation3.id,courses_id: course2.id,grade:'91'})
+g2.save!
+g3 = Grade.find_or_create_by({students_id: hll.id, evaluations_id: evaluation3.id,courses_id: course3.id,grade:'92'})
+g3.save!
+g4 = Grade.find_or_create_by({students_id: hll.id, evaluations_id: evaluation1.id,courses_id: course3.id,grade:'95'})
+g4.save!
+
+g5 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation2.id,courses_id: course2.id,grade:'A'})
+g5.save!
+g6 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation3.id,courses_id: course2.id,grade:'90'})
+g6.save!
+g7 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation3.id,courses_id: course3.id,grade:'89'})
+g7.save!
+g8 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation1.id,courses_id: course3.id,grade:'92'})
+g8.save!
+g9 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation2.id,courses_id: course1.id,grade:'B'})
+g9.save!
+g10 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation1.id,courses_id: course1.id,grade:'88'})
+g10.save!
 
 Teacher.delete_all
 yyk = Teacher.find_or_create_by({name: 'yyk', email: 'yyk',year: '2016',tno: '2016001',tel: '15066666666'})
