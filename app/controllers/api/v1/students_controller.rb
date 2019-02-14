@@ -59,6 +59,7 @@ class Api::V1::StudentsController < Api::V1::BaseController
     begin
       studentList = params.require(:params)
       studentList.length.times do |i|
+        studentList[i]["class_room_id"]=ClassRoom.where(name:studentList[i]["classname"]).ids[0]
         student = Student.new(studentList[i].permit(:name, :email, :tel, :year, :status, :sno, :class_room_id))
         if student.save!
           user = User.new
