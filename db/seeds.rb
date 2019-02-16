@@ -41,6 +41,14 @@ evaluation3 = Evaluation.find_or_create_by({name: '评价指标3',eno: 'e03',typ
 evaluation3.save!
 evaluation4 = Evaluation.find_or_create_by({name: '评价指标4',eno: 'e04',types: 'option',description: 'Excellent@Good@Average@Fair@Poor@Fail'})
 evaluation4.save!
+evaluation50 = Evaluation.find_or_create_by({name: '写作',eno: 'e05',types: 'input',description: 'input some string or number'})
+evaluation50.save!
+evaluation51 = Evaluation.find_or_create_by({name: '写作1',eno: 'e05_1',types: 'input',description: 'input some string or number'})
+evaluation51.parent = evaluation50
+evaluation51.save!
+evaluation52 = Evaluation.find_or_create_by({name: '写作2',eno: 'e05_2',types: 'input',description: 'input some string or number'})
+evaluation52.parent = evaluation50
+evaluation52.save!
 
 course1.evaluations.destroy_all
 course1.evaluations.push evaluation1
@@ -240,12 +248,12 @@ group1.auth_rules.push rule10
 group1.auth_rules.push rule20
 group1.auth_rules.push rule30
 
-group1.auth_rules.push rule50
+# group1.auth_rules.push rule50
 group1.auth_rules.push rule51
 group1.auth_rules.push rule52
 group1.auth_rules.push rule53
 
-group1.auth_rules.push rule60
+# group1.auth_rules.push rule60
 group1.auth_rules.push rule61
 group1.auth_rules.push rule62
 group1.auth_rules.push rule63
@@ -255,14 +263,15 @@ group1.auth_rules.push rule66
 group1.auth_rules.push rule67
 group1.auth_rules.push rule68
 
-group1.auth_rules.push rule70
+# group1.auth_rules.push rule70
 group1.auth_rules.push rule71
 group1.auth_rules.push rule72
 
-
+group2.auth_rules.destroy_all
 group2.auth_rules.push rule10
 group2.auth_rules.push rule20
 
+group3.auth_rules.destroy_all
 group3.auth_rules.push rule10
 group3.auth_rules.push rule30
 
@@ -297,6 +306,7 @@ user4.auth_groups.push group6
 
 user1.auth_groups.destroy_all
 user1.auth_groups.push group3
+
 user2.auth_groups.destroy_all
 user2.auth_groups.push group3
 

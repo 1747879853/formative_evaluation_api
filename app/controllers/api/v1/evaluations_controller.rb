@@ -1,7 +1,7 @@
 class Api::V1::EvaluationsController < Api::V1::BaseController
   
   def get_evaluationlist
-    render json: Evaluation.where(status: '1').where("name is not null").all
+    render json: Evaluation.where(status: '1').where(parent_id: 0).where("name is not null").all
   end
 
   def post_evaluationlist
@@ -19,7 +19,7 @@ class Api::V1::EvaluationsController < Api::V1::BaseController
     begin
       evaluation_id = params.require(:params)[:id]
       evaluation = Evaluation.find(evaluation_id)
-      if evaluation.update(evaluation_params)
+      if evaluation.update(params.require(:params).permit(:name, :eno, :types, :description))
         render json: evaluation
       end
     rescue Exception => e
@@ -40,6 +40,6 @@ class Api::V1::EvaluationsController < Api::V1::BaseController
   end
 
   def evaluation_params
-    params.require(:params).permit(:name, :eno, :types, :status, :description)
+    params.require(:params).permit(:name, :eno, :types, :status, :description, :parent_id, :weight)
   end
 end

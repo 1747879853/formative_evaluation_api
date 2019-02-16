@@ -79,7 +79,7 @@ class Api::V1::StudentsController < Api::V1::BaseController
 
   def get_classstu
     begin
-      render json: Student.select("id,name,year,sno").where(status: 1).where(class_room_id: params.require(:params)[:id])
+      render json: Student.select("id,name,year,sno,tel,status,email").where(status: 1).where(class_room_id: params.require(:params)[:id]).order("sno")
     rescue Exception => e
       render json: { msg: e }, status: 500      
     end
@@ -99,10 +99,13 @@ class Api::V1::StudentsController < Api::V1::BaseController
 
   def delete_classstu
     begin
-      student = Student.find(params.require(:params)[:stuid])
-      class_id = ClassRoom.where(name:"",year:"",clno:"").ids[0]
-      if student.update(:class_room_id => class_id)
-        render json: Student.select("id,name,year,sno").where(status: 1).where(class_room_id: params.require(:params)[:id])
+      student_id = params.require(:params)[:stuid]
+      student = Student.find(student_id)
+      if student.update(params.require(:params).permit(:status))
+        user_id = User.where(owner_id: student_id).where("owner_type='Student'").ids
+        user = User.find(user_id[0])
+        user.destroy
+        render json: Student.select("id,name,year,sno,tel,status,email").where(status: 1).where(class_room_id: params.require(:params)[:id])
       end
     rescue Exception => e
       render json: { msg: e }, status: 500      
