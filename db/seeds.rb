@@ -12,8 +12,6 @@ class2 = ClassRoom.find_or_create_by({name: '英语2班',year: '2016',clno: '102
 class2.save!
 class3 = ClassRoom.find_or_create_by({name: '英语3班',year: '2016',clno: '103'})
 class3.save!
-class4 = ClassRoom.find_or_create_by({name: '',year: '',clno: '',status: 0})
-class4.save!
 
 Course.delete_all
 course1 = Course.find_or_create_by({name: '英语1',cno: '01'})
@@ -33,22 +31,39 @@ class3.courses.destroy_all
 class3.courses.push course3
 
 Evaluation.delete_all
-evaluation1 = Evaluation.find_or_create_by({name: '评价指标1',eno: 'e01',types: 'input',description: 'input some string or number'})
+evaluation1 = Evaluation.find_or_create_by({name: '评价指标1',eno: 'e01',types: 'input',description: 'input some string or number', term:'2018秋季学期'})
 evaluation1.save!
-evaluation2 = Evaluation.find_or_create_by({name: '评价指标2',eno: 'e02',types: 'option',description: 'A@B@C@D'})
+evaluation2 = Evaluation.find_or_create_by({name: '评价指标2',eno: 'e02',types: 'option',description: 'A@B@C@D', term:'2018秋季学期'})
 evaluation2.save!
-evaluation3 = Evaluation.find_or_create_by({name: '评价指标3',eno: 'e03',types: 'input',description: 'input some string or number'})
+evaluation3 = Evaluation.find_or_create_by({name: '评价指标3',eno: 'e03',types: 'input',description: 'input some string or number', term:'2018秋季学期'})
 evaluation3.save!
-evaluation4 = Evaluation.find_or_create_by({name: '评价指标4',eno: 'e04',types: 'option',description: 'Excellent@Good@Average@Fair@Poor@Fail'})
+evaluation4 = Evaluation.find_or_create_by({name: '评价指标4',eno: 'e04',types: 'option',description: 'Excellent@Good@Average@Fair@Poor@Fail', term:'2018秋季学期'})
 evaluation4.save!
-evaluation50 = Evaluation.find_or_create_by({name: '写作',eno: 'e05',types: 'input',description: 'input some string or number'})
+evaluation50 = Evaluation.find_or_create_by({name: '写作',eno: 'e05',types: 'input',description: 'input some string or number', term:'2018秋季学期'})
 evaluation50.save!
-evaluation51 = Evaluation.find_or_create_by({name: '写作1',eno: 'e05_1',types: 'input',description: 'input some string or number'})
+evaluation51 = Evaluation.find_or_create_by({name: '写作1',eno: 'e05_1',types: 'input',description: 'input some string or number', term:'2018秋季学期'})
 evaluation51.parent = evaluation50
 evaluation51.save!
-evaluation52 = Evaluation.find_or_create_by({name: '写作2',eno: 'e05_2',types: 'input',description: 'input some string or number'})
+evaluation52 = Evaluation.find_or_create_by({name: '写作2',eno: 'e05_2',types: 'input',description: 'input some string or number', term:'2018秋季学期'})
 evaluation52.parent = evaluation50
 evaluation52.save!
+
+evaluation6 = Evaluation.find_or_create_by({name: '评价指标1',eno: 'e01',types: 'input',description: 'input some string or number', term:'2019春季学期'})
+evaluation6.save!
+evaluation7 = Evaluation.find_or_create_by({name: '评价指标2',eno: 'e02',types: 'option',description: 'A@B@C@D', term:'2019春季学期'})
+evaluation7.save!
+evaluation8 = Evaluation.find_or_create_by({name: '评价指标3',eno: 'e03',types: 'input',description: 'input some string or number', term:'2019春季学期'})
+evaluation8.save!
+evaluation9 = Evaluation.find_or_create_by({name: '评价指标4',eno: 'e04',types: 'option',description: 'Excellent@Good@Average@Fair@Poor@Fail', term:'2019春季学期'})
+evaluation9.save!
+evaluation100 = Evaluation.find_or_create_by({name: '写作',eno: 'e05',types: 'input',description: 'input some string or number', term:'2019春季学期'})
+evaluation100.save!
+evaluation101 = Evaluation.find_or_create_by({name: '写作1',eno: 'e05_1',types: 'input',description: 'input some string or number', term:'2019春季学期'})
+evaluation101.parent = evaluation100
+evaluation101.save!
+evaluation102 = Evaluation.find_or_create_by({name: '写作2',eno: 'e05_2',types: 'input',description: 'input some string or number', term:'2019春季学期'})
+evaluation102.parent = evaluation100
+evaluation102.save!
 
 course1.evaluations.destroy_all
 course1.evaluations.push evaluation1

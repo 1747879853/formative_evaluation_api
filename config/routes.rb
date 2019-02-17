@@ -81,20 +81,23 @@ Rails.application.routes.draw do
       patch      '/courseList'    =>  'courses#patch_courselist'
       delete     '/courseList'    =>  'courses#delete_courselist'
 
-      get        '/courseevalList'  =>  'courses#get_courseevallist'
+      post       '/courseevalList'  =>  'courses#get_courseevallist'
       patch      '/courseevalList'  =>  'courses#patch_courseevallist'
 
       # Evaluation actions
-      get        '/evaluationList'    =>  'evaluations#get_evaluationlist'
+      post       '/evaluationList1'   =>  'evaluations#get_evaluationlist'
       post       '/evaluationList'    =>  'evaluations#post_evaluationlist'
       patch      '/evaluationList'    =>  'evaluations#patch_evaluationlist'
       delete     '/evaluationList'    =>  'evaluations#delete_evaluationlist'
 
+      get        '/get_termList_e'    =>  'evaluations#get_termlist_e'
       # ClassGradeInput actions
-      get        'tcourseList'     =>  'class_grade_input#get_tcourselist'
+      post        'tcourseList'     =>  'class_grade_input#get_tcourselist'
       post       'tclassList'      =>  'class_grade_input#post_tclasslist'
-      patch       'inputclassgrade' =>  'class_grade_input#inputclassgrade'
+      patch      'inputclassgrade' =>  'class_grade_input#inputclassgrade'
       post       'get_classgrade'  =>  'class_grade_input#get_classgrade'
+
+      get        'studentgradeList' =>  'class_grade_input#studentgradeList'
     end
   end
 
