@@ -69,14 +69,59 @@ course1.evaluations.destroy_all
 course1.evaluations.push evaluation1
 course1.evaluations.push evaluation2
 
+course1.evaluations.push evaluation8
+course1.evaluations.push evaluation9
+course1.evaluations.push evaluation101
+
 course2.evaluations.destroy_all
 course2.evaluations.push evaluation2
 course2.evaluations.push evaluation3
 course2.evaluations.push evaluation4
 
+course2.evaluations.push evaluation7
+course2.evaluations.push evaluation8
+course2.evaluations.push evaluation102
+
 course3.evaluations.destroy_all
 course3.evaluations.push evaluation1
 course3.evaluations.push evaluation3
+
+
+Weight.delete_all
+weight1 = Weight.find_or_create_by({evaluations_id:evaluation1.id,courses_id:course1.id,weight:1,})
+weight1.save!
+weight2 = Weight.find_or_create_by({evaluations_id:evaluation2.id,courses_id:course1.id,weight:1,})
+weight2.save!
+
+weight3 = Weight.find_or_create_by({evaluations_id:evaluation8.id,courses_id:course1.id,weight:1,})
+weight3.save!
+weight4 = Weight.find_or_create_by({evaluations_id:evaluation9.id,courses_id:course1.id,weight:2,})
+weight4.save!
+weight5 = Weight.find_or_create_by({evaluations_id:evaluation100.id,courses_id:course1.id,weight:1,})
+weight5.save!
+weight6 = Weight.find_or_create_by({evaluations_id:evaluation101.id,courses_id:course1.id,weight:1,})
+weight6.save!
+
+weight7 = Weight.find_or_create_by({evaluations_id:evaluation3.id,courses_id:course2.id,weight:1,})
+weight7.save!
+weight8 = Weight.find_or_create_by({evaluations_id:evaluation2.id,courses_id:course2.id,weight:2,})
+weight8.save!
+weight9 = Weight.find_or_create_by({evaluations_id:evaluation4.id,courses_id:course2.id,weight:1,})
+weight9.save!
+
+weight10 = Weight.find_or_create_by({evaluations_id:evaluation7.id,courses_id:course2.id,weight:1,})
+weight10.save!
+weight11 = Weight.find_or_create_by({evaluations_id:evaluation8.id,courses_id:course2.id,weight:3,})
+weight11.save!
+weight12 = Weight.find_or_create_by({evaluations_id:evaluation100.id,courses_id:course2.id,weight:2,})
+weight12.save!
+weight13 = Weight.find_or_create_by({evaluations_id:evaluation102.id,courses_id:course2.id,weight:2,})
+weight13.save!
+
+weight14 = Weight.find_or_create_by({evaluations_id:evaluation1.id,courses_id:course3.id,weight:2,})
+weight14.save!
+weight15 = Weight.find_or_create_by({evaluations_id:evaluation3.id,courses_id:course3.id,weight:3,})
+weight15.save!
 
 Student.delete_all
 hll = Student.find_or_create_by({name: 'hll', email: 'hll',year: '2016',sno: '2016101001',tel: '15066666666'})

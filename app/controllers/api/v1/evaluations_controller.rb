@@ -1,7 +1,7 @@
 class Api::V1::EvaluationsController < Api::V1::BaseController
   
   def get_evaluationlist
-    render json: Evaluation.where(status: '1').where(term: params.require(:params)[:term],parent_id: 0).where("name is not null").all
+    render json: Evaluation.where(status: '1').where(term: params.require(:params)[:term],parent_id: 0).where("name is not null").order(:eno).all
   end
 
   def post_evaluationlist

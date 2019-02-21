@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_17_113759) do
+ActiveRecord::Schema.define(version: 2019_02_19_082747) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -143,6 +143,14 @@ ActiveRecord::Schema.define(version: 2019_02_17_113759) do
     t.integer "owner_id", default: 0, null: false
     t.string "owner_type", default: "0", null: false
     t.index ["email"], name: "index_users_on_email"
+  end
+
+  create_table "weights", force: :cascade do |t|
+    t.bigint "courses_id"
+    t.bigint "evaluations_id"
+    t.string "weight", default: ""
+    t.index ["courses_id"], name: "index_weights_on_courses_id"
+    t.index ["evaluations_id"], name: "index_weights_on_evaluations_id"
   end
 
 end
