@@ -31,56 +31,31 @@ class3.courses.destroy_all
 class3.courses.push course3
 
 Evaluation.delete_all
-evaluation1 = Evaluation.find_or_create_by({name: '评价指标1',eno: 'e01',types: 'input',description: 'input some string or number', term:'2018秋季学期'})
+evaluation1 = Evaluation.find_or_create_by({name: '评价指标1',types: 'input',description: 'input some string or number'})
 evaluation1.save!
-evaluation2 = Evaluation.find_or_create_by({name: '评价指标2',eno: 'e02',types: 'option',description: 'A@B@C@D', term:'2018秋季学期'})
+evaluation2 = Evaluation.find_or_create_by({name: '评价指标2',types: 'option',description: 'A@B@C@D'})
 evaluation2.save!
-evaluation3 = Evaluation.find_or_create_by({name: '评价指标3',eno: 'e03',types: 'input',description: 'input some string or number', term:'2018秋季学期'})
+evaluation3 = Evaluation.find_or_create_by({name: '评价指标3',types: 'input',description: 'input some string or number'})
 evaluation3.save!
-evaluation4 = Evaluation.find_or_create_by({name: '评价指标4',eno: 'e04',types: 'option',description: 'Excellent@Good@Average@Fair@Poor@Fail', term:'2018秋季学期'})
+evaluation4 = Evaluation.find_or_create_by({name: '评价指标4',types: 'option',description: 'Excellent@Good@Average@Fair@Poor@Fail'})
 evaluation4.save!
-evaluation50 = Evaluation.find_or_create_by({name: '写作',eno: 'e05',types: 'input',description: 'input some string or number', term:'2018秋季学期'})
+evaluation50 = Evaluation.find_or_create_by({name: '写作',types: 'input',description: 'input some string or number'})
 evaluation50.save!
-evaluation51 = Evaluation.find_or_create_by({name: '写作1',eno: 'e05_1',types: 'input',description: 'input some string or number', term:'2018秋季学期'})
+evaluation51 = Evaluation.find_or_create_by({name: '写作1',types: 'input',description: 'input some string or number'})
 evaluation51.parent = evaluation50
 evaluation51.save!
-evaluation52 = Evaluation.find_or_create_by({name: '写作2',eno: 'e05_2',types: 'input',description: 'input some string or number', term:'2018秋季学期'})
+evaluation52 = Evaluation.find_or_create_by({name: '写作2',types: 'input',description: 'input some string or number'})
 evaluation52.parent = evaluation50
 evaluation52.save!
-
-evaluation6 = Evaluation.find_or_create_by({name: '评价指标1',eno: 'e01',types: 'input',description: 'input some string or number', term:'2019春季学期'})
-evaluation6.save!
-evaluation7 = Evaluation.find_or_create_by({name: '评价指标2',eno: 'e02',types: 'option',description: 'A@B@C@D', term:'2019春季学期'})
-evaluation7.save!
-evaluation8 = Evaluation.find_or_create_by({name: '评价指标3',eno: 'e03',types: 'input',description: 'input some string or number', term:'2019春季学期'})
-evaluation8.save!
-evaluation9 = Evaluation.find_or_create_by({name: '评价指标4',eno: 'e04',types: 'option',description: 'Excellent@Good@Average@Fair@Poor@Fail', term:'2019春季学期'})
-evaluation9.save!
-evaluation100 = Evaluation.find_or_create_by({name: '写作',eno: 'e05',types: 'input',description: 'input some string or number', term:'2019春季学期'})
-evaluation100.save!
-evaluation101 = Evaluation.find_or_create_by({name: '写作1',eno: 'e05_1',types: 'input',description: 'input some string or number', term:'2019春季学期'})
-evaluation101.parent = evaluation100
-evaluation101.save!
-evaluation102 = Evaluation.find_or_create_by({name: '写作2',eno: 'e05_2',types: 'input',description: 'input some string or number', term:'2019春季学期'})
-evaluation102.parent = evaluation100
-evaluation102.save!
 
 course1.evaluations.destroy_all
 course1.evaluations.push evaluation1
 course1.evaluations.push evaluation2
 
-course1.evaluations.push evaluation8
-course1.evaluations.push evaluation9
-course1.evaluations.push evaluation101
-
 course2.evaluations.destroy_all
 course2.evaluations.push evaluation2
 course2.evaluations.push evaluation3
 course2.evaluations.push evaluation4
-
-course2.evaluations.push evaluation7
-course2.evaluations.push evaluation8
-course2.evaluations.push evaluation102
 
 course3.evaluations.destroy_all
 course3.evaluations.push evaluation1
@@ -93,30 +68,12 @@ weight1.save!
 weight2 = Weight.find_or_create_by({evaluations_id:evaluation2.id,courses_id:course1.id,weight:1,})
 weight2.save!
 
-weight3 = Weight.find_or_create_by({evaluations_id:evaluation8.id,courses_id:course1.id,weight:1,})
-weight3.save!
-weight4 = Weight.find_or_create_by({evaluations_id:evaluation9.id,courses_id:course1.id,weight:2,})
-weight4.save!
-weight5 = Weight.find_or_create_by({evaluations_id:evaluation100.id,courses_id:course1.id,weight:1,})
-weight5.save!
-weight6 = Weight.find_or_create_by({evaluations_id:evaluation101.id,courses_id:course1.id,weight:1,})
-weight6.save!
-
 weight7 = Weight.find_or_create_by({evaluations_id:evaluation3.id,courses_id:course2.id,weight:1,})
 weight7.save!
 weight8 = Weight.find_or_create_by({evaluations_id:evaluation2.id,courses_id:course2.id,weight:2,})
 weight8.save!
 weight9 = Weight.find_or_create_by({evaluations_id:evaluation4.id,courses_id:course2.id,weight:1,})
 weight9.save!
-
-weight10 = Weight.find_or_create_by({evaluations_id:evaluation7.id,courses_id:course2.id,weight:1,})
-weight10.save!
-weight11 = Weight.find_or_create_by({evaluations_id:evaluation8.id,courses_id:course2.id,weight:3,})
-weight11.save!
-weight12 = Weight.find_or_create_by({evaluations_id:evaluation100.id,courses_id:course2.id,weight:2,})
-weight12.save!
-weight13 = Weight.find_or_create_by({evaluations_id:evaluation102.id,courses_id:course2.id,weight:2,})
-weight13.save!
 
 weight14 = Weight.find_or_create_by({evaluations_id:evaluation1.id,courses_id:course3.id,weight:2,})
 weight14.save!

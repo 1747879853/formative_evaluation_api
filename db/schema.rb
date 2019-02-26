@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_19_082747) do
+ActiveRecord::Schema.define(version: 2019_02_26_061359) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -83,8 +83,6 @@ ActiveRecord::Schema.define(version: 2019_02_19_082747) do
     t.datetime "updated_at", null: false
     t.string "description", default: ""
     t.integer "parent_id", default: 0
-    t.string "eno", default: "", null: false
-    t.string "term"
   end
 
   create_table "grades", force: :cascade do |t|
@@ -149,6 +147,7 @@ ActiveRecord::Schema.define(version: 2019_02_19_082747) do
     t.bigint "courses_id"
     t.bigint "evaluations_id"
     t.string "weight", default: ""
+    t.datetime "create_time"
     t.index ["courses_id"], name: "index_weights_on_courses_id"
     t.index ["evaluations_id"], name: "index_weights_on_evaluations_id"
   end

@@ -81,11 +81,11 @@ Rails.application.routes.draw do
       patch      '/courseList'    =>  'courses#patch_courselist'
       delete     '/courseList'    =>  'courses#delete_courselist'
 
-      post       '/courseevalList'  =>  'courses#get_courseevallist'
+      get        '/courseevalList'  =>  'courses#get_courseevallist'
       patch      '/courseevalList'  =>  'courses#patch_courseevallist'
 
       # Evaluation actions
-      post       '/evaluationList1'   =>  'evaluations#get_evaluationlist'
+      get        '/evaluationList1'   =>  'evaluations#get_evaluationlist'
       post       '/evaluationList'    =>  'evaluations#post_evaluationlist'
       patch      '/evaluationList'    =>  'evaluations#patch_evaluationlist'
       delete     '/evaluationList'    =>  'evaluations#delete_evaluationlist'
