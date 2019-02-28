@@ -32,8 +32,14 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     class_id = params.require(:params)[:class_id]
     s = Student.select("id,name,sno").where(status: 1).where(class_room_id: class_id).as_json
     course = Course.find(course_id)
+
+
+    term = Term.find(params.require(:params)[:term])
+    Weight.where(courses_id:course_id).where("create_time between ? and ?",term.begin_time,term.end_time)
     e = course.evaluations.where(term: params.require(:params)[:term]).as_json
     ev = course.evaluations.where(term: params.require(:params)[:term])
+
+
     ev.length.times do |k|
       if(ev[k].parent!=nil)
         w = Weight.where(courses_id:course_id,evaluations_id:ev[k].id)[0].weight

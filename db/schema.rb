@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_26_061359) do
+ActiveRecord::Schema.define(version: 2019_02_28_034903) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -128,6 +128,12 @@ ActiveRecord::Schema.define(version: 2019_02_26_061359) do
     t.index ["teachers_id"], name: "index_teachers_classes_courses_on_teachers_id"
   end
 
+  create_table "terms", force: :cascade do |t|
+    t.string "name", null: false
+    t.date "begin_time", null: false
+    t.date "end_time", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "username", null: false
     t.string "email", null: false
@@ -148,6 +154,7 @@ ActiveRecord::Schema.define(version: 2019_02_26_061359) do
     t.bigint "evaluations_id"
     t.string "weight", default: ""
     t.datetime "create_time"
+    t.integer "status", default: 1, null: false
     t.index ["courses_id"], name: "index_weights_on_courses_id"
     t.index ["evaluations_id"], name: "index_weights_on_evaluations_id"
   end

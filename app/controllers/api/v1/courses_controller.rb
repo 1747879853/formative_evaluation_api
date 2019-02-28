@@ -45,10 +45,13 @@ class Api::V1::CoursesController < Api::V1::BaseController
 
   def get_courseevallist
     course = Course.select("id,name").where(status: '1').where("name is not null").all
-    course_id = course.ids
     eva = Evaluation.select("id,name,status").where(status: '1').where(parent_id: 0).where("name is not null").order(:id).all
-    eva_id = Evaluation.select("id,name").where(status: '1').where("name is not null").all.ids
-    weight = Weight.where(courses_id:course_id,evaluations_id:eva_id).select(:courses_id,:evaluations_id,:weight).order(:courses_id)
+    maxtime = Weight.select("courses_id,max(create_time)").group(:courses_id)
+    weight = []
+    maxtime.each do |i|
+      a = Weight.where(courses_id:i.courses_id,create_time:i.max).select(:courses_id,:evaluations_id,:weight).as_json
+      weight = weight + a
+    end
     render json: { 'a': course, 'b': eva,'c': weight}
   end
 
@@ -56,29 +59,23 @@ class Api::V1::CoursesController < Api::V1::BaseController
     begin
       course = Course.find(params.require(:params)[:id])
 
-      if course.evaluations.empty?
-      else
-        weight = params.require(:params)[:weight]
-        weight.each do |i|
-        w = Weight.where(courses_id:params.require(:params)[:id],evaluations_id:i["id"])
-        if w.empty?
-        else
-          w.update
-
-        end
-        Weight.create({courses_id:params.require(:params)[:id],evaluations_id:i["id"],weight:i["weight"]})
-      end
-      end
-
-      course.evaluations.delete course.evaluations.where(term: params.require(:params)[:term])
+      course.evaluations.delete course.evaluations
       a = params.require(:params)[:checked_id]
       course.evaluations.push Evaluation.where(id: a).all
 
-      
-      course_id =Course.select("id,name").where(status: '1').where("name is not null").all.ids
-      eva_id =Evaluation.select("id,name").where(status: '1').where(term: params.require(:params)[:term]).where("name is not null").all.ids
-      weights = Weight.where(courses_id:course_id,evaluations_id:eva_id).select(:courses_id,:evaluations_id,:weight).order(:courses_id)
-      
+      weight = params.require(:params)[:weight]
+      time = Time.now
+      weight.each do |i|
+        Weight.create({courses_id:params.require(:params)[:id],evaluations_id:i["id"],weight:i["weight"],create_time:time})
+      end
+
+      maxtime = Weight.select("courses_id,max(create_time)").group(:courses_id)
+      weights = []
+      maxtime.each do |i|
+        a = Weight.where(courses_id:i.courses_id,create_time:i.max).select(:courses_id,:evaluations_id,:weight).as_json
+        weights = weights + a
+      end
+
       render json: { 'a': course, 'b': weights}    
     rescue Exception => e
       render json: { msg: e }, status: 500

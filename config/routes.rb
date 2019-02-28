@@ -50,7 +50,7 @@ Rails.application.routes.draw do
       get        '/teachercourseList'  =>  'teachers#get_teachercourselist'
       patch      '/teachercourseList'  =>  'teachers#patch_teachercourselist'
 
-      get        '/termList'        =>  'teachers#get_termlist'
+      # get        '/termList'        =>  'teachers#get_termlist'
       post       '/tccList'         =>  'teachers#post_tcclist'
       patch      '/tccList'         =>  'teachers#patch_tcclist'
 
@@ -92,12 +92,17 @@ Rails.application.routes.draw do
 
       get        '/get_termList_e'    =>  'evaluations#get_termlist_e'
       # ClassGradeInput actions
-      post        'tcourseList'     =>  'class_grade_input#get_tcourselist'
+      post       'tcourseList'     =>  'class_grade_input#get_tcourselist'
       post       'tclassList'      =>  'class_grade_input#post_tclasslist'
       patch      'inputclassgrade' =>  'class_grade_input#inputclassgrade'
       post       'get_classgrade'  =>  'class_grade_input#get_classgrade'
 
       get        'studentgradeList' =>  'class_grade_input#studentgradeList'
+
+      #Term actions
+      get        '/termList'    =>  'terms#get_termlist'
+      post       '/termList'    =>  'terms#post_termlist'
+      patch      '/termList'    =>  'terms#patch_termlist'
     end
   end
 

@@ -61,23 +61,23 @@ course3.evaluations.destroy_all
 course3.evaluations.push evaluation1
 course3.evaluations.push evaluation3
 
-
+time = Time.now
 Weight.delete_all
-weight1 = Weight.find_or_create_by({evaluations_id:evaluation1.id,courses_id:course1.id,weight:1,})
+weight1 = Weight.find_or_create_by({evaluations_id:evaluation1.id,courses_id:course1.id,weight:1,create_time:time})
 weight1.save!
-weight2 = Weight.find_or_create_by({evaluations_id:evaluation2.id,courses_id:course1.id,weight:1,})
+weight2 = Weight.find_or_create_by({evaluations_id:evaluation2.id,courses_id:course1.id,weight:1,create_time:time})
 weight2.save!
 
-weight7 = Weight.find_or_create_by({evaluations_id:evaluation3.id,courses_id:course2.id,weight:1,})
+weight7 = Weight.find_or_create_by({evaluations_id:evaluation3.id,courses_id:course2.id,weight:1,create_time:time})
 weight7.save!
-weight8 = Weight.find_or_create_by({evaluations_id:evaluation2.id,courses_id:course2.id,weight:2,})
+weight8 = Weight.find_or_create_by({evaluations_id:evaluation2.id,courses_id:course2.id,weight:2,create_time:time})
 weight8.save!
-weight9 = Weight.find_or_create_by({evaluations_id:evaluation4.id,courses_id:course2.id,weight:1,})
+weight9 = Weight.find_or_create_by({evaluations_id:evaluation4.id,courses_id:course2.id,weight:1,create_time:time})
 weight9.save!
 
-weight14 = Weight.find_or_create_by({evaluations_id:evaluation1.id,courses_id:course3.id,weight:2,})
+weight14 = Weight.find_or_create_by({evaluations_id:evaluation1.id,courses_id:course3.id,weight:2,create_time:time})
 weight14.save!
-weight15 = Weight.find_or_create_by({evaluations_id:evaluation3.id,courses_id:course3.id,weight:3,})
+weight15 = Weight.find_or_create_by({evaluations_id:evaluation3.id,courses_id:course3.id,weight:3,create_time:time})
 weight15.save!
 
 Student.delete_all
@@ -155,34 +155,40 @@ user4.email = dev.email
 user4.tel = dev.tel
 user4.save!
 
-TeachersClassesCourse.delete_all
 
-tcc1 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class1.id,courses_id:course1.id,term:'2018秋季学期'})
+Term.delete_all
+term1 = Term.find_or_create_by({name:'2018秋季学期',begin_time:'2018-09-01',end_time:'2019-01-21'})
+term1.save!
+term2 = Term.find_or_create_by({name:'2019春季学期',begin_time:'2019-02-25',end_time:'2019-07-15'})
+term2.save!
+
+TeachersClassesCourse.delete_all
+tcc1 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class1.id,courses_id:course1.id,term:term1.id})
 tcc1.save!
-tcc2 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class1.id,courses_id:course2.id,term:'2018秋季学期'})
+tcc2 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class1.id,courses_id:course2.id,term:term1.id})
 tcc2.save!
-tcc3 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class2.id,courses_id:course3.id,term:'2018秋季学期'})
+tcc3 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class2.id,courses_id:course3.id,term:term1.id})
 tcc3.save!
 
-tcc4 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class2.id,courses_id:course1.id,term:'2018秋季学期'})
+tcc4 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class2.id,courses_id:course1.id,term:term1.id})
 tcc4.save!
-tcc5 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class2.id,courses_id:course2.id,term:'2018秋季学期'})
+tcc5 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class2.id,courses_id:course2.id,term:term1.id})
 tcc5.save!
-tcc6 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class3.id,courses_id:course1.id,term:'2018秋季学期'})
+tcc6 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class3.id,courses_id:course1.id,term:term1.id})
 tcc6.save!
 
-tcc7 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class1.id,courses_id:course3.id,term:'2019春季学期'})
+tcc7 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class1.id,courses_id:course3.id,term:term2.id})
 tcc7.save!
-tcc8 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class1.id,courses_id:course2.id,term:'2019春季学期'})
+tcc8 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class1.id,courses_id:course2.id,term:term2.id})
 tcc8.save!
-tcc9 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class2.id,courses_id:course1.id,term:'2019春季学期'})
+tcc9 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class2.id,courses_id:course1.id,term:term2.id})
 tcc9.save!
 
-tcc10 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class2.id,courses_id:course3.id,term:'2019春季学期'})
+tcc10 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class2.id,courses_id:course3.id,term:term2.id})
 tcc10.save!
-tcc11 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class2.id,courses_id:course2.id,term:'2019春季学期'})
+tcc11 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class2.id,courses_id:course2.id,term:term2.id})
 tcc11.save!
-tcc12 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class3.id,courses_id:course3.id,term:'2019春季学期'})
+tcc12 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class3.id,courses_id:course3.id,term:term2.id})
 tcc12.save!
 
 
@@ -230,7 +236,7 @@ rule64.save!
 rule65 = AuthRule.find_or_create_by({ name: 'resource-manage/class-course', title: '班级课程分配'})
 rule65.parent = rule60
 rule65.save!
-rule66 = AuthRule.find_or_create_by({ name: 'resource-manage/course-evaluation', title: '课程评价指标分配'})
+rule66 = AuthRule.find_or_create_by({ name: 'resource-manage/course-evaluation', title: '课程评价指标权重分配'})
 rule66.parent = rule60
 rule66.save!
 rule67 = AuthRule.find_or_create_by({ name: 'resource-manage/teacher-course', title: '教师课程分配'})
@@ -239,6 +245,9 @@ rule67.save!
 rule68 = AuthRule.find_or_create_by({ name: 'resource-manage/teacher-class-course', title: '教师班级课程管理'})
 rule68.parent = rule60
 rule68.save!
+rule69 = AuthRule.find_or_create_by({ name: 'resource-manage/term-manage', title: '学期管理'})
+rule69.parent = rule60
+rule69.save!
 
 rule70 = AuthRule.find_or_create_by({ name: 'users-manage/index', title: '用户管理'})
 rule70.save!
@@ -279,6 +288,7 @@ group1.auth_rules.push rule65
 group1.auth_rules.push rule66
 group1.auth_rules.push rule67
 group1.auth_rules.push rule68
+group1.auth_rules.push rule69
 
 # group1.auth_rules.push rule70
 group1.auth_rules.push rule71
@@ -314,6 +324,7 @@ group6.auth_rules.push rule65
 group6.auth_rules.push rule66
 group6.auth_rules.push rule67
 group6.auth_rules.push rule68
+group6.auth_rules.push rule69
 group6.auth_rules.push rule70
 group6.auth_rules.push rule71
 group6.auth_rules.push rule72
