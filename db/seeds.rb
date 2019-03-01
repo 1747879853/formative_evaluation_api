@@ -63,21 +63,23 @@ course3.evaluations.push evaluation3
 
 time = Time.now
 Weight.delete_all
-weight1 = Weight.find_or_create_by({evaluations_id:evaluation1.id,courses_id:course1.id,weight:1,create_time:time})
+weight1 = Weight.find_or_create_by({evaluations_id:evaluation1.id,courses_id:course1.id,weight:1,create_time:time,status:1})
 weight1.save!
-weight2 = Weight.find_or_create_by({evaluations_id:evaluation2.id,courses_id:course1.id,weight:1,create_time:time})
+weight2 = Weight.find_or_create_by({evaluations_id:evaluation2.id,courses_id:course1.id,weight:1,create_time:time,status:1})
 weight2.save!
 
-weight7 = Weight.find_or_create_by({evaluations_id:evaluation3.id,courses_id:course2.id,weight:1,create_time:time})
+weight6 = Weight.find_or_create_by({evaluations_id:evaluation1.id,courses_id:course2.id,weight:1,create_time:time,status:0})
+weight6.save!
+weight7 = Weight.find_or_create_by({evaluations_id:evaluation3.id,courses_id:course2.id,weight:1,create_time:time,status:1})
 weight7.save!
-weight8 = Weight.find_or_create_by({evaluations_id:evaluation2.id,courses_id:course2.id,weight:2,create_time:time})
+weight8 = Weight.find_or_create_by({evaluations_id:evaluation2.id,courses_id:course2.id,weight:2,create_time:time,status:1})
 weight8.save!
-weight9 = Weight.find_or_create_by({evaluations_id:evaluation4.id,courses_id:course2.id,weight:1,create_time:time})
+weight9 = Weight.find_or_create_by({evaluations_id:evaluation4.id,courses_id:course2.id,weight:1,create_time:time,status:1})
 weight9.save!
 
-weight14 = Weight.find_or_create_by({evaluations_id:evaluation1.id,courses_id:course3.id,weight:2,create_time:time})
+weight14 = Weight.find_or_create_by({evaluations_id:evaluation1.id,courses_id:course3.id,weight:2,create_time:time,status:1})
 weight14.save!
-weight15 = Weight.find_or_create_by({evaluations_id:evaluation3.id,courses_id:course3.id,weight:3,create_time:time})
+weight15 = Weight.find_or_create_by({evaluations_id:evaluation3.id,courses_id:course3.id,weight:3,create_time:time,status:1})
 weight15.save!
 
 Student.delete_all
@@ -88,28 +90,39 @@ cj = Student.find_or_create_by({name: 'cj', email: 'cj',year: '2016',sno: '20161
 cj.class_room_id = class2.id
 cj.save!
 
+Term.delete_all
+term1 = Term.find_or_create_by({name:'2018秋季学期',begin_time:'2018-09-01',end_time:'2019-01-21'})
+term1.save!
+term2 = Term.find_or_create_by({name:'2019春季学期',begin_time:'2019-02-25',end_time:'2019-07-15'})
+term2.save!
+
 Grade.delete_all
-g1 = Grade.find_or_create_by({students_id: hll.id, evaluations_id: evaluation2.id,courses_id: course2.id,grade:'A'})
+g1 = Grade.find_or_create_by({students_id: hll.id, evaluations_id: evaluation2.id,courses_id: course2.id,grade:'A',term:term2.id,class_rooms_id:class1.id})
 g1.save!
-g2 = Grade.find_or_create_by({students_id: hll.id, evaluations_id: evaluation3.id,courses_id: course2.id,grade:'91'})
+g2 = Grade.find_or_create_by({students_id: hll.id, evaluations_id: evaluation3.id,courses_id: course2.id,grade:'91',term:term2.id,class_rooms_id:class1.id})
 g2.save!
-g3 = Grade.find_or_create_by({students_id: hll.id, evaluations_id: evaluation3.id,courses_id: course3.id,grade:'92'})
+g3 = Grade.find_or_create_by({students_id: hll.id, evaluations_id: evaluation3.id,courses_id: course3.id,grade:'92',term:term2.id,class_rooms_id:class1.id})
 g3.save!
-g4 = Grade.find_or_create_by({students_id: hll.id, evaluations_id: evaluation1.id,courses_id: course3.id,grade:'95'})
+g4 = Grade.find_or_create_by({students_id: hll.id, evaluations_id: evaluation1.id,courses_id: course3.id,grade:'95',term:term2.id,class_rooms_id:class1.id})
 g4.save!
 
-g5 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation2.id,courses_id: course2.id,grade:'A'})
+g5 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation2.id,courses_id: course2.id,grade:'A',term:term2.id,class_rooms_id:class2.id})
 g5.save!
-g6 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation3.id,courses_id: course2.id,grade:'90'})
+g6 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation3.id,courses_id: course2.id,grade:'90',term:term2.id,class_rooms_id:class2.id})
 g6.save!
-g7 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation3.id,courses_id: course3.id,grade:'89'})
+g7 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation3.id,courses_id: course3.id,grade:'89',term:term2.id,class_rooms_id:class2.id})
 g7.save!
-g8 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation1.id,courses_id: course3.id,grade:'92'})
+g8 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation1.id,courses_id: course3.id,grade:'92',term:term2.id,class_rooms_id:class2.id})
 g8.save!
-g9 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation2.id,courses_id: course1.id,grade:'B'})
+g9 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation2.id,courses_id: course1.id,grade:'B',term:term2.id,class_rooms_id:class2.id})
 g9.save!
-g10 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation1.id,courses_id: course1.id,grade:'88'})
+g10 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation1.id,courses_id: course1.id,grade:'88',term:term2.id,class_rooms_id:class2.id})
 g10.save!
+
+g11 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation2.id,courses_id: course2.id,grade:'A',term:term1.id,class_rooms_id:class2.id})
+g11.save!
+g12 = Grade.find_or_create_by({students_id: cj.id, evaluations_id: evaluation1.id,courses_id: course2.id,grade:'90',term:term1.id,class_rooms_id:class2.id})
+g12.save!
 
 Teacher.delete_all
 yyk = Teacher.find_or_create_by({name: 'yyk', email: 'yyk',year: '2016',tno: '2016001',tel: '15066666666'})
@@ -156,25 +169,19 @@ user4.tel = dev.tel
 user4.save!
 
 
-Term.delete_all
-term1 = Term.find_or_create_by({name:'2018秋季学期',begin_time:'2018-09-01',end_time:'2019-01-21'})
-term1.save!
-term2 = Term.find_or_create_by({name:'2019春季学期',begin_time:'2019-02-25',end_time:'2019-07-15'})
-term2.save!
-
 TeachersClassesCourse.delete_all
-tcc1 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class1.id,courses_id:course1.id,term:term1.id})
+tcc1 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class1.id,courses_id:course1.id,term:term1.id,status:2})
 tcc1.save!
-tcc2 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class1.id,courses_id:course2.id,term:term1.id})
+tcc2 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class1.id,courses_id:course2.id,term:term1.id,status:2})
 tcc2.save!
-tcc3 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class2.id,courses_id:course3.id,term:term1.id})
+tcc3 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class2.id,courses_id:course3.id,term:term1.id,status:2})
 tcc3.save!
 
-tcc4 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class2.id,courses_id:course1.id,term:term1.id})
+tcc4 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class2.id,courses_id:course1.id,term:term1.id,status:2})
 tcc4.save!
-tcc5 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class2.id,courses_id:course2.id,term:term1.id})
+tcc5 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class2.id,courses_id:course2.id,term:term1.id,status:2})
 tcc5.save!
-tcc6 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class3.id,courses_id:course1.id,term:term1.id})
+tcc6 = TeachersClassesCourse.find_or_create_by({teachers_id:dev.id,class_rooms_id:class3.id,courses_id:course1.id,term:term1.id,status:2})
 tcc6.save!
 
 tcc7 = TeachersClassesCourse.find_or_create_by({teachers_id:yyk.id,class_rooms_id:class1.id,courses_id:course3.id,term:term2.id})

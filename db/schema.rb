@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_28_034903) do
+ActiveRecord::Schema.define(version: 2019_02_28_115644) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -90,6 +90,8 @@ ActiveRecord::Schema.define(version: 2019_02_28_034903) do
     t.bigint "evaluations_id"
     t.bigint "courses_id"
     t.string "grade", default: ""
+    t.string "term", default: ""
+    t.integer "class_rooms_id", default: 0, null: false
     t.index ["courses_id"], name: "index_grades_on_courses_id"
     t.index ["evaluations_id"], name: "index_grades_on_evaluations_id"
     t.index ["students_id"], name: "index_grades_on_students_id"
@@ -123,6 +125,7 @@ ActiveRecord::Schema.define(version: 2019_02_28_034903) do
     t.bigint "class_rooms_id"
     t.bigint "courses_id"
     t.string "term", default: "", null: false
+    t.integer "status", default: 0, null: false
     t.index ["class_rooms_id"], name: "index_teachers_classes_courses_on_class_rooms_id"
     t.index ["courses_id"], name: "index_teachers_classes_courses_on_courses_id"
     t.index ["teachers_id"], name: "index_teachers_classes_courses_on_teachers_id"

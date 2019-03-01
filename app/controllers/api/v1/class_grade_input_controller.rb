@@ -1,83 +1,142 @@
 class Api::V1::ClassGradeInputController < Api::V1::BaseController
   
-  def get_tcourselist
-    t_id = current_user.owner_id
-    a = TeachersClassesCourse.where(term: params.require(:params)[:term],teachers_id: t_id).select('courses_id').group('courses_id').order('courses_id')
-    data = []
-    a.length.times do|i|
-      b={}
-      b[:id]=a[i].courses_id
-      b[:name]=Course.find(a[i].courses_id).name
-      data.push(b)
-    end
-    render json: data
-  end
+  # def get_tcourselist
+  #   t_id = current_user.owner_id
+  #   a = TeachersClassesCourse.where(term: params.require(:params)[:term],teachers_id: t_id).select('courses_id').group('courses_id').order('courses_id')
+  #   data = []
+  #   a.length.times do|i|
+  #     b={}
+  #     b[:id]=a[i].courses_id
+  #     b[:name]=Course.find(a[i].courses_id).name
+  #     data.push(b)
+  #   end
+  #   render json: data
+  # end
 
   def post_tclasslist
     t_id = current_user.owner_id
-    courses_id = params.require(:params)[:id]
-      a = TeachersClassesCourse.where(term: params.require(:params)[:term],teachers_id: t_id,courses_id: courses_id).select('class_rooms_id').order('class_rooms_id')
+    a = TeachersClassesCourse.where(term: params.require(:params)[:term],teachers_id: t_id).select('class_rooms_id').group('class_rooms_id').order('class_rooms_id')
     data = []
     a.length.times do|i|
       b={}
       b[:id]=a[i].class_rooms_id
       b[:name]=ClassRoom.find(a[i].class_rooms_id).name
+      c = TeachersClassesCourse.where(term: params.require(:params)[:term],teachers_id: t_id,class_rooms_id:a[i].class_rooms_id).select('courses_id').group('courses_id').order('courses_id').as_json
+      b[:course]=[]
+      c.each do |j|
+        b[:course].push({"id" => j["courses_id"],"name" => Course.find(j["courses_id"]).name})
+      end      
       data.push(b)
     end
     render json: data
   end
 
   def get_classgrade
+    t_id = current_user.owner_id
     course_id = params.require(:params)[:course_id]
     class_id = params.require(:params)[:class_id]
-    s = Student.select("id,name,sno").where(status: 1).where(class_room_id: class_id).as_json
-    course = Course.find(course_id)
+    st = TeachersClassesCourse.where(teachers_id:t_id,courses_id:course_id,class_rooms_id:class_id,term:params.require(:params)[:term]).select(:status)
+    
 
+    if st[0]["status"]==2
+      
+      s = Student.select("id,name,sno").where(status: 1).where(class_room_id: class_id).as_json
+      course = Course.find(course_id)
 
-    term = Term.find(params.require(:params)[:term])
-    Weight.where(courses_id:course_id).where("create_time between ? and ?",term.begin_time,term.end_time)
-    e = course.evaluations.where(term: params.require(:params)[:term]).as_json
-    ev = course.evaluations.where(term: params.require(:params)[:term])
-
-
-    ev.length.times do |k|
-      if(ev[k].parent!=nil)
-        w = Weight.where(courses_id:course_id,evaluations_id:ev[k].id)[0].weight
-        e[k]["name"]=ev[k].parent.name+'-'+e[k]["name"]+'('+w+')'
-      else
-        w = Weight.where(courses_id:course_id,evaluations_id:ev[k].id)[0].weight
-        e[k]["name"]=e[k]["name"]+'('+w+')'
+      #这种情况的评价指标应该从grades表里面取
+      # ee = Weight.where(courses_id:course_id).where(status:1).select(:evaluations_id)
+      ee = Grade.where(term:params.require(:params)[:term],courses_id:course_id).select(:evaluations_id).group(:evaluations_id)
+      eee = []
+      ee.each do |i|
+        eee.push(i.evaluations_id)
       end
-    end
-    s.length.times do |i|
-      e.length.times do |j|
-        eno = e[j]["eno"]
-        a = Grade.select("grade").where(students_id:s[i]["id"],evaluations_id:e[j]["id"],courses_id:course_id).as_json
-        if a.empty?
-          s[i][eno]=''
+      e = Evaluation.where(id:eee).as_json
+      ev = Evaluation.where(id:eee)
+
+
+      ev.length.times do |k|
+        if(ev[k].parent!=nil)
+          w = Weight.where(courses_id:course_id,evaluations_id:ev[k].id)[0].weight
+          e[k]["name"]=ev[k].parent.name+'-'+e[k]["name"]+'('+w+')'
         else
-          s[i][eno]=a[0]["grade"]
+          w = Weight.where(courses_id:course_id,evaluations_id:ev[k].id)[0].weight
+          e[k]["name"]=e[k]["name"]+'('+w+')'
         end
       end
+      s.length.times do |i|
+        e.length.times do |j|
+          e_id = 'e'+e[j]["id"].to_s
+          a = Grade.select("grade").where(students_id:s[i]["id"],evaluations_id:e[j]["id"],courses_id:course_id,term:params.require(:params)[:term]).as_json
+          if a.empty?
+            s[i][e_id]=''
+          else
+            s[i][e_id]=a[0]["grade"]
+          end
+        end
+      end
+      render json: {'a': e,'b': s,'c': 'uneditable'}
+
+    else
+
+      s = Student.select("id,name,sno").where(status: 1).where(class_room_id: class_id).as_json
+      course = Course.find(course_id)
+
+      term = Term.find(params.require(:params)[:term])
+      ee = Weight.where(courses_id:course_id).where(status:1).select(:evaluations_id)
+      eee = []
+      ee.each do |i|
+        eee.push(i.evaluations_id)
+      end
+      e = Evaluation.where(id:eee).as_json
+      ev = Evaluation.where(id:eee)
+
+
+      ev.length.times do |k|
+        if(ev[k].parent!=nil)
+          w = Weight.where(courses_id:course_id,evaluations_id:ev[k].id)[0].weight
+          e[k]["name"]=ev[k].parent.name+'-'+e[k]["name"]+'('+w+')'
+        else
+          w = Weight.where(courses_id:course_id,evaluations_id:ev[k].id)[0].weight
+          e[k]["name"]=e[k]["name"]+'('+w+')'
+        end
+      end
+      s.length.times do |i|
+        e.length.times do |j|
+          e_id = 'e'+e[j]["id"].to_s
+          a = Grade.select("grade").where(students_id:s[i]["id"],evaluations_id:e[j]["id"],courses_id:course_id,term:params.require(:params)[:term]).as_json
+          if a.empty?
+            s[i][e_id]=''
+          else
+            s[i][e_id]=a[0]["grade"]
+          end
+        end
+      end
+      render json: {'a': e,'b': s,'c': 'editable'}
+
     end
-    render json: {'a': e,'b': s}
+    
   end
 
   def inputclassgrade
-    students_id = params.require(:params)[:students_id]
+    t_id = current_user.owner_id
+    status = params.require(:params)[:status]
     courses_id = params.require(:params)[:courses_id]
     evallist = params.require(:params)[:eval]
+    class_id = params.require(:params)[:class_id]
+    term = params.require(:params)[:term]
+
+    tcc = TeachersClassesCourse.where(teachers_id:t_id,class_rooms_id:class_id,courses_id:courses_id,term:term)
+    tcc.update(status:status)
+
     a = []
     evallist.length.times do |i|
-      if evallist[i]["stu"] == students_id
-        g = Grade.where(students_id:students_id,courses_id:courses_id,evaluations_id:evallist[i]["id"])
-        if g.empty?
-          Grade.create(students_id:students_id,courses_id:courses_id,evaluations_id:evallist[i]["id"],grade:evallist[i]["grade"])
-        else
-          g.update(grade:evallist[i]["grade"])
-        end
-        a.push(evallist[i])
+      g = Grade.where(students_id:evallist[i]["stu"],courses_id:courses_id,evaluations_id:evallist[i]["id"])
+      if g.empty?
+        Grade.create(students_id:evallist[i]["stu"],courses_id:courses_id,evaluations_id:evallist[i]["id"],grade:evallist[i]["grade"],class_rooms_id:class_id,term:term)
+      else
+        g.update(grade:evallist[i]["grade"])
       end
+      a.push(evallist[i])
     end
     render json: a
   end
