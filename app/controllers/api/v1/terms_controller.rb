@@ -1,7 +1,16 @@
 class Api::V1::TermsController < Api::V1::BaseController
   
   def get_termlist
-    render json: Term.where("name is not null").all
+    t = Term.where("name is not null").all
+    now = Time.now
+    option = ''
+    t.each do |i|
+      if i.begin_time<now&&i.end_time>now
+        option = i.id
+        break
+      end
+    end
+    render json: { 'a': t,'b': option }
   end
 
   def post_termlist

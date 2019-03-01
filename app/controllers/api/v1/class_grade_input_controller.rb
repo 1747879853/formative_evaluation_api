@@ -144,39 +144,52 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
   def studentgradeList
     type = current_user.owner_type
     s_name = current_user.owner.name
-    if type=='Student'      
+    if type=='Student'
+
       s_id = current_user.owner_id
       s = Student.find(s_id)
       c_name = s.class_room.name
       c_id = s.class_room.id
+
       t = TeachersClassesCourse.where(class_rooms_id:c_id).select("term").group("term").order("term")
+
       table_list = []
       grade_list = []
+      term = []
       t.length.times do |i|
+        term.push(Term.find(t[i].term))
         table_msg = []
         grade = []
-        course = TeachersClassesCourse.where(class_rooms_id:c_id,term:t[i].term).select("courses_id").group("courses_id").order("courses_id")
+        course = TeachersClassesCourse.where(class_rooms_id:c_id,term:t[i].term,status:2).select("courses_id").group("courses_id").order("courses_id")
         b = {}
         course.length.times do |j|
           e = []
-          c = Course.find(course[j].courses_id).evaluations.where(term:t[i].term).select("id,parent_id,name,eno")
+
+          ee = Grade.where(term:t[i].term,courses_id:course[j].courses_id).select(:evaluations_id).group(:evaluations_id)
+          eee = []
+          ee.each do |l|
+            eee.push(l.evaluations_id)
+          end
+          c = Evaluation.where(id:eee).select("id,parent_id,name")
+
+          # c = Course.find(course[j].courses_id).evaluations.where(term:t[i].term).select("id,parent_id,name,eno")
           bb =[]
           aa = {}
           aa["coursename"]=Course.find(course[j].courses_id).name
           c.length.times do |k|
-            g = Grade.where(students_id:s_id,courses_id:course[j].courses_id,evaluations_id:c[k].id)
+            g = Grade.where(students_id:s_id,courses_id:course[j].courses_id,evaluations_id:c[k].id,term:t[i].term)
             if g.empty?
-              aa[c[k].eno]='暂无成绩'
+              aa['e'+c[k].id.to_s]='暂无成绩'
             else
-              aa[c[k].eno]=g[0].grade
+              aa['e'+c[k].id.to_s]=g[0].grade
             end            
             a = {}
             if c[k].parent!=nil
               a["evalname"]=c[k].parent.name+'-'+c[k]["name"]
             else
               a["evalname"]=c[k].name
-            end            
-            a["eno"]=c[k].eno
+            end  
+            a["id"]=c[k].id         
             e.push(a.as_json)
           end
           b["eval"]=e
@@ -189,7 +202,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         table_list.push(table_msg)
       end
       
-      render json: {'a': s_name,'b': c_name,'c': table_list,'d': t,'e': grade_list}
+      render json: {'a': s_name,'b': c_name,'c': table_list,'d': term,'e': grade_list}
     else
       render json: {'a': s_name}
     end    
