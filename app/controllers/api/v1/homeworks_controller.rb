@@ -154,9 +154,9 @@ class Api::V1::HomeworksController < Api::V1::BaseController
             h = TeaHomework.where(teachers_id:t[0].teachers_id,courses_id:i.id,term:term,evaluations_id:j.id)
             
             if h.length>0&&h[0].start_time>Time.now
-              b["homework"].push(h[0].as_json)
-              b["done"]=0
-              a["homework"].push(b.as_json)
+              # b["homework"].push(h[0].as_json)
+              # b["done"]=0
+              # a["homework"].push(b.as_json)
             elsif h.length>0&&h[0].start_time<Time.now&&h[0].end_time>Time.now
               b["homework"].push(h[0].as_json)
               sh = StuHomework.where(tea_homeworks_id:h[0].id,students_id:u.id)
