@@ -24,7 +24,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       c = TeachersClassesCourse.where(term: params.require(:params)[:term],teachers_id: t_id,class_rooms_id:a[i].class_rooms_id).select('courses_id').group('courses_id').order('courses_id').as_json
       b[:course]=[]
       c.each do |j|
-        b[:course].push({"id" => j["courses_id"],"name" => Course.find(j["courses_id"]).name})
+        b[:course].push({"id" => j["courses_id"],"name" => Course.find(j["courses_id"]).name,"status" => TeachersClassesCourse.where(term: params.require(:params)[:term],teachers_id: t_id,class_rooms_id:a[i].class_rooms_id,courses_id:j["courses_id"])[0].status})
       end      
       data.push(b)
     end

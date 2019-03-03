@@ -103,6 +103,18 @@ Rails.application.routes.draw do
       get        '/termList'    =>  'terms#get_termlist'
       post       '/termList'    =>  'terms#post_termlist'
       patch      '/termList'    =>  'terms#patch_termlist'
+
+      #Homework actions
+      get        '/tea_homework'  =>  'homeworks#get_hw_eva'
+      post       '/tea_homework'  =>  'homeworks#post_hw_eva'
+      patch      '/tea_homework'  =>  'homeworks#patch_hw_eva'
+
+      get        '/stu_homework'  =>  'homeworks#get_hw'
+      post       '/stu_homework'  =>  'homeworks#post_hw'
+      patch      '/stu_homework'  =>  'homeworks#patch_hw'
+
+      get        '/stu_homework_by_id'  =>  'homeworks#get_hw_by_id'
+
     end
   end
 

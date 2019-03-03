@@ -216,6 +216,12 @@ rule22.save!
 
 rule30 = AuthRule.find_or_create_by({ name: 'student_grade/index', title: '学生成绩查看'})
 rule30.save!
+rule31 = AuthRule.find_or_create_by({ name: 'student_grade/check_grade', title: '查看成绩'})
+rule31.parent = rule30
+rule31.save!
+rule32 = AuthRule.find_or_create_by({ name: 'student_grade/submit_homework', title: '我的作业'})
+rule32.parent = rule30
+rule32.save!
 
 rule50 = AuthRule.find_or_create_by({ name: 'system-manage/index', title: '系统管理'})
 rule50.save!
@@ -286,7 +292,8 @@ group1.auth_rules.destroy_all
 group1.auth_rules.push rule10
 group1.auth_rules.push rule21
 group1.auth_rules.push rule22
-group1.auth_rules.push rule30
+group1.auth_rules.push rule31
+group1.auth_rules.push rule32
 
 # group1.auth_rules.push rule50
 group1.auth_rules.push rule51
@@ -315,7 +322,8 @@ group2.auth_rules.push rule22
 
 group3.auth_rules.destroy_all
 group3.auth_rules.push rule10
-group3.auth_rules.push rule30
+group3.auth_rules.push rule31
+group3.auth_rules.push rule32
 
 
 group6.auth_rules.destroy_all
@@ -323,7 +331,8 @@ group6.auth_rules.push rule10
 group6.auth_rules.push rule21
 group6.auth_rules.push rule22
 
-group6.auth_rules.push rule30
+group6.auth_rules.push rule31
+group6.auth_rules.push rule32
 
 group6.auth_rules.push rule50
 group6.auth_rules.push rule51

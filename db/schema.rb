@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_28_115644) do
+ActiveRecord::Schema.define(version: 2019_03_02_142520) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -97,6 +97,17 @@ ActiveRecord::Schema.define(version: 2019_02_28_115644) do
     t.index ["students_id"], name: "index_grades_on_students_id"
   end
 
+  create_table "stu_homeworks", force: :cascade do |t|
+    t.bigint "students_id"
+    t.bigint "tea_homeworks_id"
+    t.datetime "finish_time", null: false
+    t.string "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["students_id"], name: "index_stu_homeworks_on_students_id"
+    t.index ["tea_homeworks_id"], name: "index_stu_homeworks_on_tea_homeworks_id"
+  end
+
   create_table "students", force: :cascade do |t|
     t.string "name", null: false
     t.string "email", null: false
@@ -107,6 +118,22 @@ ActiveRecord::Schema.define(version: 2019_02_28_115644) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "year", default: "0", null: false
+  end
+
+  create_table "tea_homeworks", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "demand", null: false
+    t.datetime "start_time", null: false
+    t.datetime "end_time", null: false
+    t.bigint "courses_id"
+    t.bigint "evaluations_id"
+    t.bigint "teachers_id"
+    t.string "term", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["courses_id"], name: "index_tea_homeworks_on_courses_id"
+    t.index ["evaluations_id"], name: "index_tea_homeworks_on_evaluations_id"
+    t.index ["teachers_id"], name: "index_tea_homeworks_on_teachers_id"
   end
 
   create_table "teachers", force: :cascade do |t|
