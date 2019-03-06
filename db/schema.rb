@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_19_082747) do
+ActiveRecord::Schema.define(version: 2019_03_03_065227) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -85,6 +85,15 @@ ActiveRecord::Schema.define(version: 2019_02_19_082747) do
     t.integer "parent_id", default: 0
     t.string "eno", default: "", null: false
     t.string "term"
+  end
+
+  create_table "excel_templates", force: :cascade do |t|
+    t.string "file_used_by"
+    t.string "file_name"
+    t.string "file_path"
+    t.datetime "upload_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "grades", force: :cascade do |t|

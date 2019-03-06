@@ -24,9 +24,9 @@ default: &default
 development:
   <<: *default
   database: formative_evaluation
-  host: db
-  username: huangll
-  password: hll123456
+  host: 127.0.0.1
+  username: postgres
+  password: postgres
   # database: formative_evaluation
   # username: sdwelltek
   # password: sdqufu0537***+-
@@ -65,8 +65,9 @@ development:
 test:
   <<: *default
   database: app_test
-  host: db
+  host: 127.0.0.1
   username: postgres
+  password: postgres
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is

@@ -98,6 +98,12 @@ Rails.application.routes.draw do
       post       'get_classgrade'  =>  'class_grade_input#get_classgrade'
 
       get        'studentgradeList' =>  'class_grade_input#studentgradeList'
+
+      #used for upload excel template
+      post        'upload_student_template' => 'upload#upload_student_template' 
+      get         'get_student_template' => 'upload#get_student_template'
+      post        'delete_student_template'  =>'upload#delete_student_template'
+
     end
   end
 
