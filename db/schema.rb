@@ -12,6 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2019_03_03_065227) do
 
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -83,8 +84,6 @@ ActiveRecord::Schema.define(version: 2019_03_03_065227) do
     t.datetime "updated_at", null: false
     t.string "description", default: ""
     t.integer "parent_id", default: 0
-    t.string "eno", default: "", null: false
-    t.string "term"
   end
 
   create_table "excel_templates", force: :cascade do |t|
@@ -101,9 +100,22 @@ ActiveRecord::Schema.define(version: 2019_03_03_065227) do
     t.bigint "evaluations_id"
     t.bigint "courses_id"
     t.string "grade", default: ""
+    t.string "term", default: ""
+    t.integer "class_rooms_id", default: 0, null: false
     t.index ["courses_id"], name: "index_grades_on_courses_id"
     t.index ["evaluations_id"], name: "index_grades_on_evaluations_id"
     t.index ["students_id"], name: "index_grades_on_students_id"
+  end
+
+  create_table "stu_homeworks", force: :cascade do |t|
+    t.bigint "students_id"
+    t.bigint "tea_homeworks_id"
+    t.datetime "finish_time", null: false
+    t.string "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["students_id"], name: "index_stu_homeworks_on_students_id"
+    t.index ["tea_homeworks_id"], name: "index_stu_homeworks_on_tea_homeworks_id"
   end
 
   create_table "students", force: :cascade do |t|
@@ -116,6 +128,22 @@ ActiveRecord::Schema.define(version: 2019_03_03_065227) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "year", default: "0", null: false
+  end
+
+  create_table "tea_homeworks", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "demand", null: false
+    t.datetime "start_time", null: false
+    t.datetime "end_time", null: false
+    t.bigint "courses_id"
+    t.bigint "evaluations_id"
+    t.bigint "teachers_id"
+    t.string "term", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["courses_id"], name: "index_tea_homeworks_on_courses_id"
+    t.index ["evaluations_id"], name: "index_tea_homeworks_on_evaluations_id"
+    t.index ["teachers_id"], name: "index_tea_homeworks_on_teachers_id"
   end
 
   create_table "teachers", force: :cascade do |t|
@@ -134,9 +162,16 @@ ActiveRecord::Schema.define(version: 2019_03_03_065227) do
     t.bigint "class_rooms_id"
     t.bigint "courses_id"
     t.string "term", default: "", null: false
+    t.integer "status", default: 0, null: false
     t.index ["class_rooms_id"], name: "index_teachers_classes_courses_on_class_rooms_id"
     t.index ["courses_id"], name: "index_teachers_classes_courses_on_courses_id"
     t.index ["teachers_id"], name: "index_teachers_classes_courses_on_teachers_id"
+  end
+
+  create_table "terms", force: :cascade do |t|
+    t.string "name", null: false
+    t.date "begin_time", null: false
+    t.date "end_time", null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -158,6 +193,8 @@ ActiveRecord::Schema.define(version: 2019_03_03_065227) do
     t.bigint "courses_id"
     t.bigint "evaluations_id"
     t.string "weight", default: ""
+    t.datetime "create_time"
+    t.integer "status", default: 1, null: false
     t.index ["courses_id"], name: "index_weights_on_courses_id"
     t.index ["evaluations_id"], name: "index_weights_on_evaluations_id"
   end

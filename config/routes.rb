@@ -50,7 +50,7 @@ Rails.application.routes.draw do
       get        '/teachercourseList'  =>  'teachers#get_teachercourselist'
       patch      '/teachercourseList'  =>  'teachers#patch_teachercourselist'
 
-      get        '/termList'        =>  'teachers#get_termlist'
+      # get        '/termList'        =>  'teachers#get_termlist'
       post       '/tccList'         =>  'teachers#post_tcclist'
       patch      '/tccList'         =>  'teachers#patch_tcclist'
 
@@ -81,18 +81,18 @@ Rails.application.routes.draw do
       patch      '/courseList'    =>  'courses#patch_courselist'
       delete     '/courseList'    =>  'courses#delete_courselist'
 
-      post       '/courseevalList'  =>  'courses#get_courseevallist'
+      get        '/courseevalList'  =>  'courses#get_courseevallist'
       patch      '/courseevalList'  =>  'courses#patch_courseevallist'
 
       # Evaluation actions
-      post       '/evaluationList1'   =>  'evaluations#get_evaluationlist'
+      get        '/evaluationList1'   =>  'evaluations#get_evaluationlist'
       post       '/evaluationList'    =>  'evaluations#post_evaluationlist'
       patch      '/evaluationList'    =>  'evaluations#patch_evaluationlist'
       delete     '/evaluationList'    =>  'evaluations#delete_evaluationlist'
 
       get        '/get_termList_e'    =>  'evaluations#get_termlist_e'
       # ClassGradeInput actions
-      post        'tcourseList'     =>  'class_grade_input#get_tcourselist'
+      post       'tcourseList'     =>  'class_grade_input#get_tcourselist'
       post       'tclassList'      =>  'class_grade_input#post_tclasslist'
       patch      'inputclassgrade' =>  'class_grade_input#inputclassgrade'
       post       'get_classgrade'  =>  'class_grade_input#get_classgrade'
@@ -103,6 +103,21 @@ Rails.application.routes.draw do
       post        'upload_student_template' => 'upload#upload_student_template' 
       get         'get_student_template' => 'upload#get_student_template'
       post        'delete_student_template'  =>'upload#delete_student_template'
+      #Term actions
+      get        '/termList'    =>  'terms#get_termlist'
+      post       '/termList'    =>  'terms#post_termlist'
+      patch      '/termList'    =>  'terms#patch_termlist'
+
+      #Homework actions
+      get        '/tea_homework'  =>  'homeworks#get_hw_eva'
+      post       '/tea_homework'  =>  'homeworks#post_hw_eva'
+      patch      '/tea_homework'  =>  'homeworks#patch_hw_eva'
+
+      get        '/stu_homework'  =>  'homeworks#get_hw'
+      post       '/stu_homework'  =>  'homeworks#post_hw'
+      patch      '/stu_homework'  =>  'homeworks#patch_hw'
+
+      get        '/stu_homework_by_id'  =>  'homeworks#get_hw_by_id'
 
     end
   end

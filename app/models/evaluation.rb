@@ -8,7 +8,8 @@ class Evaluation < ApplicationRecord
 	h[:title] = self.name
 	h[:checked] = false
 	h[:expand] = true
-	h[:children] = self.children.where(status:1) if self.children.where(status:1)
+	h[:status] = self.status == 1 ? '激活' : '停用'
+	h[:children] = self.status == 1 ? (self.children.where(status:1) if self.children.where(status:1)) : (self.children if self.children)
 	h
   end
 end

@@ -75,14 +75,14 @@ class Api::V1::TeachersController < Api::V1::BaseController
     end
   end
 
-  def get_termlist
-    term = []
-    t = TeachersClassesCourse.select('term').group('term').order('term')
-    t.length.times do |i|
-      term.push(t[i].term)
-    end
-    render json: term
-  end
+  # def get_termlist
+  #   term = []
+  #   t = TeachersClassesCourse.select('term').group('term').order('term')
+  #   t.length.times do |i|
+  #     term.push(t[i].term)
+  #   end
+  #   render json: term
+  # end
 
   def post_tcclist
     t = Teacher.select("id,name").where(status: '1').where("name is not null").all.as_json
