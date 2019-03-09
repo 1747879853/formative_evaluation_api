@@ -95,7 +95,8 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       ev.length.times do |k|
         if(ev[k].parent!=nil)
           w = Weight.where(courses_id:course_id,evaluations_id:ev[k].id)[0].weight
-          e[k]["name"]=ev[k].parent.name+'-'+e[k]["name"]+'('+w+')'
+          pw = Weight.where(courses_id:course_id,evaluations_id:ev[k].parent.id)[0].weight
+          e[k]["name"]=ev[k].parent.name+'('+pw+')'+'-'+e[k]["name"]+'('+w+')'
         else
           w = Weight.where(courses_id:course_id,evaluations_id:ev[k].id)[0].weight
           e[k]["name"]=e[k]["name"]+'('+w+')'
