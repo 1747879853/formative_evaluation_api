@@ -45,7 +45,7 @@ class Api::V1::CoursesController < Api::V1::BaseController
 
   def get_courseevallist
     course = Course.select("id,name").where(status: '1').where("name is not null").all
-    eva = Evaluation.select("id,name,status").where(status: '1').where(parent_id: 0).where("name is not null").order(:id).all
+    eva = Evaluation.select("id,name,status,in_class").where(status: '1').where(parent_id: 0).where("name is not null").order(:id).all
     weights = Weight.where(status:1).select(:courses_id,:evaluations_id,:weight,:status)
     render json: { 'a': course, 'b': eva,'c': weights}
   end
