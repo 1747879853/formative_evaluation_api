@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_03_065227) do
-
+ActiveRecord::Schema.define(version: 2019_03_09_142247) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +83,7 @@ ActiveRecord::Schema.define(version: 2019_03_03_065227) do
     t.datetime "updated_at", null: false
     t.string "description", default: ""
     t.integer "parent_id", default: 0
+    t.integer "in_class", default: 1, null: false
   end
 
   create_table "excel_templates", force: :cascade do |t|

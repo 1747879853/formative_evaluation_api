@@ -340,7 +340,6 @@ group6.auth_rules.push rule52
 group6.auth_rules.push rule53
 group6.auth_rules.push rule54
 
-group6.auth_rules.push rule60
 group6.auth_rules.push rule61
 group6.auth_rules.push rule62
 group6.auth_rules.push rule63
