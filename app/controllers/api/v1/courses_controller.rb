@@ -1,7 +1,11 @@
 class Api::V1::CoursesController < Api::V1::BaseController
   
   def get_courselist
-    render json: Course.where(status: '1').where("name is not null").all
+    render json: Course.where(status: '1').where("name is not null").all.order(:name)
+    # ret = []
+    # cc.each do |e|
+    #   ret << {e}
+    # end
   end
 
   def post_courselist
@@ -40,7 +44,7 @@ class Api::V1::CoursesController < Api::V1::BaseController
   end
 
   def course_params
-    params.require(:params).permit(:name, :cno, :status)
+    params.require(:params).permit(:name, :cno, :brief,:status)
   end
 
   def get_courseevallist

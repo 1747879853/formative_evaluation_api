@@ -57,5 +57,65 @@ class Api::V1::UploadController < Api::V1::BaseController
 			}
 		end
 	end
+
+
+	def upload_course_outline
+		upload_file = params[:file]
+		# p upload_file.original_filename
+		# p params[:id]
+		file_name = upload_file.original_filename
+		file_path = File.expand_path(File.dirname(__FILE__) + '/../../../..') + '/public/course_outline/' + file_name
+		
+		et = Course.find_by(id: params[:id])
+
+		if File.exist?(file_path) # server exist a same name file 
+			if et.outline_url && et.outline_url == file_path   # the same name file is the current course's outline_name
+				File.delete(et.outline_url)  #delete old
+				data = File.read(upload_file.path)  #add new
+				new_file = File.new(file_path, "wb+")
+				if new_file
+					new_file.syswrite(data)
+				end
+				new_file.close			
+
+				et.outline_name = file_name
+				et.outline_url = file_path
+				et.save!
+
+				render json:{				
+					file_name: file_name,
+					status: true
+					# url: file_path	
+				}
+			else  #he same name file is not the current course's outline_name, return : has same name file!!!
+				render json:{				
+					file_name: file_name,
+					status: false
+				}
+			end
+		else
+			#delete the current course's old file if exist
+			if et.outline_url && File.exist?(et.outline_url)
+				File.delete(et.outline_url)
+			end
+
+			data = File.read(upload_file.path)
+			new_file = File.new(file_path, "wb+")
+			if new_file
+				new_file.syswrite(data)
+			end
+			new_file.close			
+
+			et.outline_name = file_name
+			et.outline_url = file_path
+			et.save!
+
+			render json:{				
+				file_name: file_name,
+				status: true
+				# url: file_path	
+			}
+		end
+	end
 	
 end

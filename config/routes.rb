@@ -103,6 +103,8 @@ Rails.application.routes.draw do
       post        'upload_student_template' => 'upload#upload_student_template' 
       get         'get_student_template' => 'upload#get_student_template'
       post        'delete_student_template'  =>'upload#delete_student_template'
+
+      post        'upload_course_outline' => 'upload#upload_course_outline'
       #Term actions
       get        '/termList'    =>  'terms#get_termlist'
       post       '/termList'    =>  'terms#post_termlist'
