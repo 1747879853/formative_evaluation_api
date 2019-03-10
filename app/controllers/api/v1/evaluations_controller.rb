@@ -17,12 +17,12 @@ class Api::V1::EvaluationsController < Api::V1::BaseController
         parent.update(status: 2)
         parent.children.update(status: 2)
 
-        new_parent = Evaluation.create({ name:parent.name,types:parent.types,status:1,description:parent.description,parent_id:0 })
+        new_parent = Evaluation.create({ name:parent.name,types:parent.types,status:1,description:parent.description,parent_id:0,in_class: parent.in_class })
         parent.children.each do |i|
-          Evaluation.create({ name:i.name,types:i.types,status:1,description:i.description,parent_id:new_parent.id })
+          Evaluation.create({ name:i.name,types:i.types,status:1,description:i.description,parent_id:new_parent.id,in_class: i.in_class })
         end
 
-        evaluation = Evaluation.create({ name:params.require(:params)[:name],types:params.require(:params)[:types],status:1,description:params.require(:params)[:description],parent_id:new_parent.id })
+        evaluation = Evaluation.create({ name:params.require(:params)[:name],types:params.require(:params)[:types],status:1,description:params.require(:params)[:description],parent_id:new_parent.id,in_class: params.require(:params)[:in_class] })
         
         if evaluation.save!
           render json: new_parent
@@ -40,10 +40,10 @@ class Api::V1::EvaluationsController < Api::V1::BaseController
       evaluation = Evaluation.find(evaluation_id)
 
       if evaluation.parent_id == 0       
-        new_e = Evaluation.new(params.require(:params).permit(:name, :types, :description))
+        new_e = Evaluation.new(params.require(:params).permit(:name, :types, :description, :in_class))
         new_e.save!
         evaluation.children.each do |e|
-          Evaluation.create({name:e.name,types:e.types,status:1,description:e.description,parent_id:new_e.id})
+          Evaluation.create({name:e.name,types:e.types,status:1,description:e.description,parent_id:new_e.id,in_class: e.in_class})
         end       
 
         evaluation.update(status: 2)
@@ -81,13 +81,13 @@ class Api::V1::EvaluationsController < Api::V1::BaseController
       else
         evaluation_parent = Evaluation.find(evaluation.parent_id)
 
-        new_parent = Evaluation.create({name:evaluation_parent.name,types:evaluation_parent.types,status:1,description:evaluation_parent.description,parent_id:0})
+        new_parent = Evaluation.create({name:evaluation_parent.name,types:evaluation_parent.types,status:1,description:evaluation_parent.description,parent_id:0, in_class: evaluation_parent.in_class})
         
         evaluation_parent.children.each do |i|
           if i.id==evaluation_id
-            eva = Evaluation.create({name:params.require(:params)[:name],types:params.require(:params)[:types],status:1,description:params.require(:params)[:description],parent_id:new_parent.id})
+            eva = Evaluation.create({name:params.require(:params)[:name],types:params.require(:params)[:types],status:1,description:params.require(:params)[:description],parent_id:new_parent.id, in_class: params.require(:params)[:in_class]})
           else
-            Evaluation.create({name:i.name,types:i.types,status:1,description:i.description,parent_id:new_parent.id})
+            Evaluation.create({name:i.name,types:i.types,status:1,description:i.description,parent_id:new_parent.id,in_class:i.in_class})
           end
         end
 
@@ -115,7 +115,7 @@ class Api::V1::EvaluationsController < Api::V1::BaseController
   end
 
   def evaluation_params
-    params.require(:params).permit(:name, :types, :status, :description, :parent_id)
+    params.require(:params).permit(:name, :types, :status, :description, :parent_id, :in_class)
   end
 
   def get_termlist_e
