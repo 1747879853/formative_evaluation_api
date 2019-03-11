@@ -66,7 +66,7 @@ class Api::V1::UploadController < Api::V1::BaseController
 		file_name = upload_file.original_filename
 		file_path = File.expand_path(File.dirname(__FILE__) + '/../../../..') + '/public/course_outline/' + file_name
 		
-		et = Course.find_by(id: params[:id])
+		et = Course.find_by(id: params[:course_id])
 
 		if File.exist?(file_path) # server exist a same name file 
 			if et.outline_url && et.outline_url == file_path   # the same name file is the current course's outline_name
@@ -87,7 +87,7 @@ class Api::V1::UploadController < Api::V1::BaseController
 					status: true
 					# url: file_path	
 				}
-			else  #he same name file is not the current course's outline_name, return : has same name file!!!
+			else  #the same name file is not the current course's outline_name, return : has same name file!!!
 				render json:{				
 					file_name: file_name,
 					status: false
