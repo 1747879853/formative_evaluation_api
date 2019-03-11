@@ -3,7 +3,7 @@ class Api::V1::UploadController < Api::V1::BaseController
 	def upload_student_template
 		upload_file = params[:file]
 		file_name = upload_file.original_filename
-		file_path = File.expand_path(File.dirname(__FILE__) + '/../../../..') + '/public/' + file_name
+		file_path = File.expand_path(File.dirname(__FILE__) + '/../../../..') + '/public/_attachment/' + file_name
 		data = File.read(upload_file.path)
 		new_file = File.new(file_path, "wb+")
 		if new_file
@@ -26,7 +26,7 @@ class Api::V1::UploadController < Api::V1::BaseController
 	def delete_student_template
 		f_name = params[:params][:file_name]
 		
-		f_path = File.expand_path(File.dirname(__FILE__)+'/../../../..')+'/public/'+f_name
+		f_path = File.expand_path(File.dirname(__FILE__)+'/../../../..')+'/public/_attachment/'+f_name
 		if File.exist?(f_path)
 			File.delete(f_path)
 			# et = ExcelTemplate.find_by(file_used_by: 'student_info')
