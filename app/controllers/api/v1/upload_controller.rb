@@ -58,6 +58,22 @@ class Api::V1::UploadController < Api::V1::BaseController
 		end
 	end
 
+	def get_student_template_url
+		et = ExcelTemplate.find_by(file_used_by: 'student_info')
+		if(et)
+			render json:{
+				code: '0000',
+				# stu_template_url: 'http://127.0.0.1:3000/_attachment/' + et.file_name
+				stu_template_url: 'http://47.100.174.14:9999/_attachment/' + et.file_name
+			}
+		else
+			render json:{
+				code: '1111',
+				stu_template_url: '#'
+			}
+		end
+	end
+
 
 	def upload_course_outline
 		upload_file = params[:file]

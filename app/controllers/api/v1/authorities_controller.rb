@@ -94,7 +94,10 @@ class Api::V1::AuthoritiesController < Api::V1::BaseController
   def get_userlist
     # unauthorized and return unless Auth.check('Admin/Authority/list', current_user)
 
-    render  json:{'a': User.where(status: 1).all ,'b': AuthGroup.where(status: 1).all}
+    # render  json:{'a': User.where(status: 1).all ,'b': AuthGroup.where(status: 1).all}
+
+    # 学生已经在添加学生数据的时候默认分配给了“学生”权限组，所以这里就不再显示学生的权限了
+    render  json:{'a': User.where(status: 1).where.not(owner_type: "Student").all ,'b': AuthGroup.where(status: 1).all}
   end
 
   def patch_userlist

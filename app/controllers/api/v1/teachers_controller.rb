@@ -12,9 +12,11 @@ class Api::V1::TeachersController < Api::V1::BaseController
         user.password='password'
         user.owner = teacher
         user.username = teacher.name
-        user.email = teacher.email
+        user.email = teacher.tno
         user.tel = teacher.tel
         user.save!
+
+        user.auth_groups.push AuthGroup.find_by(title: '老师')
         render json: teacher
       end
     rescue Exception => e
@@ -30,7 +32,7 @@ class Api::V1::TeachersController < Api::V1::BaseController
         user_id = User.where(owner_id: teacher_id).where("owner_type='Teacher'").ids
         user = User.find(user_id[0])
         user.username = teacher.name
-        user.email = teacher.email
+        user.email = teacher.tno
         user.tel = teacher.tel
         user.save!
         render json: teacher

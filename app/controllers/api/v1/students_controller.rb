@@ -12,9 +12,12 @@ class Api::V1::StudentsController < Api::V1::BaseController
         user.password='password'
         user.owner = student
         user.username = student.name
-        user.email = student.email
+        user.email = student.sno
         user.tel = student.tel
         user.save!
+
+        user.auth_groups.push AuthGroup.find_by(title: '学生')
+
         render json: Student.joins(:class_room).select("students.id,students.name,students.year,students.email,students.sno,students.tel,students.status,students.class_room_id,class_rooms.name classname").where(id: student.id)
       end
     rescue Exception => e
@@ -30,7 +33,7 @@ class Api::V1::StudentsController < Api::V1::BaseController
         user_id = User.where(owner_id: student_id).where("owner_type='Student'").ids
         user = User.find(user_id[0])
         user.username = student.name
-        user.email = student.email
+        user.email = student.sno
         user.tel = student.tel
         user.save!
         render json: Student.joins(:class_room).select("students.id,students.name,students.year,students.email,students.sno,students.tel,students.status,students.class_room_id,class_rooms.name classname").where(id: student.id)
@@ -66,14 +69,18 @@ class Api::V1::StudentsController < Api::V1::BaseController
           user.password='password'
           user.owner = student
           user.username = student.name
-          user.email = student.email
+          user.email = student.sno   #changed by yyk
           user.tel = student.tel
           user.save!
+
+          user.auth_groups.push AuthGroup.find_by(title: '学生')   #给导入的学生添加默认的“学生”权限组
         end
       end
-      render json: Student.joins(:class_room).select("students.id,students.name,students.year,students.email,students.sno,students.tel,students.status,students.class_room_id,class_rooms.name classname").where(status: 1)
+      # render json: Student.joins(:class_room).select("students.id,students.name,students.year,students.email,students.sno,students.tel,students.status,students.class_room_id,class_rooms.name classname").where(status: 1)
+      render json: { msg: '导入成功', code: '0000'}  #changed by yyk
     rescue Exception => e
-      render json: { msg: e }, status: 500      
+      # render json: { msg: e }, status: 500
+      render json: {msg: '请检查学生学号是否为空或是否重复（和文件中的其他学生、已经导入的学生）', code: '1111'}      
     end
   end
 
