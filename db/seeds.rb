@@ -31,20 +31,20 @@ class3.courses.destroy_all
 class3.courses.push course3
 
 Evaluation.delete_all
-evaluation1 = Evaluation.find_or_create_by({name: '评价指标1',types: 'input',description: 'input some string or number'})
+evaluation1 = Evaluation.find_or_create_by({name: '评价指标1',types: 'score',description: 'input some string or number'})
 evaluation1.save!
-evaluation2 = Evaluation.find_or_create_by({name: '评价指标2',types: 'option',description: 'A@B@C@D'})
+evaluation2 = Evaluation.find_or_create_by({name: '评价指标2',types: 'grade',description: 'A-90@B-80@C-70@D-60'})
 evaluation2.save!
-evaluation3 = Evaluation.find_or_create_by({name: '评价指标3',types: 'input',description: 'input some string or number'})
+evaluation3 = Evaluation.find_or_create_by({name: '评价指标3',types: 'score',description: 'input some string or number'})
 evaluation3.save!
-evaluation4 = Evaluation.find_or_create_by({name: '评价指标4',types: 'option',description: 'Excellent@Good@Average@Fair@Poor@Fail'})
+evaluation4 = Evaluation.find_or_create_by({name: '评价指标4',types: 'grade',description: 'Excellent-100@Good-90@Average-80@Fair-70@Poor-60@Fail-50'})
 evaluation4.save!
-evaluation50 = Evaluation.find_or_create_by({name: '写作',types: 'input',description: 'input some string or number'})
+evaluation50 = Evaluation.find_or_create_by({name: '写作',types: 'text-score',description: 'input some string or number'})
 evaluation50.save!
-evaluation51 = Evaluation.find_or_create_by({name: '写作1',types: 'input',description: 'input some string or number'})
+evaluation51 = Evaluation.find_or_create_by({name: '写作1',types: 'text-score',description: 'input some string or number'})
 evaluation51.parent = evaluation50
 evaluation51.save!
-evaluation52 = Evaluation.find_or_create_by({name: '写作2',types: 'input',description: 'input some string or number'})
+evaluation52 = Evaluation.find_or_create_by({name: '写作2',types: 'text-score',description: 'input some string or number'})
 evaluation52.parent = evaluation50
 evaluation52.save!
 
