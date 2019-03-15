@@ -22,14 +22,14 @@ class Api::V1::HomeworksController < Api::V1::BaseController
       end
 
       if sta==0
-        e = i.evaluations.where(types:'homework')
+        e = i.evaluations.where(types:'text-score')
       else
         ee = Grade.where(term:term,courses_id:i.id).select(:evaluations_id).group(:evaluations_id)
         eee = []
         ee.each do |j|
           eee.push(j.evaluations_id)
         end
-        e = Evaluation.where(id:eee,types:'homework')
+        e = Evaluation.where(id:eee,types:'text-score')
       end
 
       
@@ -80,10 +80,11 @@ class Api::V1::HomeworksController < Api::V1::BaseController
     eval_id = params.require(:params)[:eval_id]
     homework = params.require(:params)[:homework]
     if homework=='get'
-      render json: TeaHomework.where(teachers_id:t_id,courses_id:course_id,term:term,evaluations_id:eval_id)
+      t = TeaHomework.where(teachers_id:t_id,courses_id:course_id,term:term,evaluations_id:eval_id)
+      render json: {'a': t[0],'b': t[0].start_time > Time.now ? true : false}
     else
       t = TeaHomework.create({teachers_id:t_id,courses_id:course_id,term:term,evaluations_id:eval_id,name:homework["name"],demand:homework["demand"],start_time:homework["start_time"],end_time:homework["end_time"]})
-      render json: t
+      render json: {'a': t,'b': t.start_time > Time.now ? true : false}
     end
   end
 
@@ -96,7 +97,7 @@ class Api::V1::HomeworksController < Api::V1::BaseController
 
     t = TeaHomework.where(teachers_id:t_id,courses_id:course_id,term:term,evaluations_id:eval_id)
     t.update(name:homework["name"],demand:homework["demand"],start_time:homework["start_time"],end_time:homework["end_time"])
-    render json: t
+    render json: {'a': t[0],'b': t[0].start_time > Time.now ? true : false}
   end
 
   def get_hw
@@ -128,14 +129,14 @@ class Api::V1::HomeworksController < Api::V1::BaseController
         end
 
         if sta==0
-          e = i.evaluations.where(types:'homework')
+          e = i.evaluations.where(types:'text-score')
         else
           ee = Grade.where(term:term,courses_id:i.id).select(:evaluations_id).group(:evaluations_id)
           eee = []
           ee.each do |j|
             eee.push(j.evaluations_id)
           end
-          e = Evaluation.where(id:eee,types:'homework')
+          e = Evaluation.where(id:eee,types:'text-score')
         end
 
 
