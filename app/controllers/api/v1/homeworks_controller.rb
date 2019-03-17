@@ -1,20 +1,27 @@
 class Api::V1::HomeworksController < Api::V1::BaseController
   
   def save_hw_img
-    upload_file = params[:file]
-    file_name = upload_file.original_filename
-    file_path = File.expand_path(File.dirname(__FILE__) + '/../../../..') + '/public/homework_img/' + file_name
-    data = File.read(upload_file.path)
-    new_file = File.new(file_path, "wb+")
-    if new_file
-      new_file.syswrite(data)
-    end
-    new_file.close
-    pl = 'http://127.0.0.1:3000/homework_img/' + file_name
-    path_list = [pl]
+    path_list = []
+
+    100.times do |i|
+      upload_file = params["file"+i.to_s]
+      if upload_file.nil?
+        break
+      end
+      file_name = upload_file.original_filename
+      file_path = File.expand_path(File.dirname(__FILE__) + '/../../../..') + '/public/homework_img/' + file_name
+      data = File.read(upload_file.path)
+      new_file = File.new(file_path, "wb+")
+      if new_file
+        new_file.syswrite(data)
+      end
+      new_file.close
+      pl = 'http://127.0.0.1:9999/homework_img/' + file_name
+      path_list.push(pl)
+    end   
     
     render json:{
-      file_name: file_name,
+      # file_name: file_name,
       error: false,
       pathList: path_list
       # url: file_path  
