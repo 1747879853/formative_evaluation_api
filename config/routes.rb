@@ -123,6 +123,8 @@ Rails.application.routes.draw do
 
       get        '/stu_homework_by_id'  =>  'homeworks#get_hw_by_id'
 
+      post      'save_hw_img' =>  'homeworks#save_hw_img'
+
     end
   end
 
