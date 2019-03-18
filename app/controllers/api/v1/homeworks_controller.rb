@@ -2,9 +2,9 @@ class Api::V1::HomeworksController < Api::V1::BaseController
   
   def save_hw_img
     path_list = []
-
-    100.times do |i|
-      upload_file = params["file"+i.to_s]
+    files = params.keys[0,params.keys.length-2]
+    files.each do |i|
+      upload_file = params[i.to_s]
       if upload_file.nil?
         break
       end
@@ -16,14 +16,14 @@ class Api::V1::HomeworksController < Api::V1::BaseController
         new_file.syswrite(data)
       end
       new_file.close
-      pl = 'http://127.0.0.1:9999/homework_img/' + file_name
+      pl = 'http://127.0.0.1:3000/homework_img/' + file_name
       path_list.push(pl)
     end   
     
     render json:{
       # file_name: file_name,
-      error: false,
-      pathList: path_list
+      "errno": 0,
+      "data": path_list
       # url: file_path  
     }
   end
