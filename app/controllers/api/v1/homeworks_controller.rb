@@ -16,7 +16,7 @@ class Api::V1::HomeworksController < Api::V1::BaseController
         new_file.syswrite(data)
       end
       new_file.close
-      pl = 'http://127.0.0.1:3000/homework_img/' + file_name
+      pl = 'http://127.0.0.1:9999/homework_img/' + file_name
       path_list.push(pl)
     end   
     
