@@ -67,9 +67,12 @@ class Api::V1::CoursesController < Api::V1::BaseController
       weight.each do |i|
         v = true
         c_e.each do |j|
-          if i["id"] ==j.evaluations_id
+          if i["id"] == j.evaluations_id 
             v = false
-            puts '++++++++++++++++++++++++++++++++++++++'
+            if i["weight"] != j.weight 
+              j.update(weight: i["weight"])
+            end
+            # puts '++++++++++++++++++++++++++++++++++++++'
             break
           end
         end
