@@ -15,6 +15,9 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
 
   def post_tclasslist
     t_id = current_user.owner_id
+
+    # TeachersClassesCourse存放:  教师id-班级id-课程id-学期id 之间的对应关系
+    # <TeachersClassesCourse id: 60, teachers_id: 9, class_rooms_id: 13, courses_id: 16, term: "7", status: 2>
     a = TeachersClassesCourse.where(term: params.require(:params)[:term],teachers_id: t_id).select('class_rooms_id').group('class_rooms_id').order('class_rooms_id')
     data = []
     a.length.times do|i|
@@ -31,14 +34,14 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     render json: data
   end
 
-  def get_classgrade
+  def get_classgrade   #根据学期term、班级class_id、课程course_id,查成绩
     t_id = current_user.owner_id
     course_id = params.require(:params)[:course_id]
     class_id = params.require(:params)[:class_id]
     st = TeachersClassesCourse.where(teachers_id:t_id,courses_id:course_id,class_rooms_id:class_id,term:params.require(:params)[:term]).select(:status)
     
 
-    if st[0]["status"]==2
+    if st[0]["status"]==2  #已经提交了成绩，不能再修改
       
       s = Student.select("id,name,sno").where(status: 1).where(class_room_id: class_id).as_json
       course = Course.find(course_id)
