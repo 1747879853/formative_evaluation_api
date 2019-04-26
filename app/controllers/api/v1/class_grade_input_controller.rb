@@ -93,7 +93,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       end
       e = Evaluation.where(id:eee).as_json
       ev = Evaluation.where(id:eee)
-
+      e_question = Evaluation.where(id:eee,types:'classroom_question').where.not(parent_id: 0).as_json
 
       ev.length.times do |k|
         if(ev[k].parent!=nil)
@@ -109,12 +109,25 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         e.length.times do |j|
           e_id = 'e'+e[j]["id"].to_s
           a = Grade.select("grade").where(students_id:s[i]["id"],evaluations_id:e[j]["id"],courses_id:course_id,term:params.require(:params)[:term]).as_json
-          if a.empty?
+          if a.empty? or a[0]["grade"] == nil
             s[i][e_id]=''
           else
             s[i][e_id]=a[0]["grade"]
           end
         end
+        sum = 0
+        e_question.each do |k|
+          aa = Grade.select("grade").where(students_id:s[i]["id"],evaluations_id:k["id"],courses_id:course_id,term:params.require(:params)[:term]).as_json
+          if aa.empty? or aa[0]["grade"] == nil
+            
+          else
+            sum = sum + 1
+          end
+          # puts '************'
+          # puts aa
+          # puts '************'
+        end
+        s[i]['count']=sum
       end
       render json: {'a': e,'b': s,'c': 'editable'}
 
