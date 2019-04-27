@@ -34,14 +34,64 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     render json: data
   end
 
+  def post_tclasslist_question
+    t_id = current_user.owner_id
+
+    # TeachersClassesCourse存放:  教师id-班级id-课程id-学期id 之间的对应关系
+    # <TeachersClassesCourse id: 60, teachers_id: 9, class_rooms_id: 13, courses_id: 16, term: "7", status: 2>
+    a = TeachersClassesCourse.where(term: params.require(:params)[:term],teachers_id: t_id).select('class_rooms_id').group('class_rooms_id').order('class_rooms_id')
+    data = []
+    a.length.times do|i|
+      b={}
+      b[:id]=a[i].class_rooms_id
+      b[:name]=ClassRoom.find(a[i].class_rooms_id).name
+      c = TeachersClassesCourse.where(term: params.require(:params)[:term],teachers_id: t_id,class_rooms_id:a[i].class_rooms_id).select('courses_id').group('courses_id').order('courses_id').as_json
+      b[:course]=[]
+
+      c.each do |j|
+        status = TeachersClassesCourse.where(term: params.require(:params)[:term],teachers_id: t_id,class_rooms_id:a[i].class_rooms_id,courses_id:j["courses_id"])[0].status
+        if status == 2
+          ee = Grade.where(term:params.require(:params)[:term],courses_id:j["courses_id"]).select(:evaluations_id).group(:evaluations_id)
+          eee = []
+          ee.each do |i|
+            eee.push(i.evaluations_id)
+          end
+
+          ev = Evaluation.where(id:eee,types:'classroom_question')
+          if ev.empty? or ev[0].id ==nil
+          else
+            b[:course].push({"id" => j["courses_id"],"name" => Course.find(j["courses_id"]).name,"status" => status})
+          end
+        else
+          ee = Weight.where(courses_id:j["courses_id"]).where(status:1).select(:evaluations_id)
+          eee = []
+          ee.each do |i|
+            eee.push(i.evaluations_id)
+          end
+
+          ev = Evaluation.where(id:eee,types:'classroom_question')
+          if ev.empty? or ev[0].id ==nil
+          else
+            b[:course].push({"id" => j["courses_id"],"name" => Course.find(j["courses_id"]).name,"status" => status})
+          end
+        end
+        # b[:course].push({"id" => j["courses_id"],"name" => Course.find(j["courses_id"]).name,"status" => status})
+      end      
+      data.push(b)
+    end
+    render json: data
+  end
+
   def get_classgrade   #根据学期term、班级class_id、课程course_id,查成绩
     t_id = current_user.owner_id
     course_id = params.require(:params)[:course_id]
     class_id = params.require(:params)[:class_id]
     st = TeachersClassesCourse.where(teachers_id:t_id,courses_id:course_id,class_rooms_id:class_id,term:params.require(:params)[:term]).select(:status)
     
-
-    if st[0]["status"]==2  #已经提交了成绩，不能再修改
+    if st.empty?
+      render json: {'a': [],'b': [],'c': 'uneditable'}
+    
+    elsif st[0]["status"]==2  #已经提交了成绩，不能再修改
       
       s = Student.select("id,name,sno").where(status: 1).where(class_room_id: class_id).as_json
       course = Course.find(course_id)
@@ -93,7 +143,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       end
       e = Evaluation.where(id:eee).as_json
       ev = Evaluation.where(id:eee)
-      e_question = Evaluation.where(id:eee,types:'classroom_question').where.not(parent_id: 0).as_json
+      e_question = Evaluation.where(id:eee,types:'classroom_question').as_json
 
       ev.length.times do |k|
         if(ev[k].parent!=nil)
@@ -148,7 +198,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
 
     a = []
     evallist.length.times do |i|
-      g = Grade.where(students_id:evallist[i]["stu"],courses_id:courses_id,evaluations_id:evallist[i]["id"])
+      g = Grade.where(students_id:evallist[i]["stu"],courses_id:courses_id,evaluations_id:evallist[i]["id"],term:term)
       if g.empty?
         Grade.create(students_id:evallist[i]["stu"],courses_id:courses_id,evaluations_id:evallist[i]["id"],grade:evallist[i]["grade"],class_rooms_id:class_id,term:term)
       else

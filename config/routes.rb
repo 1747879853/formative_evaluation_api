@@ -94,6 +94,7 @@ Rails.application.routes.draw do
       # ClassGradeInput actions
       post       'tcourseList'     =>  'class_grade_input#get_tcourselist'
       post       'tclassList'      =>  'class_grade_input#post_tclasslist'
+      post       'tclassList_question'      =>  'class_grade_input#post_tclasslist_question'
       patch      'inputclassgrade' =>  'class_grade_input#inputclassgrade'
       post       'get_classgrade'  =>  'class_grade_input#get_classgrade'
 
