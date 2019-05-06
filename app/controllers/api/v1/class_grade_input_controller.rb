@@ -197,16 +197,20 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     tcc.update(status:status)
 
     a = []
+    
     evallist.length.times do |i|
+      sum = 0
       g = Grade.where(students_id:evallist[i]["stu"],courses_id:courses_id,evaluations_id:evallist[i]["id"],term:term)
-      if g.empty?
+      if g.empty? and evallist[i]["grade"]!=nil
+        sum = sum +1
         Grade.create(students_id:evallist[i]["stu"],courses_id:courses_id,evaluations_id:evallist[i]["id"],grade:evallist[i]["grade"],class_rooms_id:class_id,term:term)
       else
         g.update(grade:evallist[i]["grade"])
       end
+      evallist[i]["count"]=sum
       a.push(evallist[i])
     end
-    render json: a
+    render json: {'a': a}
   end
 
   def studentgradeList
