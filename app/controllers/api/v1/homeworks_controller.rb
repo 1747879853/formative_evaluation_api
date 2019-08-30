@@ -129,76 +129,91 @@ class Api::V1::HomeworksController < Api::V1::BaseController
   end
 
   def get_hw
-    type = current_user.owner_type
-    u = current_user.owner    
-    term = params[:term]
+    type = current_user.owner_type #获取当前用户的类型，Student或Teacher
+    u = current_user.owner    #获取当前用户记录
+    term = params[:term]   #获取前端给的学期id
     if type =='Student'
-      cr = u.class_room
-      c_id = TeachersClassesCourse.where(class_rooms_id:cr.id,term:term).select(:courses_id).group(:courses_id)
+      cr = u.class_room    #获取学生的班级记录
+      c_id = TeachersClassesCourse.where(class_rooms_id:cr.id,term:term).select(:courses_id).group(:courses_id)  #通过班级学期查找课程id
       c = []
       c_id.each do |i|
-        c.push(Course.find(i.courses_id))
+        c.push(Course.find(i.courses_id))  #通过课程id找到课程的所有记录
       end
-
+      # puts '*******************'
+      # puts c
+      # puts '*******************'
       data = []
-      c.each do |i|
+      c.each do |i|    #循环遍历每一门课程
+        # puts '-------------------------------'
+        # puts '-------------------------------'
         a = {}
-        t = TeachersClassesCourse.where(class_rooms_id:cr.id,term:term,courses_id:i.id).select(:teachers_id)
+        t = TeachersClassesCourse.where(class_rooms_id:cr.id,term:term,courses_id:i.id).select(:teachers_id)  #通过每一门课程找到课程对应的老师
 
         # e = i.evaluations.where(types:'homework')
 
-        sta = 1
-        st = TeachersClassesCourse.where(teachers_id:t[0].teachers_id,courses_id:i.id,term:term).select(:status)
-        st.each do |j|
-          if j.status !=2
-            sta = 0
-            break
-          end
+        sta = 1  #标志位用于163行判断(如果是1说明status为2，0则status为1或0)
+        st = TeachersClassesCourse.where(teachers_id:t[0].teachers_id,courses_id:i.id,term:term,class_rooms_id:cr.id).select(:status) #查status
+        # puts 'status='
+        # puts st[0].status
+        if st[0].status !=2   #如果status不为2（2为已提交成绩的,0为未暂存过的,1为暂存过的）
+          sta = 0
         end
-
-        if sta==0
-          e = i.evaluations.where(types:'text-score')
-        else
-          ee = Grade.where(term:term,courses_id:i.id).select(:evaluations_id).group(:evaluations_id)
+        # puts 'sta='
+        # puts sta
+        if sta==0  #如果老师还没有提交课程学生的成绩,则从课程评价指标关系中找评价指标
+          e = i.evaluations.where(types:'text-score')   
+          # puts '*******************'
+          # puts e                
+          # puts '*******************'
+        else          #如果是已经提交过成绩的那么从grade表里查找评价指标
+          ee = Grade.where(term:term,courses_id:i.id).select(:evaluations_id).group(:evaluations_id)  
           eee = []
           ee.each do |j|
             eee.push(j.evaluations_id)
           end
           e = Evaluation.where(id:eee,types:'text-score')
+          # puts '*******************'
+          # puts e                
+          # puts '*******************'
         end
 
+        
 
-        if e.length>0
+        if e.length>0            #如果作业类型的评价指标不为空则创建数组a
           a["id"]=i.id
           a["name"]=i.name
           a["homework"]=[]
 
           b = {}
-          e.each do |j|
+          e.each do |j|          #遍历作业类型的评价指标看是否有作业被布置，如果有则加入a["homework"]
             b["id"]=j.id
             b["name"]=j.name
             b["types"]=j.types
             b["homework"]=[]
             b["done"]=0
-            h = TeaHomework.where(teachers_id:t[0].teachers_id,courses_id:i.id,term:term,evaluations_id:j.id)
+            h = TeaHomework.where(teachers_id:t[0].teachers_id,courses_id:i.id,term:term,evaluations_id:j.id) #看看这个作业评价指标是否被老师布置
+
+            # puts '*******************'
+            # puts h                
+            # puts '*******************'
             
-            if h.length>0&&h[0].start_time>Time.now
+            if h.length>0&&h[0].start_time>Time.now   #如果已被布置但是开始时间未到,什么都不做
               # b["homework"].push(h[0].as_json)
               # b["done"]=0
               # a["homework"].push(b.as_json)
-            elsif h.length>0&&h[0].start_time<Time.now&&h[0].end_time>Time.now
+            elsif h.length>0&&h[0].start_time<Time.now&&h[0].end_time>Time.now  #如果已被布置且已到开始时间未到结束时间
               b["homework"].push(h[0].as_json)
-              sh = StuHomework.where(tea_homeworks_id:h[0].id,students_id:u.id)
-              if sh.length>0
+              sh = StuHomework.where(tea_homeworks_id:h[0].id,students_id:u.id)   #查看学生是否已提交作业
+              if sh.length>0  #已提交
                 b["done"]=2  
                 b["homework"].push(sh[0].as_json)
-              else
+              else  #未提交
                 b["done"]=1
               end
               a["homework"].push(b.as_json)
-            elsif h.length>0&&h[0].end_time<Time.now
+            elsif h.length>0&&h[0].end_time<Time.now   #如果已被布置且已超过截止时间
               b["homework"].push(h[0].as_json)
-              sh = StuHomework.where(tea_homeworks_id:h[0].id,students_id:u.id)
+              sh = StuHomework.where(tea_homeworks_id:h[0].id,students_id:u.id)   #查看学生是否已提交作业
               if sh.length>0
                 b["homework"].push(sh[0].as_json)
               end
