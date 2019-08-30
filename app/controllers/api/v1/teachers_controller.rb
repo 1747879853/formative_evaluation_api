@@ -7,7 +7,7 @@ class Api::V1::TeachersController < Api::V1::BaseController
 
   def post_teacherlist
     begin
-      t = Teacher.find_by(tno: params[:tno])
+      t = Teacher.find_by(tno: params.require(:params)[:tno])
       if t
         render json: {
           code: 0,
@@ -56,13 +56,15 @@ class Api::V1::TeachersController < Api::V1::BaseController
 
   def delete_teacherlist
     begin
-      teacher_id = params[:id]
+      teacher_id = params.require(:params)[:id]
       teacher = Teacher.find(teacher_id)
-      if teacher.update(status: params[:status])
+     
+      teacher.status = params.require(:params)[:status]
+      if teacher.save!
         user_id = User.where(owner_id: teacher_id).where("owner_type='Teacher'").ids
-        user = User.find(user_id[0])
-        user.destroy
-        render json: { }
+        user = User.find(user_id[0]) if user_id.length > 0
+        user.delete if user
+        render json: teacher
       end
     rescue Exception => e
       render json: { msg: e }, status: 500      
