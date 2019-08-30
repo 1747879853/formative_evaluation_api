@@ -1,23 +1,35 @@
 class Api::V1::TeachersController < Api::V1::BaseController
   
   def get_teacherlist
-    render json: Teacher.where(status: '1').where("name is not null").all
+    # render json: Teacher.where(status: '1').where("name is not null").all
+    render json: Teacher.all.order(status: :desc).order(:tno)
   end
 
   def post_teacherlist
     begin
-      teacher = Teacher.new(teacher_params)
-      if teacher.save!
-        user = User.new
-        user.password='password'
-        user.owner = teacher
-        user.username = teacher.name
-        user.email = teacher.tno
-        user.tel = teacher.tel
-        user.save!
+      t = Teacher.find_by(tno: params[:tno])
+      if t
+        render json: {
+          code: 0,
+          msg: '该教师已存在'
+        }
+      else
+        teacher = Teacher.new(teacher_params)
+        if teacher.save!
+          user = User.new
+          user.password='password'
+          user.owner = teacher
+          user.username = teacher.name
+          user.email = teacher.tno
+          user.tel = teacher.tel
+          user.save!
 
-        user.auth_groups.push AuthGroup.find_by(title: '老师')
-        render json: teacher
+          user.auth_groups.push AuthGroup.find_by(title: '老师')
+          render json: {
+            code: 1,
+            data: teacher
+          }
+        end
       end
     rescue Exception => e
       render json: { msg: e }, status: 500
@@ -44,9 +56,9 @@ class Api::V1::TeachersController < Api::V1::BaseController
 
   def delete_teacherlist
     begin
-      teacher_id = params.require(:params)[:id]
+      teacher_id = params[:id]
       teacher = Teacher.find(teacher_id)
-      if teacher.update(params.require(:params).permit(:status))
+      if teacher.update(status: params[:status])
         user_id = User.where(owner_id: teacher_id).where("owner_type='Teacher'").ids
         user = User.find(user_id[0])
         user.destroy
