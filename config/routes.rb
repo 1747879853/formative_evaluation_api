@@ -117,7 +117,7 @@ Rails.application.routes.draw do
       get        '/tea_homework'  =>  'homeworks#get_hw_eva'
       post       '/tea_homework'  =>  'homeworks#post_hw_eva'
       patch      '/tea_homework'  =>  'homeworks#patch_hw_eva'
-
+      post       '/tea_comment'   =>  'homeworks#post_tea_comment'
       get        '/stu_homework'  =>  'homeworks#get_hw'
       post       '/stu_homework'  =>  'homeworks#post_hw'
       patch      '/stu_homework'  =>  'homeworks#patch_hw'

@@ -228,44 +228,73 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       s = Student.find(s_id)
       c_name = s.class_room.name
       c_id = s.class_room.id
-
+      id_list=[]
       t = TeachersClassesCourse.where(class_rooms_id:c_id).select("term").group("term").order("term")
-
+      #班级id是唯一的，对应的学期可能有多个
       table_list = []
       grade_list = []
       term = []
+      teachers_id=[]
+      tea_comment_list=[]
+      
       t.length.times do |i|
-        term.push(Term.find(t[i].term))
+        if defined?t[i].term
+        else
+          next
+        end
+        #teachers_id.push(t[i].teachers_id)
+        #tea_home_id=
+        term.push(Term.find(t[i].term))#这一句应该是没有用，暂定
         table_msg = []
         grade = []
         course = TeachersClassesCourse.where(class_rooms_id:c_id,term:t[i].term,status:2).select("courses_id").group("courses_id").order("courses_id")
+        #根据唯一班级id查找在本学期上的课程
         b = {}
         course.length.times do |j|
           e = []
-
+          #查找本学期，本课程的评估id（评估id可能一对多）可能有多个评价指标
           ee = Grade.where(term:t[i].term,courses_id:course[j].courses_id).select(:evaluations_id).group(:evaluations_id)
           eee = []
           ee.each do |l|
             eee.push(l.evaluations_id)
           end
           c = Evaluation.where(id:eee).select("id,parent_id,name")
-
+          #根据评价指标id查找父id以及名字
           # c = Course.find(course[j].courses_id).evaluations.where(term:t[i].term).select("id,parent_id,name,eno")
           bb =[]
           aa = {}
           aa["coursename"]=Course.find(course[j].courses_id).name
           c.length.times do |k|
             g = Grade.where(students_id:s_id,courses_id:course[j].courses_id,evaluations_id:c[k].id,term:t[i].term)
-            if g.empty?
-              aa['e'+c[k].id.to_s]='暂无成绩'
+            teacher_id=TeachersClassesCourse.where(courses_id:course[j].courses_id,term:t[i].term,class_rooms_id:s.class_room.id).select("teachers_id")
+            #################!!!!!!!!!!!!!
+            
+            tea_homework_id = TeaHomework.where(courses_id:course[j].courses_id,evaluations_id:c[k].id,term:t[i].term,teachers_id:teacher_id[0].teachers_id).select("id")
+            if tea_homework_id!=nil
+              tea_comment=StuHomework.where(students_id:s_id,tea_homeworks_id:tea_homework_id[0].id).select("tea_comment")
+              tea_comment_list.push(tea_comment[0].tea_comment)
             else
-              aa['e'+c[k].id.to_s]=g[0].grade
-            end            
+            end
+            if g.empty?
+              aa['e'+c[k].id.to_s]='暂无成绩    教师评语：'+tea_comment[0].tea_comment.to_s
+            else
+              aa['e'+c[k].id.to_s]=g[0].grade.to_s+'    教师评语：'+tea_comment[0].tea_comment.to_s
+              #aa['tea_comment']=g[0].
+
+            end  
+            
+            
+            #tea_comment=StuHomework.where(students_id:s_id,tea_homeworks_id:tea_homework_id[0].id).select("tea_comment")
+            
+            #tea_comment_list.push(tea_comment[0].tea_comment)
+           # id_list.push(tea_homework_id[0])
             a = {}
             if c[k].parent!=nil
               a["evalname"]=c[k].parent.name+'-'+c[k]["name"]
+              a["tea_comment"] = tea_comment[0].tea_comment
             else
               a["evalname"]=c[k].name
+               a["tea_comment"] = tea_comment[0].tea_comment
             end  
             a["id"]=c[k].id         
             e.push(a.as_json)
@@ -280,7 +309,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         table_list.push(table_msg)
       end
       
-      render json: {'a': s_name,'b': c_name,'c': table_list,'d': term,'e': grade_list}
+      render json: {'a': s_name,'b': c_name,'c': table_list,'d': term,'e': grade_list,'f':tea_comment_list,'g':id_list}
     else
       render json: {'a': s_name}
     end    

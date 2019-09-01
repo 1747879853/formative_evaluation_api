@@ -116,6 +116,19 @@ class Api::V1::HomeworksController < Api::V1::BaseController
     end
   end
 
+  def post_tea_comment
+    th_id = current_user.owner_id
+    tea_comment = params.require(:params)[:tea_comment]
+    stu_id = params.require(:params)[:stu_id]
+    courses_id = params.require(:params)[:courses_id]
+    term = params.require(:params)[:term]
+    eva_id = params.require(:params)[:eval]
+    th = TeaHomework.where(teachers_id:th_id,courses_id:courses_id,term:term,evaluations_id:eva_id)
+    s = StuHomework.where(students_id:stu_id,tea_homeworks_id:th[0].id)
+    s.update(tea_comment:tea_comment)
+    render json: s
+  end
+
   def patch_hw_eva
     t_id = current_user.owner_id
     term = params.require(:params)[:term]
@@ -250,7 +263,7 @@ class Api::V1::HomeworksController < Api::V1::BaseController
     th = TeaHomework.where(teachers_id:t_id,courses_id:course_id,term:term,evaluations_id:eva_id)
     if th.length>0
       th_id = th[0].id
-      sh = StuHomework.where(students_id:stu_id,tea_homeworks_id:th_id).select(:finish_time,:content)
+      sh = StuHomework.where(students_id:stu_id,tea_homeworks_id:th_id).select(:finish_time,:content,:tea_comment)
       if sh.length>0
         render json: sh[0]
       else
