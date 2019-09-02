@@ -101,7 +101,7 @@ class Api::V1::TeachersController < Api::V1::BaseController
   # end
 
   def post_tcclist
-    t = Teacher.select("id,name").where(status: '1').where("name is not null").all.as_json
+    t = Teacher.where(status: '1').where("name is not null").all.as_json
     t.length.times do |i|
       a = TeachersClassesCourse.where(term: params.require(:params)[:term] ,teachers_id: t[i]["id"]).select('class_rooms_id').group('class_rooms_id').order('class_rooms_id')
       b = []
