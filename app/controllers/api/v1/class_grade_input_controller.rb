@@ -266,19 +266,19 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
           aa["coursename"]=Course.find(course[j].courses_id).name
           c.length.times do |k|
             g = Grade.where(students_id:s_id,courses_id:course[j].courses_id,evaluations_id:c[k].id,term:t[i].term)
-            teacher_id=TeachersClassesCourse.where(courses_id:course[j].courses_id,term:t[i].term,class_rooms_id:s.class_room.id).select("teachers_id")
+            #teacher_id=TeachersClassesCourse.where(courses_id:course[j].courses_id,term:t[i].term,class_rooms_id:s.class_room.id).select("teachers_id")
             #################!!!!!!!!!!!!!
             
-            tea_homework_id = TeaHomework.where(courses_id:course[j].courses_id,evaluations_id:c[k].id,term:t[i].term,teachers_id:teacher_id[0].teachers_id).select("id")
-            if tea_homework_id!=nil
-              tea_comment=StuHomework.where(students_id:s_id,tea_homeworks_id:tea_homework_id[0].id).select("tea_comment")
-              tea_comment_list.push(tea_comment[0].tea_comment)
-            else
-            end
+            #tea_homework_id = TeaHomework.where(courses_id:course[j].courses_id,evaluations_id:c[k].id,term:t[i].term,teachers_id:teacher_id[0].teachers_id).select("id")
+            #if tea_homework_id!=nil
+              #tea_comment=StuHomework.where(students_id:s_id,tea_homeworks_id:tea_homework_id[0].id).select("tea_comment")
+              #tea_comment_list.push(tea_comment[0].tea_comment)
+            #else
+            #end
             if g.empty?
-              aa['e'+c[k].id.to_s]='暂无成绩    教师评语：'+tea_comment[0].tea_comment.to_s
+              aa['e'+c[k].id.to_s]='暂无成绩'
             else
-              aa['e'+c[k].id.to_s]=g[0].grade.to_s+'    教师评语：'+tea_comment[0].tea_comment.to_s
+              aa['e'+c[k].id.to_s]=g[0].grade.to_s
               #aa['tea_comment']=g[0].
 
             end  
@@ -291,10 +291,10 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
             a = {}
             if c[k].parent!=nil
               a["evalname"]=c[k].parent.name+'-'+c[k]["name"]
-              a["tea_comment"] = tea_comment[0].tea_comment
+             
             else
               a["evalname"]=c[k].name
-               a["tea_comment"] = tea_comment[0].tea_comment
+               
             end  
             a["id"]=c[k].id         
             e.push(a.as_json)
@@ -309,7 +309,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         table_list.push(table_msg)
       end
       
-      render json: {'a': s_name,'b': c_name,'c': table_list,'d': term,'e': grade_list,'f':tea_comment_list,'g':id_list}
+      render json: {'a': s_name,'b': c_name,'c': table_list,'d': term,'e': grade_list,'g':id_list}
     else
       render json: {'a': s_name}
     end    
