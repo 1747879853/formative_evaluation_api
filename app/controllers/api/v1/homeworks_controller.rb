@@ -118,6 +118,7 @@ class Api::V1::HomeworksController < Api::V1::BaseController
 
   def post_tea_comment
     th_id = current_user.owner_id
+    excellent = params.require(:params)[:excellent]
     tea_comment = params.require(:params)[:tea_comment]
     stu_id = params.require(:params)[:stu_id]
     courses_id = params.require(:params)[:courses_id]
@@ -125,7 +126,7 @@ class Api::V1::HomeworksController < Api::V1::BaseController
     eva_id = params.require(:params)[:eval]
     th = TeaHomework.where(teachers_id:th_id,courses_id:courses_id,term:term,evaluations_id:eva_id)
     s = StuHomework.where(students_id:stu_id,tea_homeworks_id:th[0].id)
-    s.update(tea_comment:tea_comment)
+    s.update(tea_comment:tea_comment,excellent:excellent)
     render json: s
   end
 
@@ -243,6 +244,26 @@ class Api::V1::HomeworksController < Api::V1::BaseController
     end
   end
 
+  def get_ex_hw
+    s_id = current_user.owner_id
+    th_id = params[:th_id]
+    all_stu_num=[]
+    stu_name=[]
+    stu_num=[]
+    stu_content=[]
+    excellent_homwork = StuHomework.where(tea_homeworks_id:th_id,excellent:true).select(:students_id,:content)
+    if excellent_homwork.length>0
+    excellent_homwork.each do |i|
+      stu_content.push(i.content)
+      stu_name.push(Student.where(id:i.students_id).select(:name)[0].name)
+      stu_num.push(Student.where(id:i.students_id).select(:sno)[0].sno)
+      
+    end  
+    else
+    end
+    render json: {'name':stu_name,'stu_num':stu_num,'content':stu_content}
+  end
+
   def patch_hw
     s_id = current_user.owner_id
     content = params.require(:params)[:content]
@@ -263,7 +284,7 @@ class Api::V1::HomeworksController < Api::V1::BaseController
     th = TeaHomework.where(teachers_id:t_id,courses_id:course_id,term:term,evaluations_id:eva_id)
     if th.length>0
       th_id = th[0].id
-      sh = StuHomework.where(students_id:stu_id,tea_homeworks_id:th_id).select(:finish_time,:content,:tea_comment)
+      sh = StuHomework.where(students_id:stu_id,tea_homeworks_id:th_id).select(:finish_time,:content,:tea_comment,:excellent)
       if sh.length>0
         render json: sh[0]
       else
