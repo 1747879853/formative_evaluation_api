@@ -251,17 +251,11 @@ class Api::V1::HomeworksController < Api::V1::BaseController
     stu_name=[]
     stu_num=[]
     stu_content=[]
-    excellent_homwork = StuHomework.where(tea_homeworks_id:th_id,excellent:true).select(:students_id,:content)
-    if excellent_homwork.length>0
-    excellent_homwork.each do |i|
-      stu_content.push(i.content)
-      stu_name.push(Student.where(id:i.students_id).select(:name)[0].name)
-      stu_num.push(Student.where(id:i.students_id).select(:sno)[0].sno)
-      
-    end  
-    else
-    end
-    render json: {'name':stu_name,'stu_num':stu_num,'content':stu_content}
+    excellent_homwork = StuHomework.joins("left join students on stu_homeworks.students_id = students.id").where(tea_homeworks_id:th_id, excellent: true).select("students.name, students.sno, stu_homeworks.content")
+    
+
+
+    render json: excellent_homwork
   end
 
   def patch_hw
