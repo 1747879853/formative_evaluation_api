@@ -1,7 +1,6 @@
 class Student < ApplicationRecord
   has_one :user, as: :owner
   belongs_to :class_room
-  has_many :stu_homeworks, foreign_key: "students_id"
 
  #  def as_json(options = {})
 	# h = {}	

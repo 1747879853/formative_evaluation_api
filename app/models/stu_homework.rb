@@ -1,5 +1,4 @@
 class StuHomework < ApplicationRecord
-	belongs_to :students, foreign_key: 'students_id'
  #  def as_json(options = {})
 	# h = super(options)	
 	# h[:title] = self.name
