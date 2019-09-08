@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_29_071819) do
+ActiveRecord::Schema.define(version: 2019_09_03_110951) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -118,6 +118,7 @@ ActiveRecord::Schema.define(version: 2019_08_29_071819) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "tea_comment"
+    t.boolean "excellent"
     t.index ["students_id"], name: "index_stu_homeworks_on_students_id"
     t.index ["tea_homeworks_id"], name: "index_stu_homeworks_on_tea_homeworks_id"
   end

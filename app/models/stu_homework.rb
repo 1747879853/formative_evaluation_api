@@ -1,5 +1,4 @@
 class StuHomework < ApplicationRecord
-
  #  def as_json(options = {})
 	# h = super(options)	
 	# h[:title] = self.name
