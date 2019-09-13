@@ -126,6 +126,22 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
           else
             s[i][e_id]=a[0]["grade"]
           end
+
+          if e[j]["types"].to_s == 'text-score'
+            th = TeaHomework.where(teachers_id:t_id,courses_id:course_id,term:params.require(:params)[:term],evaluations_id:e[j]["id"])
+            if th.length>0 
+              th_id = th[0].id
+              sh = StuHomework.where(students_id:s[i]["id"],tea_homeworks_id:th_id).select(:status)
+              if sh.length>0
+                s[i][e_id+'status']=sh[0].status
+              else
+                s[i][e_id+'status']=0
+              end
+            else
+              s[i][e_id+'status']=0
+            end            
+          end
+
         end
       end
       render json: {'a': e,'b': s,'c': 'uneditable'}
@@ -164,6 +180,22 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
           else
             s[i][e_id]=a[0]["grade"]
           end
+
+          if e[j]["types"].to_s == 'text-score'
+            th = TeaHomework.where(teachers_id:t_id,courses_id:course_id,term:params.require(:params)[:term],evaluations_id:e[j]["id"])
+            if th.length>0 
+              th_id = th[0].id
+              sh = StuHomework.where(students_id:s[i]["id"],tea_homeworks_id:th_id).select(:status)
+              if sh.length>0
+                s[i][e_id+'status']=sh[0].status
+              else
+                s[i][e_id+'status']=0
+              end
+            else
+              s[i][e_id+'status']=0
+            end            
+          end
+          
         end
         sum = 0
         e_question.each do |k|

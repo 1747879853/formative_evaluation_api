@@ -218,20 +218,26 @@ class Api::V1::HomeworksController < Api::V1::BaseController
             elsif h.length>0&&h[0].start_time<Time.now&&h[0].end_time>Time.now  #如果已被布置且已到开始时间未到结束时间
               b["homework"].push(h[0].as_json)
               sh = StuHomework.where(tea_homeworks_id:h[0].id,students_id:u.id)   #查看学生是否已提交作业
-              if sh.length>0  #已提交
-                b["done"]=2  
+              if sh.length>0  #已暂存
+                if sh[0].status==0 #未提交
+                  b["done"]=1
+                else      #已提交
+                  b["done"]=2
+                end                  
                 b["homework"].push(sh[0].as_json)
-              else  #未提交
+              else  #未暂存
                 b["done"]=1
               end
               a["homework"].push(b.as_json)
             elsif h.length>0&&h[0].end_time<Time.now   #如果已被布置且已超过截止时间
               b["homework"].push(h[0].as_json)
               sh = StuHomework.where(tea_homeworks_id:h[0].id,students_id:u.id)   #查看学生是否已提交作业
-              if sh.length>0
+              if sh.length>0    #已提交
+                b["done"]=2
                 b["homework"].push(sh[0].as_json)
-              end
-              b["done"]=3
+              else             #未提交且已经超时
+                b["done"]=3
+              end              
               a["homework"].push(b.as_json)
             end
 
@@ -251,10 +257,18 @@ class Api::V1::HomeworksController < Api::V1::BaseController
     s_id = current_user.owner_id
     content = params.require(:params)[:content]
     th_id = params.require(:params)[:th_id]
+    status = params.require(:params)[:status]
     if content=='get'
       render json: StuHomework.where(students_id:s_id,tea_homeworks_id:th_id)
     else
-      s = StuHomework.create({students_id:s_id,tea_homeworks_id:th_id,finish_time:Time.now,content:content})
+      s = StuHomework.where(students_id:s_id,tea_homeworks_id:th_id)
+      if s.length>0
+        s.update(finish_time:Time.now,content:content,status:status)
+        s=s[0]
+      else
+        s = StuHomework.create({students_id:s_id,tea_homeworks_id:th_id,finish_time:Time.now,content:content,status:0})
+      end
+      
       render json: s
     end
   end
@@ -274,13 +288,13 @@ class Api::V1::HomeworksController < Api::V1::BaseController
   end
 
   def patch_hw
-    s_id = current_user.owner_id
-    content = params.require(:params)[:content]
-    th_id = params.require(:params)[:th_id]
+    # s_id = current_user.owner_id
+    # content = params.require(:params)[:content]
+    # th_id = params.require(:params)[:th_id]
 
-    s = StuHomework.where(students_id:s_id,tea_homeworks_id:th_id)
-    s.update(finish_time:Time.now,content:content)
-    render json: s
+    # s = StuHomework.where(students_id:s_id,tea_homeworks_id:th_id)
+    # s.update(finish_time:Time.now,content:content)
+    # render json: s
   end
 
   def get_hw_by_id
@@ -293,7 +307,7 @@ class Api::V1::HomeworksController < Api::V1::BaseController
     th = TeaHomework.where(teachers_id:t_id,courses_id:course_id,term:term,evaluations_id:eva_id)
     if th.length>0
       th_id = th[0].id
-      sh = StuHomework.where(students_id:stu_id,tea_homeworks_id:th_id).select(:finish_time,:content,:tea_comment,:excellent)
+      sh = StuHomework.where(students_id:stu_id,tea_homeworks_id:th_id,status:1).select(:finish_time,:content,:tea_comment,:excellent)
       if sh.length>0
         render json: sh[0]
       else
