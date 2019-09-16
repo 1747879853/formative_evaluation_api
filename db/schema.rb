@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_03_110951) do
+ActiveRecord::Schema.define(version: 2019_09_15_094956) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -105,6 +105,7 @@ ActiveRecord::Schema.define(version: 2019_09_03_110951) do
     t.string "grade", default: ""
     t.string "term", default: ""
     t.integer "class_rooms_id", default: 0, null: false
+    t.datetime "record_time"
     t.index ["courses_id"], name: "index_grades_on_courses_id"
     t.index ["evaluations_id"], name: "index_grades_on_evaluations_id"
     t.index ["students_id"], name: "index_grades_on_students_id"
