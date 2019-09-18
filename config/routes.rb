@@ -128,6 +128,8 @@ Rails.application.routes.draw do
 
       post      'save_hw_img' =>  'homeworks#save_hw_img'
 
+      get         '/lastWeekActivity'     =>    'homeworks#last_Week_Activity'
+
     end
   end
 

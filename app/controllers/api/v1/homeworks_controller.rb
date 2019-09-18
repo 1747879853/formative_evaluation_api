@@ -28,6 +28,22 @@ class Api::V1::HomeworksController < Api::V1::BaseController
     }
   end
 
+  def last_Week_Activity
+    #final_list = []
+    teacher_list = []
+    class_room_questions_list = []
+    room_questions = Evaluation.where(types:'classroom_question').select(:id)
+    room_questions.each do |i|
+      g = Grade.where(evaluations_id:i.id,record_time:(Time.now - 7.day)..Time.now).select(:class_rooms_id,:courses_id,:term)
+      g.each do |j|
+        teacher_id = TeachersClassesCourse.where(class_rooms_id:j.class_rooms_id,courses_id:j.courses_id,term:j.term).select(:teachers_id)
+        teacher_list.push(Teacher.where(id:teacher_id[0].teachers_id).select(:name,:tno)[0].name)
+      end
+    end
+
+    render json: teacher_list.group_by{|x| x}.map{|k,v| [k,v.count] }
+  end
+
   def get_hw_eva
     term = params[:term]
     t_id = current_user.owner_id
