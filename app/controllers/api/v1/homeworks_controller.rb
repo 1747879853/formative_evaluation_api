@@ -29,7 +29,14 @@ class Api::V1::HomeworksController < Api::V1::BaseController
   end
 
   def show_histo
-    render json: current_user.owner_type
+    user_id = current_user.owner
+    b = User.where(status: 1,owner_id:current_user.owner_id).where.not(owner_type: "Student").all
+    render json: {'a':b[0] }
+  end
+
+  def now_show_histo
+    checked_id = params[:checked_id]
+    render json: AuthGroup.where(id:checked_id).select(:title)
   end
 
   def last_Week_Activity

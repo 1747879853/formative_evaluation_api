@@ -130,6 +130,7 @@ Rails.application.routes.draw do
 
       get         '/lastWeekActivity'     =>    'homeworks#last_Week_Activity'
       get         '/show_histo'     =>    'homeworks#show_histo'
+      get         '/now_show_histo' =>    'homeworks#now_show_histo'
 
     end
   end
