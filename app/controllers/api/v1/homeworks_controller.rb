@@ -28,6 +28,10 @@ class Api::V1::HomeworksController < Api::V1::BaseController
     }
   end
 
+  def show_histo
+    render json: current_user.owner_type
+  end
+
   def last_Week_Activity
     #final_list = []
     teacher_list = []
