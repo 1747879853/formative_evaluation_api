@@ -28,32 +28,6 @@ class Api::V1::HomeworksController < Api::V1::BaseController
     }
   end
 
-  def show_histo
-    user_id = current_user.owner
-    b = User.where(status: 1,owner_id:current_user.owner_id).where.not(owner_type: "Student").all
-    render json: {'a':b[0] }
-  end
-
-  def now_show_histo
-    checked_id = params[:checked_id]
-    render json: AuthGroup.where(id:checked_id).select(:title)
-  end
-
-  def last_Week_Activity
-    #final_list = []
-    teacher_list = []
-    class_room_questions_list = []
-    room_questions = Evaluation.where(types:'classroom_question').select(:id)
-    room_questions.each do |i|
-      g = Grade.where(evaluations_id:i.id,record_time:(Time.now - 7.day)..Time.now).select(:class_rooms_id,:courses_id,:term)
-      g.each do |j|
-        teacher_id = TeachersClassesCourse.where(class_rooms_id:j.class_rooms_id,courses_id:j.courses_id,term:j.term).select(:teachers_id)
-        teacher_list.push(Teacher.where(id:teacher_id[0].teachers_id).select(:name,:tno)[0].name)
-      end
-    end
-
-    render json: teacher_list.group_by{|x| x}.map{|k,v| [k,v.count] }
-  end
 
   def get_hw_eva
     term = params[:term]
