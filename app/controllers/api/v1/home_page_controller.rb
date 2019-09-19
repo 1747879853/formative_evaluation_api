@@ -28,7 +28,12 @@ class Api::V1::HomePageController < Api::V1::BaseController
 
     t=Time.now
     current_term = Term.where('begin_time < ?',t).where('end_time > ?', t).first
-    name_times = Grade.joins("inner join evaluations on grades.evaluations_id = evaluations.id inner join teachers_classes_courses on grades.class_rooms_id = teachers_classes_courses.class_rooms_id and grades.courses_id = teachers_classes_courses.courses_id and grades.term = teachers_classes_courses.term inner join teachers on teachers_classes_courses.teachers_id = teachers.id").where(term: current_term.id).where("evaluations.types = 'classroom_question' ").group('teachers.name').count
+
+    d = Date.today
+    end_datetime = (d-d.wday).to_datetime.end_of_day
+    start_datetime = (d-d.wday-6).to_datetime.beginning_of_day
+
+    name_times = Grade.joins("inner join evaluations on grades.evaluations_id = evaluations.id inner join teachers_classes_courses on grades.class_rooms_id = teachers_classes_courses.class_rooms_id and grades.courses_id = teachers_classes_courses.courses_id and grades.term = teachers_classes_courses.term inner join teachers on teachers_classes_courses.teachers_id = teachers.id").where(term: current_term.id).where(record_time: start_datetime..end_datetime).where("evaluations.types = 'classroom_question' ").group('teachers.name').count
     re =[]
     t = {}
     name_times.each do |e|
