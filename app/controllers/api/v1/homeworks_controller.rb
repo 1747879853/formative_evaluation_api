@@ -232,10 +232,14 @@ class Api::V1::HomeworksController < Api::V1::BaseController
             elsif h.length>0&&h[0].end_time<Time.now   #如果已被布置且已超过截止时间
               b["homework"].push(h[0].as_json)
               sh = StuHomework.where(tea_homeworks_id:h[0].id,students_id:u.id)   #查看学生是否已提交作业
-              if sh.length>0    #已提交
-                b["done"]=2
+              if sh.length>0    #已暂存
+                if sh[0].status==0 #未提交
+                  b["done"]=3
+                else      #已提交
+                  b["done"]=2
+                end
                 b["homework"].push(sh[0].as_json)
-              else             #未提交且已经超时
+              else             #未暂存且已经超时
                 b["done"]=3
               end              
               a["homework"].push(b.as_json)
