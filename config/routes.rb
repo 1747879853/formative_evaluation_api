@@ -128,6 +128,9 @@ Rails.application.routes.draw do
 
       post      'save_hw_img' =>  'homeworks#save_hw_img'
 
+      get         '/classroom_question_chart'     =>    'home_page#classroom_question_chart'
+      get         '/show_histo'     =>    'home_page#show_histo'
+
     end
   end
 

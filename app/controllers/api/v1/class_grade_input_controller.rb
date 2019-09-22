@@ -217,7 +217,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     
   end
 
-  def inputclassgrade
+  def inputclassgrade #暂存
     t_id = current_user.owner_id
     status = params.require(:params)[:status]
     courses_id = params.require(:params)[:courses_id]
@@ -233,17 +233,23 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     evallist.length.times do |i|
       sum = 0
       g = Grade.where(students_id:evallist[i]["stu"],courses_id:courses_id,evaluations_id:evallist[i]["id"],term:term)
+      # the grade record is not exist,so added
       if g.empty? and evallist[i]["grade"]!=nil and evallist[i]["grade"]!=''
         sum = sum +1
-        Grade.create(students_id:evallist[i]["stu"],courses_id:courses_id,evaluations_id:evallist[i]["id"],grade:evallist[i]["grade"],class_rooms_id:class_id,term:term)
+        Grade.create(students_id:evallist[i]["stu"],courses_id:courses_id,evaluations_id:evallist[i]["id"],grade:evallist[i]["grade"],class_rooms_id:class_id,term:term,record_time:Time.now)
+      # the grade record exist and score not null, but new score(the params) is null, so this is 原来填写了成绩，后来又清空
       elsif !g.empty? and evallist[i]["grade"] == '' and g[0]["grade"] != ''
         sum = sum -1
-        g.update(grade:evallist[i]["grade"])
+        # g.update(grade:evallist[i]["grade"],record_time:Time.now)
+        g[0].delete
+
+      # the grade record exist and new score(the params) is not null, so this is 修改成绩
       elsif !g.empty? and evallist[i]["grade"] != '' and evallist[i]["grade"]!=nil
         sum = sum +1
-        g.update(grade:evallist[i]["grade"])
+        g.update(grade:evallist[i]["grade"],record_time:Time.now)
+      # the grade record exist and new score(the params) is not null  , so this is 修改成绩
       elsif !g.empty? and evallist[i]["grade"] != '' and g[0]["grade"] != ''
-        g.update(grade:evallist[i]["grade"])
+        g.update(grade:evallist[i]["grade"],record_time:Time.now)
       end
       evallist[i]["count"]=sum
       a.push(evallist[i])

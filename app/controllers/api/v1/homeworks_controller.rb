@@ -28,6 +28,7 @@ class Api::V1::HomeworksController < Api::V1::BaseController
     }
   end
 
+
   def get_hw_eva
     term = params[:term]
     t_id = current_user.owner_id
