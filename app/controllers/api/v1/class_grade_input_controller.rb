@@ -285,7 +285,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         term.push(Term.find(t[i].term))#这一句应该是没有用，暂定
         table_msg = []
         grade = []
-        course = TeachersClassesCourse.where(class_rooms_id:c_id,term:t[i].term,status:[1,2]).select("courses_id").group("courses_id").order("courses_id")
+        course = TeachersClassesCourse.where(class_rooms_id:c_id,term:t[i].term,status:2).select("courses_id").group("courses_id").order("courses_id")
         #根据唯一班级id查找在本学期上的课程
         b = {}
         course.length.times do |j|
