@@ -271,7 +271,7 @@ class Api::V1::HomeworksController < Api::V1::BaseController
         s.update(finish_time:Time.now,content:content,status:status)
         s=s[0]
       else
-        s = StuHomework.create({students_id:s_id,tea_homeworks_id:th_id,finish_time:Time.now,content:content,status:0})
+        s = StuHomework.create({students_id:s_id,tea_homeworks_id:th_id,finish_time:Time.now,content:content,status:status})
       end
       
       render json: s
