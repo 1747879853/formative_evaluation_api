@@ -46,5 +46,41 @@ class Api::V1::HomePageController < Api::V1::BaseController
     render json: re
   end
 
+  def get_teacher_course_list
+    render json: {'a': Teacher.all,'b': Course.all } 
+  end
+
+  def get_details_histogram
+    checked_teachers = params[:checked_teachers]
+    checked_courses = params[:checked_courses]
+    t=Time.now
+    current_term = Term.where('begin_time < ?',t).where('end_time > ?', t).first
+    time = params[:time]
+    d = {}
+    res = []
+    times = []
+    checked_courses.each do |j|
+        courses_id = Course.select(:id).where(name:j)
+        
+        times = Grade.joins("inner join evaluations on grades.evaluations_id = evaluations.id inner join teachers_classes_courses on grades.class_rooms_id = teachers_classes_courses.class_rooms_id and grades.courses_id = teachers_classes_courses.courses_id and grades.term = teachers_classes_courses.term inner join teachers on teachers_classes_courses.teachers_id = teachers.id").where(term: current_term.id).where(record_time: time[0]..time[1]).where("evaluations.types = 'classroom_question' ").where(courses_id:courses_id).group('teachers.name').count
+       
+      end
+    checked_teachers.each do |i|
+      d['name'] = i
+      #res.push i
+      t = 0
+      times.each do |k|
+        if(k[0]==i)
+          t+=k[1]
+        end
+      end
+      d['times'] = t
+      res.push d
+      d = {}
+    end
+    render json: res
+  end
+
+
 
 end
