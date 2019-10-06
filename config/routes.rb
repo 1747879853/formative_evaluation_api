@@ -13,6 +13,9 @@ Rails.application.routes.draw do
       # Get login token from Knock
       post   'user_token'      => 'user_token#create'
 
+      #before_login actions
+      post   'resetPassword'  => 'before_login#reset_password'
+
       # User actions
       get    '/userList'       => 'users#get_userlist'
       get    '/users/current'  => 'users#current'
