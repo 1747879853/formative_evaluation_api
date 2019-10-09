@@ -268,7 +268,7 @@ class Api::V1::HomeworksController < Api::V1::BaseController
     else
       s = StuHomework.where(students_id:s_id,tea_homeworks_id:th_id)
       if s.length>0
-        s.update(finish_time:Time.now,content:content,status:status)
+        s = s.update(finish_time:Time.now,content:content,status:status)
         s=s[0]
       else
         s = StuHomework.create({students_id:s_id,tea_homeworks_id:th_id,finish_time:Time.now,content:content,status:status})
