@@ -130,9 +130,14 @@ Rails.application.routes.draw do
 
       get         '/classroom_question_chart'     =>    'home_page#classroom_question_chart'
       get         '/show_histo'     =>    'home_page#show_histo'
-      get         '/git_details_histogram'      =>    'home_page#git_details_histogram'
+      get         '/get_detailed_teacher_histogram'      =>    'home_page#get_detailed_teacher_histogram'
       get         '/get_teacher_course_list'     =>    'home_page#get_teacher_course_list'
       get         '/get_details_histogram'      =>    'home_page#get_details_histogram'
+      get         '/get_teacher_charts'   =>    'home_page#get_teacher_charts'
+      get         '/get_detailed_class_room_histogram'      =>    'home_page#get_detailed_class_room_histogram'
+      get         '/get_detailed_class__histogram'    =>    'home_page#get_detailed_class__histogram'
+      get         '/get_class_room_charts'      =>    'home_page#get_class_room_charts'
+      get         '/get_course_charts'    =>    'home_page#get_course_charts'
     end                                                     
   end
 

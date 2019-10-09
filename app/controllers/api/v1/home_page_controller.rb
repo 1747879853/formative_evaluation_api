@@ -47,7 +47,7 @@ class Api::V1::HomePageController < Api::V1::BaseController
   end
 
   def get_teacher_course_list
-    render json: {'a': Teacher.all,'b': Course.all } 
+    render json: {'a': Teacher.all,'b': Course.all,'c': ClassRoom.all } 
   end
 
   def get_details_histogram
@@ -79,6 +79,124 @@ class Api::V1::HomePageController < Api::V1::BaseController
       d = {}
     end
     render json: res
+  end
+
+  def get_detailed_teacher_histogram
+    time = params[:time]
+    name_times =Grade.joins("inner join evaluations on grades.evaluations_id = evaluations.id inner join teachers_classes_courses on grades.class_rooms_id = teachers_classes_courses.class_rooms_id and grades.courses_id = teachers_classes_courses.courses_id and grades.term = teachers_classes_courses.term inner join teachers on teachers_classes_courses.teachers_id = teachers.id").where(record_time: time[0]..time[1]).where("evaluations.types = 'classroom_question' ").group('teachers.name').count
+    re =[]
+    t = {}
+    name_times.each do |e|
+      t['name'] = e[0]
+      t['times'] = e[1]
+      re.push t  
+      t={}   
+
+    end
+    render json: re
+  end
+
+  def get_teacher_charts
+    time = params[:time]
+    checked_teacher = params[:checked_teacher]
+    teacher_id = Teacher.select(:id).where(name:checked_teacher).first.id
+    name_times_class_rooms =Grade.joins("inner join evaluations on grades.evaluations_id = evaluations.id inner join teachers_classes_courses on grades.class_rooms_id = teachers_classes_courses.class_rooms_id and grades.courses_id = teachers_classes_courses.courses_id and grades.term = teachers_classes_courses.term inner join teachers on teachers_classes_courses.teachers_id = teachers.id and teachers.id = #{teacher_id} inner join class_rooms on grades.class_rooms_id = class_rooms.id").where(record_time: time[0]..time[1]).where("evaluations.types = 'classroom_question' ").group('class_rooms.name').count
+    name_times_courses =Grade.joins("inner join evaluations on grades.evaluations_id = evaluations.id inner join teachers_classes_courses on grades.class_rooms_id = teachers_classes_courses.class_rooms_id and grades.courses_id = teachers_classes_courses.courses_id and grades.term = teachers_classes_courses.term inner join teachers on teachers_classes_courses.teachers_id = teachers.id and teachers.id = #{teacher_id} inner join courses on grades.courses_id = courses.id").where(record_time: time[0]..time[1]).where("evaluations.types = 'classroom_question' ").group('courses.name').count
+    re1 =[]
+    re2 =[]
+    t = {}
+    name_times_class_rooms.each do |e|
+      t['name'] = e[0]
+      t['times'] = e[1]
+      re1.push t  
+      t={}   
+    end
+    t = {}
+    name_times_courses.each do |i|
+      t['name'] = i[0]
+      t['times'] = i[1]
+      re2.push t  
+      t={}   
+    end
+    render  json: {'a': re1,'b': re2}
+  end
+
+  def get_detailed_class_room_histogram
+    time = params[:time]
+    name_times_class_rooms =Grade.joins("inner join evaluations on grades.evaluations_id = evaluations.id inner join teachers_classes_courses on grades.class_rooms_id = teachers_classes_courses.class_rooms_id and grades.courses_id = teachers_classes_courses.courses_id and grades.term = teachers_classes_courses.term inner join teachers on teachers_classes_courses.teachers_id = teachers.id inner join class_rooms on grades.class_rooms_id = class_rooms.id").where(record_time: time[0]..time[1]).where("evaluations.types = 'classroom_question' ").group('class_rooms.name').count
+    re1 =[]
+    t = {}
+    name_times_class_rooms.each do |e|
+      t['name'] = e[0]
+      t['times'] = e[1]
+      re1.push t  
+      t={}   
+    end
+    render json: re1
+  end
+
+  def get_class_room_charts
+    time = params[:time]
+    checked_class_room = params[:checked_class_room]
+    class_room_id = ClassRoom.select(:id).where(name:checked_class_room).first.id
+    name_times_teachers =Grade.joins("inner join evaluations on grades.evaluations_id = evaluations.id inner join teachers_classes_courses on grades.class_rooms_id = teachers_classes_courses.class_rooms_id and grades.courses_id = teachers_classes_courses.courses_id and grades.term = teachers_classes_courses.term inner join teachers on teachers_classes_courses.teachers_id = teachers.id inner join class_rooms on grades.class_rooms_id = class_rooms.id").where(record_time: time[0]..time[1]).where(class_rooms_id: class_room_id).where("evaluations.types = 'classroom_question' ").group('teachers.name').count
+    name_times_courses =Grade.joins("inner join evaluations on grades.evaluations_id = evaluations.id inner join teachers_classes_courses on grades.class_rooms_id = teachers_classes_courses.class_rooms_id and grades.courses_id = teachers_classes_courses.courses_id and grades.term = teachers_classes_courses.term inner join teachers on teachers_classes_courses.teachers_id = teachers.id inner join courses on grades.courses_id = courses.id").where(record_time: time[0]..time[1]).where(class_rooms_id:class_room_id).where("evaluations.types = 'classroom_question' ").group('courses.name').count
+    re1 =[]
+    re2 =[]
+    t = {}
+    name_times_teachers.each do |e|
+      t['name'] = e[0]
+      t['times'] = e[1]
+      re1.push t  
+      t={}   
+    end
+    t = {}
+    name_times_courses.each do |i|
+      t['name'] = i[0]
+      t['times'] = i[1]
+      re2.push t  
+      t={}   
+    end
+    render  json: {'a': re1,'b': re2}
+  end
+
+  def get_detailed_class__histogram
+    time = params[:time]
+    name_times_courses =Grade.joins("inner join evaluations on grades.evaluations_id = evaluations.id inner join teachers_classes_courses on grades.class_rooms_id = teachers_classes_courses.class_rooms_id and grades.courses_id = teachers_classes_courses.courses_id and grades.term = teachers_classes_courses.term inner join teachers on teachers_classes_courses.teachers_id = teachers.id inner join courses on grades.courses_id = courses.id").where(record_time: time[0]..time[1]).where("evaluations.types = 'classroom_question' ").group('courses.name').count
+    re1 =[]
+    t = {}
+    name_times_courses.each do |e|
+      t['name'] = e[0]
+      t['times'] = e[1]
+      re1.push t  
+      t={}   
+    end
+    render json: re1
+  end
+
+  def get_course_charts
+    time = params[:time]
+    checked_course = params[:checked_course]
+    course_id = Course.select(:id).where(name:checked_course).first.id
+    name_times_class_rooms =Grade.joins("inner join evaluations on grades.evaluations_id = evaluations.id inner join teachers_classes_courses on grades.class_rooms_id = teachers_classes_courses.class_rooms_id and grades.courses_id = teachers_classes_courses.courses_id and grades.term = teachers_classes_courses.term inner join teachers on teachers_classes_courses.teachers_id = teachers.id inner join class_rooms on grades.class_rooms_id = class_rooms.id").where(record_time: time[0]..time[1]).where("evaluations.types = 'classroom_question' ").where(courses_id:course_id).group('teachers.name').count
+    name_times_courses =Grade.joins("inner join evaluations on grades.evaluations_id = evaluations.id inner join teachers_classes_courses on grades.class_rooms_id = teachers_classes_courses.class_rooms_id and grades.courses_id = teachers_classes_courses.courses_id and grades.term = teachers_classes_courses.term inner join teachers on teachers_classes_courses.teachers_id = teachers.id inner join courses on grades.courses_id = courses.id inner join class_rooms on grades.class_rooms_id = class_rooms.id").where(record_time: time[0]..time[1]).where("evaluations.types = 'classroom_question' ").where(courses_id:course_id).group('class_rooms.name').count
+    re1 =[]
+    re2 =[]
+    t = {}
+    name_times_class_rooms.each do |e|
+      t['name'] = e[0]
+      t['times'] = e[1]
+      re1.push t  
+      t={}   
+    end
+    t = {}
+    name_times_courses.each do |i|
+      t['name'] = i[0]
+      t['times'] = i[1]
+      re2.push t  
+      t={}   
+    end
+    render  json: {'a': re1,'b': re2}
   end
 
 
