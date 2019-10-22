@@ -47,7 +47,7 @@ class Api::V1::HomePageController < Api::V1::BaseController
   end
 
   def get_teacher_course_list
-    render json: {'a': Teacher.all,'b': Course.all,'c': ClassRoom.all } 
+    render json: {'a': Teacher.all,'b': Course.all,'c': ClassRoom.all,'d':Term.all } 
   end
 
   def get_details_histogram
@@ -199,6 +199,187 @@ class Api::V1::HomePageController < Api::V1::BaseController
     render  json: {'a': re1,'b': re2}
   end
 
+  def get_teacher_line
+    checked_teachers = params[:checked_teachers]
+    term_id = params[:term_id]
+
+    #t = Term.where("name is not null").all
+    
+    t = Term.where(id:term_id).first
+    now = Time.now
+    begin_time = Time.now
+    end_time = Time.now
+   
+      if t.begin_time<now&&t.end_time>now
+         begin_time = t.begin_time
+         end_time = Time.now
+      else
+        begin_time = t.begin_time
+        end_time = t.end_time
+      end
+    
+    weeks = []
+    time_weeks ={}
+    time_end = Time.new -1
+    time_begin = Time.new -1
+    m = 1
+    while time_end < end_time do 
+      time_weeks['begin_time'] = begin_time
+      time_weeks['end_time'] = begin_time + 6
+      time_weeks['weeks'] = "第#{m}学周"
+      time_weeks['max'] = m
+      m = m+1
+      weeks.push time_weeks
+      time_end = begin_time + 6
+      begin_time = begin_time + 7
+      time_weeks = {}
+    end
+    res1 =[]
+    t ={}
+    res = nil
+    checked_teachers.each do |i|
+      data = []
+      weeks.each do |j|
+        name_times =Grade.joins("inner join evaluations on grades.evaluations_id = evaluations.id inner join teachers_classes_courses on grades.class_rooms_id = teachers_classes_courses.class_rooms_id and grades.courses_id = teachers_classes_courses.courses_id and grades.term = teachers_classes_courses.term inner join teachers on teachers_classes_courses.teachers_id = teachers.id and teachers.name = '#{i}'").where(record_time: j['begin_time']...j['end_time']+1).where("evaluations.types = 'classroom_question' ").group('teachers.name').count
+        
+        name_times.each do |k|
+          t['name'] = k[0]
+          t['times'] = k[1]
+          t['week'] = j['weeks']
+          t['max'] = j['max']
+          data.push t
+          t = {}
+        end
+      end
+      res1.push data
+        data = []
+     
+    end
+    
+    render json: {'b': begin_time ,'a': end_time, 'c': weeks,'d': res1}
+  end
+
+  def get_course_line
+    checked_course = params[:checked_course]
+    term_id = params[:term_id]
+
+    #t = Term.where("name is not null").all
+    
+    t = Term.where(id:term_id).first
+    now = Time.now
+    begin_time = Time.now
+    end_time = Time.now
+   
+      if t.begin_time<now&&t.end_time>now
+         begin_time = t.begin_time
+         end_time = Time.now
+      else
+        begin_time = t.begin_time
+        end_time = t.end_time
+      end
+    
+    weeks = []
+    time_weeks ={}
+    time_end = Time.new -1
+    time_begin = Time.new -1
+    m = 1
+    while time_end < end_time do 
+      time_weeks['begin_time'] = begin_time
+      time_weeks['end_time'] = begin_time + 6
+      time_weeks['weeks'] = "第#{m}学周"
+      time_weeks['max'] = m
+      m = m+1
+      weeks.push time_weeks
+      time_end = begin_time + 6
+      begin_time = begin_time + 7
+      time_weeks = {}
+    end
+    res1 =[]
+    t ={}
+    res = nil
+    checked_course.each do |i|
+      data = []
+      weeks.each do |j|
+        course_id = Course.select(:id).where(name:i).first.id
+        name_times =Grade.joins("inner join evaluations on grades.evaluations_id = evaluations.id inner join teachers_classes_courses on grades.class_rooms_id = teachers_classes_courses.class_rooms_id and grades.courses_id = teachers_classes_courses.courses_id and grades.term = teachers_classes_courses.term inner join teachers on teachers_classes_courses.teachers_id = teachers.id inner join courses on courses.id = grades.courses_id").where(record_time: j['begin_time']...j['end_time']+1).where("evaluations.types = 'classroom_question' ").where(courses_id:course_id).group('courses.name').count
+        
+        name_times.each do |k|
+          t['name'] = k[0]
+          t['times'] = k[1]
+          t['week'] = j['weeks']
+          t['max'] = j['max']
+          data.push t
+          t = {}
+        end
+      end
+      res1.push data
+        data = []
+     
+    end
+    
+    render json: {'b': begin_time ,'a': end_time, 'c': weeks,'d': res1}
+  end
+
+  def get_class_room_line
+    checked_class_room = params[:checked_class_room]
+    term_id = params[:term_id]
+
+    #t = Term.where("name is not null").all
+    
+    t = Term.where(id:term_id).first
+    now = Time.now
+    begin_time = Time.now
+    end_time = Time.now
+   
+      if t.begin_time<now&&t.end_time>now
+         begin_time = t.begin_time
+         end_time = Time.now
+      else
+        begin_time = t.begin_time
+        end_time = t.end_time
+      end
+    
+    weeks = []
+    time_weeks ={}
+    time_end = Time.new -1
+    time_begin = Time.new -1
+    m = 1
+    while time_end < end_time do 
+      time_weeks['begin_time'] = begin_time
+      time_weeks['end_time'] = begin_time + 6
+      time_weeks['weeks'] = "第#{m}学周"
+      time_weeks['max'] = m
+      m = m+1
+      weeks.push time_weeks
+      time_end = begin_time + 6
+      begin_time = begin_time + 7
+      time_weeks = {}
+    end
+    res1 =[]
+    t ={}
+    res = nil
+    checked_class_room.each do |i|
+      data = []
+      weeks.each do |j|
+         class_room_id = ClassRoom.select(:id).where(name:i).first.id
+        name_times =Grade.joins("inner join evaluations on grades.evaluations_id = evaluations.id inner join teachers_classes_courses on grades.class_rooms_id = teachers_classes_courses.class_rooms_id and grades.courses_id = teachers_classes_courses.courses_id and grades.term = teachers_classes_courses.term inner join teachers on teachers_classes_courses.teachers_id = teachers.id inner join class_rooms on grades.class_rooms_id = class_rooms.id").where(record_time: j['begin_time']...j['end_time']+1).where("evaluations.types = 'classroom_question' ").where(class_rooms_id:class_room_id).group('class_rooms.name').count
+        
+        name_times.each do |k|
+          t['name'] = k[0]
+          t['times'] = k[1]
+          t['week'] = j['weeks']
+          t['max'] = j['max']
+          data.push t
+          t = {}
+        end
+      end
+      res1.push data
+        data = []
+     
+    end
+    
+    render json: {'b': begin_time ,'a': end_time, 'c': weeks,'d': res1}
+  end
 
 
 end
