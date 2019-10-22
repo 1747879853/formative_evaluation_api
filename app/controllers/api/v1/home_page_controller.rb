@@ -251,6 +251,14 @@ class Api::V1::HomePageController < Api::V1::BaseController
           t = {}
         end
       end
+      if data == []
+        t['name'] = i
+        t['times'] = 0
+        t['week'] = ''
+        t['max'] = 0
+        data.push t
+        t = {} 
+      end
       res1.push data
         data = []
      
@@ -312,6 +320,14 @@ class Api::V1::HomePageController < Api::V1::BaseController
           t = {}
         end
       end
+      if data == []
+        t['name'] = i
+        t['times'] = 0
+        t['week'] = ''
+        t['max'] = 0
+        data.push t
+        t = {} 
+      end
       res1.push data
         data = []
      
@@ -372,6 +388,14 @@ class Api::V1::HomePageController < Api::V1::BaseController
           data.push t
           t = {}
         end
+      end
+      if data == []
+        t['name'] = i
+        t['times'] = 0
+        t['week'] = ''
+        t['max'] = 0
+        data.push t
+        t = {} 
       end
       res1.push data
         data = []
