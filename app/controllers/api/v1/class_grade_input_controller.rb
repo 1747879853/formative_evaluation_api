@@ -260,6 +260,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
   def studentgradeList
     arr = []
     arr2 = []
+    arr_ =[]
     n = 1
     arr3 =[]
     type = current_user.owner_type
@@ -328,11 +329,12 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
                 arr = Grade.where(courses_id:course[j].courses_id,evaluations_id:c[k].id,term:t[i].term,class_rooms_id:c_id).select("grade")
                 arr2 =[]
                 arr.each do |o|
-                  arr2.push(o.grade.to_i)
+                  arr2.push(o.grade.to_f)
+                  arr_.push(o.grade.to_f)
                 end
                 arr2.sort!{|x,y| y <=> x }
                 for p in arr2
-                  if g[0].grade.to_i == p
+                  if g[0].grade.to_f == p
                     break
                   end
                   n=n+1
@@ -377,7 +379,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         table_list.push(table_msg)
       end
       
-      render json: {'a': s_name,'b': c_name,'c': table_list,'d': term,'e': grade_list,'g':id_list,'i': n,'h': arr2}
+      render json: {'a': s_name,'b': c_name,'c': table_list,'d': term,'e': grade_list,'g':id_list,'i': n,'h': arr_}
     else
       render json: {'a': s_name}
     end    
