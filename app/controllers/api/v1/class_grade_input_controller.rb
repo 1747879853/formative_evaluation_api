@@ -325,7 +325,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
               aa['e'+c[k].id.to_s]='暂无成绩'
             else
               if evaluation_types[0].types == 'score'||evaluation_types[0].types == 'text-score'
-                arr = Grade.where(courses_id:course[j].courses_id,evaluations_id:c[k].id,term:t[i].term).select("grade")
+                arr = Grade.where(courses_id:course[j].courses_id,evaluations_id:c[k].id,term:t[i].term,class_rooms_id:c_id).select("grade")
                 arr2 =[]
                 arr.each do |o|
                   arr2.push(o.grade.to_i)
