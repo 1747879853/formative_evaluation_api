@@ -161,7 +161,7 @@ class Api::V1::HomePageController < Api::V1::BaseController
       re2.push t  
       t={}   
     end
-    render  json: {'a': re1,'b': re2}
+    render  json: {'a': re1,'c': re2}
   end
 
   def get_detailed_class__histogram
