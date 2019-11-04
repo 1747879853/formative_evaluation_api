@@ -260,7 +260,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
   def studentgradeList
     arr = []
     arr2 = []
-    arr_ =[]
+    
     n = 1
     arr3 =[]
     type = current_user.owner_type
@@ -272,6 +272,8 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       c_name = s.class_room.name
       c_id = s.class_room.id
       id_list=[]
+      arr_ =[]
+
       t = TeachersClassesCourse.where(class_rooms_id:c_id).where("term != ''").select("term").group("term").order("term")
       #班级id是唯一的，对应的学期可能有多个
       table_list = []
@@ -339,7 +341,6 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
                   end
                   n=n+1
                 end
-               
                 aa['e'+c[k].id.to_s]=g[0].grade.to_s+" 排名(#{n})"
                 n = 1
                 arr = []
@@ -350,10 +351,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
                 aa['e'+c[k].id.to_s]=g[0].grade.to_s
               end
               #aa['tea_comment']=g[0].
-
-            end  
-            
-            
+            end        
             #tea_comment=StuHomework.where(students_id:s_id,tea_homeworks_id:tea_homework_id[0].id).select("tea_comment")
             
             #tea_comment_list.push(tea_comment[0].tea_comment)
@@ -362,7 +360,6 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
             if c[k].parent!=nil
               a["evalname"]=c[k].parent.name+'-'+c[k]["name"]
             else
-
               a["evalname"]=c[k].name
                
             end  
@@ -379,7 +376,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         table_list.push(table_msg)
       end
       
-      render json: {'a': s_name,'b': c_name,'c': table_list,'d': term,'e': grade_list,'g':id_list,'i': n,'h': arr_}
+      render json: {'a': s_name,'b': c_name,'c': table_list,'d': term,'e': grade_list,'g':id_list,'i': n,'h': arr_,'i': c_id}
     else
       render json: {'a': s_name}
     end    
