@@ -18,6 +18,7 @@ class Api::V1::UploadController < Api::V1::BaseController
 		et.save!
 
 		render json:{
+			status: true,
 			file_name: file_name,
 			# url: file_path	
 		}
@@ -64,7 +65,8 @@ class Api::V1::UploadController < Api::V1::BaseController
 			render json:{
 				code: '0000',
 				# stu_template_url: 'http://127.0.0.1:3000/_attachment/' + et.file_name
-				stu_template_url: 'http://47.100.174.14:9999/_attachment/' + et.file_name
+				# stu_template_url: 'http://47.100.174.14:9999/_attachment/' + et.file_name
+				stu_template_url: '/_attachment/' + et.file_name
 			}
 		else
 			render json:{
