@@ -258,6 +258,11 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
   end
 
   def studentgradeList
+    arr = []
+    arr2 = []
+    
+    n = 1
+    arr3 =[]
     type = current_user.owner_type
     s_name = current_user.owner.name
     if type=='Student'
@@ -267,6 +272,8 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       c_name = s.class_room.name
       c_id = s.class_room.id
       id_list=[]
+      arr_ =[]
+
       t = TeachersClassesCourse.where(class_rooms_id:c_id).where("term != ''").select("term").group("term").order("term")
       #班级id是唯一的，对应的学期可能有多个
       table_list = []
@@ -282,7 +289,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         end
         #teachers_id.push(t[i].teachers_id)
         #tea_home_id=
-        term.push(Term.find(t[i].term))#这一句应该是没有用，暂定
+        term.push(Term.find(t[i].term))
         table_msg = []
         grade = []
         course = TeachersClassesCourse.where(class_rooms_id:c_id,term:t[i].term,status:[1,2]).select("courses_id").group("courses_id").order("courses_id")
@@ -304,6 +311,10 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
           aa["coursename"]=Course.find(course[j].courses_id).name
           c.length.times do |k|
             g = Grade.where(students_id:s_id,courses_id:course[j].courses_id,evaluations_id:c[k].id,term:t[i].term)
+            evaluation_types =[]
+            evaluation_types = Evaluation.where(id:c[k].id).select("types")
+            
+            arr3 = evaluation_types[0].types
             #teacher_id=TeachersClassesCourse.where(courses_id:course[j].courses_id,term:t[i].term,class_rooms_id:s.class_room.id).select("teachers_id")
             #################!!!!!!!!!!!!!
             
@@ -316,12 +327,31 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
             if g.empty?
               aa['e'+c[k].id.to_s]='暂无成绩'
             else
-              aa['e'+c[k].id.to_s]=g[0].grade.to_s
+              if evaluation_types[0].types == 'score'||evaluation_types[0].types == 'text-score'
+                arr = Grade.where(courses_id:course[j].courses_id,evaluations_id:c[k].id,term:t[i].term,class_rooms_id:c_id).select("grade")
+                arr2 =[]
+                arr.each do |o|
+                  arr2.push(o.grade.to_f)
+                  arr_.push(o.grade.to_f)
+                end
+                arr2.sort!{|x,y| y <=> x }
+                for p in arr2
+                  if g[0].grade.to_f == p
+                    break
+                  end
+                  n=n+1
+                end
+                aa['e'+c[k].id.to_s]=g[0].grade.to_s+" 排名(#{n})"
+                n = 1
+                arr = []
+                arr2 = []
+               evaluation_types = []
+              else
+                puts "+++++++++++"
+                aa['e'+c[k].id.to_s]=g[0].grade.to_s
+              end
               #aa['tea_comment']=g[0].
-
-            end  
-            
-            
+            end        
             #tea_comment=StuHomework.where(students_id:s_id,tea_homeworks_id:tea_homework_id[0].id).select("tea_comment")
             
             #tea_comment_list.push(tea_comment[0].tea_comment)
@@ -329,7 +359,6 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
             a = {}
             if c[k].parent!=nil
               a["evalname"]=c[k].parent.name+'-'+c[k]["name"]
-             
             else
               a["evalname"]=c[k].name
                
@@ -347,7 +376,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         table_list.push(table_msg)
       end
       
-      render json: {'a': s_name,'b': c_name,'c': table_list,'d': term,'e': grade_list,'g':id_list}
+      render json: {'a': s_name,'b': c_name,'c': table_list,'d': term,'e': grade_list,'g':id_list,'i': n,'h': arr_,'i': c_id}
     else
       render json: {'a': s_name}
     end    

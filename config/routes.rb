@@ -141,6 +141,9 @@ Rails.application.routes.draw do
       get         '/get_detailed_class__histogram'    =>    'home_page#get_detailed_class__histogram'
       get         '/get_class_room_charts'      =>    'home_page#get_class_room_charts'
       get         '/get_course_charts'    =>    'home_page#get_course_charts'
+      get         '/get_teacher_line'     =>    'home_page#get_teacher_line'
+      get         '/get_course_line'      =>    'home_page#get_course_line'
+      get         '/get_class_room_line'  =>    'home_page#get_class_room_line'
     end                                                     
   end
 
