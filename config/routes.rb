@@ -130,7 +130,7 @@ Rails.application.routes.draw do
       get        '/stu_homework_by_id'  =>  'homeworks#get_hw_by_id'
 
       post      'save_hw_img' =>  'homeworks#save_hw_img'
-
+      #charts
       get         '/classroom_question_chart'     =>    'home_page#classroom_question_chart'
       get         '/show_histo'     =>    'home_page#show_histo'
       get         '/get_detailed_teacher_histogram'      =>    'home_page#get_detailed_teacher_histogram'
@@ -144,6 +144,9 @@ Rails.application.routes.draw do
       get         '/get_teacher_line'     =>    'home_page#get_teacher_line'
       get         '/get_course_line'      =>    'home_page#get_course_line'
       get         '/get_class_room_line'  =>    'home_page#get_class_room_line'
+
+      #students grades export
+      get         '/output_grades'  =>    'class_grade_input#output_grades'
     end                                                     
   end
 

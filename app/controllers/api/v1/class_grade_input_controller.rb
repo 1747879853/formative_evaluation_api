@@ -382,4 +382,68 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     end    
   end
 
+  def output_grades
+    checked_teachers = params[:teacher]
+    checked_courses = params[:course]
+    checked_term = params[:term]
+    checked_class_rooms = params[:class_room]
+    checked_courses_id = ''
+    checked_teachers_id = []
+    checked_class_rooms_id = ''
+    a = []
+    b = []
+    checked_courses.each do |i|
+      checked_courses_id.concat(Course.where(name: i).select(:id).first.id.to_s+",")
+      a.push Course.where(name: i).select(:id).first.id
+    end
+    checked_courses_id = checked_courses_id.chop
+    checked_class_rooms.each do |k|
+      checked_class_rooms_id.concat(ClassRoom.where(name: k).select(:id).first.id.to_s+",")
+      b.push ClassRoom.where(name: k).select(:id).first.id
+    end
+    checked_class_rooms_id = checked_class_rooms_id.chop
+    checked_teachers.each do |j|
+      checked_teachers_id.push Teacher.where(name: j).select(:id).first.id
+    end
+    times = Grade.where("class_rooms_id IN (#{checked_class_rooms_id})").where("courses_id IN (#{checked_courses_id})").where(term:checked_term)
+    res = []
+    t = {}
+    times.each do |i|
+      if checked_teachers_id.include? TeachersClassesCourse.select(:teachers_id).where(class_rooms_id: i.class_rooms_id,courses_id: i.courses_id,term: checked_term).first.teachers_id
+        t["teachers_name"] = Teacher.find(TeachersClassesCourse.select(:teachers_id).where(class_rooms_id: i.class_rooms_id,courses_id: i.courses_id,term: checked_term).first.teachers_id).name
+        t["students_name"] = Student.find(i.students_id).name
+        t["students_num"] = Student.find(i.students_id).sno
+        t["course_name"] = Course.find(i.courses_id).name
+        t["class_rooms_name"] = ClassRoom.find(i.class_rooms_id).name
+        t["grade"] = Grade.find(i.id).grade
+        
+        t["description"] = Evaluation.find(i.evaluations_id).description
+        if Evaluation.find(i.evaluations_id).parent_id == 0
+          t["evaluations"] = Evaluation.find(i.evaluations_id).name
+        else
+          t["evaluations"] = Evaluation.find(Evaluation.find(i.evaluations_id).parent_id).name+"-"+Evaluation.find(i.evaluations_id).name
+        end
+        res.push t
+        t = {}
+      end
+    end
+      
+    #res = Grade.select("grades.grade,students.name,courses.name,class_rooms.name,evaluations.name,evaluations.description").joins("inner join teachers on teachers_classes_courses.teachers_id=teachers.id) inner join students on grades.students_id = students.id inner join courses on grades.courses_id=courses.id inner join class_rooms on grades.class_rooms_id=class_rooms.id inner join evaluations on grades.evaluations_id=evaluations.id")
+
+
+
+
+
+
+    render json: {'checked_teachers_id': checked_teachers_id,'checked_class_rooms_id': checked_class_rooms_id,'checked_courses_id': checked_courses_id,'e': a,'f': b,'g': times,'k': res}
+    
+
+
+
+
+
+
+
+  end
+
 end
