@@ -265,6 +265,8 @@ class Api::V1::HomeworksController < Api::V1::BaseController
     status = params.require(:params)[:status]
     if content=='get'
       render json: StuHomework.where(students_id:s_id,tea_homeworks_id:th_id)
+    elsif content=='无法输入作业内容'||content==''
+      render json: { msg: '提交失败，请刷新后重新提交！' }, status: 412
     else
       s = StuHomework.where(students_id:s_id,tea_homeworks_id:th_id)
       if s.length>0
