@@ -464,6 +464,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
   end
 
   def  get_detail_list
+
     students_list = []
     student_grade_list = []
     evaluations_weight = []
@@ -507,29 +508,53 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         c['parent_id'] = k['parent_id']
         student_grade_list.each do |j|
           if Evaluation.where(id: j.evaluations_id).first.parent_id == k['parent_id']
-            case j.grade
-            when 'Excellent'
-               grade_sco = 100
-            when 'Good'
-               grade_sco = 90
-            when 'Average'
-               grade_sco = 80
-            when 'Fair'
-               grade_sco = 70
-            when 'Poor'
-               grade_sco = 60
-            else 'Fail'
-               grade_sco = 50
+            puts '+++++++++++++++++++++++++++grade'
+            puts j.grade
+            if j.grade == 'Excellent'
+               
+               sco += 100*Weight.where(evaluations_id:j.evaluations_id).first.weight.to_f
+               puts 'ininininininini------------------'
             end
+            puts grade_sco
+            if j.grade == 'Good'
+              puts 'goodgoodgood'
+               
+               sco += 90*Weight.where(evaluations_id:j.evaluations_id).first.weight.to_f
+            end
+            if j.grade == 'Average'
+              puts 'aveaveave'
+               
+               sco += 80*Weight.where(evaluations_id:j.evaluations_id).first.weight.to_f
+            end
+            if j.grade == 'Fair'
+              
+               sco += 70*Weight.where(evaluations_id:j.evaluations_id).first.weight.to_f
+            end
+            if j.grade == 'Poor'
+               
+              sco += 60*Weight.where(evaluations_id:j.evaluations_id).first.weight.to_f
+
+            end
+            if j.grade == 'Fail'
+               
+               sco += 50*Weight.where(evaluations_id:j.evaluations_id).first.weight.to_f
+
+            end
+            
             if  j.grade.to_f <= 10
-               grade_sco = j.grade.to_f*10
-            else
-               grade_sco = j.grade.to_f
+               
+               sco += (j.grade.to_f*10)*Weight.where(evaluations_id:j.evaluations_id).first.weight.to_f
             end
-            sco += grade_sco*Weight.where(evaluations_id:j.evaluations_id).first.weight.to_f
+            if j.grade.to_f > 10
+               
+               sco += j.grade.to_f*Weight.where(evaluations_id:j.evaluations_id).first.weight.to_f
+            end
+            puts ' _____________________'
+            puts sco
+            
           end
         end
-        puts '############'
+        puts '############kkkk'
         puts k['weight']
         puts sco
         c['score']=sco/k['weight']
@@ -540,10 +565,16 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       end
       all_weight = 0
       all_sco = 0
+      puts '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
+      puts student_score_midle
+      puts '^^^^^^^^^^^^^^^^'
       student_score_midle.each do |l|
        all_weight += Weight.where(evaluations_id:l['parent_id']).first.weight.to_f
        all_sco += l['score']*Weight.where(evaluations_id:l['parent_id']).first.weight.to_f
      end
+     puts '###################'
+     puts all_sco
+     puts all_weight
      b[:score]=all_sco/all_weight
      student_score_end.push b
      b = {}
