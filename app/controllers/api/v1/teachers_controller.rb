@@ -134,7 +134,7 @@ class Api::V1::TeachersController < Api::V1::BaseController
       t_id = params.require(:params)[:id]
       checked_course = params.require(:params)[:checked_course]
       checked_class_id = params.require(:params)[:checked_class_id]
-
+      
       tcc = TeachersClassesCourse.where(teachers_id: t_id,term: term)
       tcc.destroy_all
 

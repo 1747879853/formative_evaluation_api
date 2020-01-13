@@ -54,6 +54,8 @@ class Api::V1::HomePageController < Api::V1::BaseController
     render json: {'a': Teacher.all,'b': Course.all,'c': ClassRoom.all,'d':Term.all } 
   end
 
+ 
+
   def get_details_histogram
     checked_teachers = params[:checked_teachers]
     checked_courses = params[:checked_courses]

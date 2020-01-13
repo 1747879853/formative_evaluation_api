@@ -144,9 +144,14 @@ Rails.application.routes.draw do
       get         '/get_teacher_line'     =>    'home_page#get_teacher_line'
       get         '/get_course_line'      =>    'home_page#get_course_line'
       get         '/get_class_room_line'  =>    'home_page#get_class_room_line'
-
+      
       #students grades export
       get         '/output_grades'  =>    'class_grade_input#output_grades'
+      #get_detail_achieve
+
+      get         '/get_detail_achieve'   =>    'class_grade_input#get_detail_achieve'
+      get         '/get_teachers_course'  =>    'class_grade_input#get_teacher_course'
+      get         '/get_detail_list'      =>    'class_grade_input#get_detail_list'
     end                                                     
   end
 

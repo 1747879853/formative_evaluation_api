@@ -442,4 +442,111 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     render json: {'checked_teachers_id': checked_teachers_id,'checked_class_rooms_id': checked_class_rooms_id,'checked_courses_id': checked_courses_id,'e': a,'f': b,'k': res,'l': checked_term}
   end
 
+  def get_detail_achieve
+    render json: {'term': Term.all}  
+  end
+
+  def get_teacher_course
+    term_id = params[:term]
+    final_list = []
+    b={}
+    #User.where(id: current_user.id).
+    teacher_class_course = TeachersClassesCourse.where(teachers_id: current_user.owner_id).where(term: term_id)
+    teacher_class_course.each do |i|
+      b[:class_room_id] = i.class_rooms_id
+      b[:name] = ClassRoom.where(id: i.class_rooms_id).first.name + Course.where(id: i.courses_id).first.name
+      b[:course_id] = i.courses_id
+     # b[:course_name] = 
+      final_list.push(b)
+      b = {}
+    end
+    render json: {'a': final_list}
+  end
+
+  def  get_detail_list
+    students_list = []
+    student_grade_list = []
+    evaluations_weight = []
+    b = {}
+    evaluations_id_falg = []
+    term_id = params[:term]
+    class_room_id = params[:class_room_id]
+    course_id = params[:course_id]
+    students_list = Student.where(class_room_id: class_room_id)
+    students_list.each do |i|
+      student_grade_list = Grade.where(students_id: i.id).where(courses_id: course_id).where(class_rooms_id:class_room_id)
+      student_grade_list.each do |j|
+        parent_id = Evaluation.where(id: j.evaluations_id).first.parent_id
+        b['parent_id'] = parent_id
+        b['weight'] = 0
+        student_grade_list.each do |k|
+
+          if Evaluation.where(id: k.evaluations_id).first.parent_id == parent_id && !(evaluations_id_falg.include? k.evaluations_id)
+            b['weight'] +=  Weight.where(evaluations_id:k.evaluations_id).first.weight.to_f
+            evaluations_id_falg.push k.evaluations_id
+          end
+        end
+        if b['weight'] != 0 
+          evaluations_weight.push b
+        end
+        b = {}
+      end
+    end
+    student_score_midle = []
+    student_score_end = []
+    sco = 0
+    c = {}
+    grade_sco = 0
+    students_list.each do |i|
+      b[:name] = i.name
+      b[:sno] = i.sno
+      b[:class_room] = class_room_id
+      b[:course] = course_id
+      student_grade_list = Grade.where(students_id: i.id).where(courses_id: course_id).where(class_rooms_id:class_room_id)
+      evaluations_weight.each do |k|
+        c['parent_id'] = k['parent_id']
+        student_grade_list.each do |j|
+          if Evaluation.where(id: j.evaluations_id).first.parent_id == k['parent_id']
+            case j.grade
+            when 'Excellent'
+               grade_sco = 100
+            when 'Good'
+               grade_sco = 90
+            when 'Average'
+               grade_sco = 80
+            when 'Fair'
+               grade_sco = 70
+            when 'Poor'
+               grade_sco = 60
+            else 'Fail'
+               grade_sco = 50
+            end
+            if  j.grade.to_f <= 10
+               grade_sco = j.grade.to_f*10
+            else
+               grade_sco = j.grade.to_f
+            end
+            sco += grade_sco*Weight.where(evaluations_id:j.evaluations_id).first.weight.to_f
+          end
+        end
+        puts '############'
+        puts k['weight']
+        puts sco
+        c['score']=sco/k['weight']
+        student_score_midle.push c
+        c={}
+        sco = 0
+        grade_sco = 0
+      end
+      all_weight = 0
+      all_sco = 0
+      student_score_midle.each do |l|
+       all_weight += Weight.where(evaluations_id:l['parent_id']).first.weight.to_f
+       all_sco += l['score']*Weight.where(evaluations_id:l['parent_id']).first.weight.to_f
+     end
+     b[:score]=all_sco/all_weight
+     student_score_end.push b
+    end
+    render json: {'a': student_score_end}
+  end
 end
