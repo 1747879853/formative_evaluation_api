@@ -500,8 +500,8 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     students_list.each do |i|
       b[:name] = i.name
       b[:sno] = i.sno
-      b[:class_room] = class_room_id
-      b[:course] = course_id
+      b[:class_room] = ClassRoom.where(id:class_room_id).first.name
+      b[:course] = Course.where(id:course_id).first.name
       student_grade_list = Grade.where(students_id: i.id).where(courses_id: course_id).where(class_rooms_id:class_room_id)
       evaluations_weight.each do |k|
         c['parent_id'] = k['parent_id']
@@ -546,6 +546,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
      end
      b[:score]=all_sco/all_weight
      student_score_end.push b
+     b = {}
     end
     render json: {'a': student_score_end}
   end
