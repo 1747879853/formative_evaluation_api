@@ -464,7 +464,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
   end
 
   def  get_detail_list
-
+    begin
     students_list = []
     student_grade_list = []
     evaluations_weight = []
@@ -580,5 +580,8 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
      b = {}
     end
     render json: {'a': student_score_end}
+    rescue Exception => e
+      render json: { msg: e }, status: 500
+    end
   end
 end
