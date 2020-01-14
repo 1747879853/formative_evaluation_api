@@ -477,12 +477,9 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     students_list.each do |i|
       student_grade_list = Grade.where(students_id: i.id).where(courses_id: course_id).where(class_rooms_id:class_room_id).where(term:term_id)
       student_grade_list.each do |j|
-        begin
+        
         parent_id1 = Evaluation.where(id: j.evaluations_id).first.parent_id
-        rescue Exception => e
-         render json: { msg: e ,'parent_id1': parent_id1}, status: 500
-        end
-        raise 'A test exception.'
+        
         b[:parent_id_b] = parent_id1
         b[:weight] = 0
         student_grade_list.each do |k|
