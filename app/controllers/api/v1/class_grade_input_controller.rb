@@ -482,7 +482,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         if eva == nil
           next
         else
-          parent_id1 = Evaluation.where(id: j.evaluations_id)[0].parent_id
+          parent_id1 = Evaluation.where(id: j.evaluations_id)
         end
         b[:parent_id_b] = parent_id1
         b[:weight] = 0
