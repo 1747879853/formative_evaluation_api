@@ -469,7 +469,6 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     student_grade_list = []
     evaluations_weight = []
     b = {}
-    ee = ''
     evaluations_id_falg = []
     term_id = params[:term]
     class_room_id = params[:class_room_id]
@@ -479,13 +478,27 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       student_grade_list = Grade.where(students_id: i.id).where(courses_id: course_id).where(class_rooms_id:class_room_id).where(term:term_id)
       student_grade_list.each do |j|
         
-        
-        evaluations_weight.push Evaluation.where(id: j.evaluations_id)
-       
+        eva = Evaluation.where(id: j.evaluations_id)
+        if eva == nil
+          next
+        else
+          parent_id1 = Evaluation.where(id: j.evaluations_id).first.parent_id
+        end
+        b[:parent_id_b] = parent_id1
+        b[:weight] = 0
+        student_grade_list.each do |k|
+            if Evaluation.where(id: k.evaluations_id).first.parent_id == parent_id1 && !(evaluations_id_falg.include? k.evaluations_id)
+              b[:weight] +=  Weight.where(evaluations_id:k.evaluations_id).where(courses_id:course_id).first.weight.to_f
+              evaluations_id_falg.push k.evaluations_id
+            end
+        end
+        if b['weight'] != 0 
+          evaluations_weight.push b
+        end
+        b = {}
       end
     end
-    ee = evaluations_weight[1][0].parent_id
-    render json: {'a': evaluations_weight,'ee':ee}
+    render json: {'a': evaluations_weight}
     rescue Exception => e
       render json: { msg: e }, status: 500      
     end
