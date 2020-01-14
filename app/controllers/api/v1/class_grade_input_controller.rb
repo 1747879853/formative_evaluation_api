@@ -484,7 +484,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
        
       end
     end
-    ee = evaluations_weight[1]
+    ee = evaluations_weight[1][0].parent_id
     render json: {'a': evaluations_weight,'ee':ee}
     rescue Exception => e
       render json: { msg: e }, status: 500      
