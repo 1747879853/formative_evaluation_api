@@ -478,12 +478,12 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       student_grade_list = Grade.where(students_id: i.id).where(courses_id: course_id).where(class_rooms_id:class_room_id).where(term:term_id)
       student_grade_list.each do |j|
         parent_id1 = Evaluation.where(id: j.evaluations_id).first.parent_id
-        b['parent_id'] = parent_id1
-        b['weight'] = 0
+        b[:parent_id_b] = parent_id1
+        b[:weight] = 0
         student_grade_list.each do |k|
 
           if Evaluation.where(id: k.evaluations_id).first.parent_id == parent_id1 && !(evaluations_id_falg.include? k.evaluations_id)
-            b['weight'] +=  Weight.where(evaluations_id:k.evaluations_id).where(courses_id:course_id).first.weight.to_f
+            b[:weight] +=  Weight.where(evaluations_id:k.evaluations_id).where(courses_id:course_id).first.weight.to_f
             evaluations_id_falg.push k.evaluations_id
           end
         end
@@ -505,9 +505,9 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       b[:course] = Course.where(id:course_id).first.name
       student_grade_list g s= Grade.where(students_id: i.id).where(courses_id: course_id).where(class_rooms_id:class_room_id)
       evaluations_weight.each do |k|
-        c['parent_id'] = k['parent_id']
+        c[:parent_id_c] = k['parent_id_b']
         student_grade_list.each do |j|
-          if Evaluation.where(id: j.evaluations_id).first.parent_id == k['parent_id']
+          if Evaluation.where(id: j.evaluations_id).first.parent_id == k['parent_id_b']
             puts '+++++++++++++++++++++++++++grade'
             puts j.grade
             if j.grade == 'Excellent'
@@ -557,7 +557,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         puts '############kkkk'
         puts k['weight']
         puts sco
-        c['score']=sco/k['weight']
+        c[:score]=sco/k['weight']
         student_score_midle.push c
         c={}
         sco = 0
@@ -569,8 +569,8 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       puts student_score_midle
       puts '^^^^^^^^^^^^^^^^'
       student_score_midle.each do |l|
-       all_weight += Weight.where(evaluations_id:l['parent_id']).where(courses_id:course_id).first.weight.to_f
-       all_sco += l['score']*Weight.where(evaluations_id:l['parent_id']).where(courses_id:course_id).first.weight.to_f
+       all_weight += Weight.where(evaluations_id:l['parent_id_c']).where(courses_id:course_id).first.weight.to_f
+       all_sco += l['score']*Weight.where(evaluations_id:l['parent_id_c']).where(courses_id:course_id).first.weight.to_f
      end
      puts '###################'
      puts all_sco
