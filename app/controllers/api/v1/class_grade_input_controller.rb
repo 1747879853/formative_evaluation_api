@@ -504,8 +504,8 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
             #  evaluations_id_falg.push k.evaluations_id
            # end
         end
-        flag = b['weight'].class
-        if b['weight'] > 0 
+        #flag = b['weight'].class
+        if b[:weight] > 0 
           evaluations_weight.push b
         end
         b = {}
