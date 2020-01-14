@@ -496,6 +496,9 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       end
     end
     render json: {'a': evaluations_weight}
+    rescue Exception => e
+      render json: { msg: e }, status: 500      
+    end
   end
-end
+
 end
