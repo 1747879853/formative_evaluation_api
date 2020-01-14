@@ -480,7 +480,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         #if Evaluation.where(id: j.evaluations_id).first.parent_id !=nil
           #evaluations_weight.push Evaluation.where(id: j.evaluations_id).first.parent_id
         #end
-        evaluations_weight.push Evaluation.where(id: j.evaluations_id).select("parent_id")
+        evaluations_weight.push Evaluation.where(id: j.evaluations_id).select(:parent_id)
         
       end
     end
