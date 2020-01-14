@@ -480,10 +480,10 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         eva = Evaluation.where(id: j.evaluations_id) 
         
         evaluations_weight.push Evaluation.where(id: j.evaluations_id)
-        ee = evaluations_weight[1].parent_id
+      #  ee = evaluations_weight[1].parent_id
       end
     end
-    render json: {'a': evaluations_weight, 'ee': ee}
+    render json: {'a': evaluations_weight}
     rescue Exception => e
       render json: { msg: e }, status: 500      
     end
