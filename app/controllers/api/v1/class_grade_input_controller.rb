@@ -496,6 +496,6 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       end
     end
     render json: {'a': evaluations_weight}
-    
   end
+end
 end
