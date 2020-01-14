@@ -477,12 +477,12 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     students_list.each do |i|
       student_grade_list = Grade.where(students_id: i.id).where(courses_id: course_id).where(class_rooms_id:class_room_id).where(term:term_id)
       student_grade_list.each do |j|
-        parent_id = Evaluation.where(id: j.evaluations_id).first.parent_id
-        b['parent_id'] = parent_id
+        parent_id1 = Evaluation.where(id: j.evaluations_id).first.parent_id
+        b['parent_id'] = parent_id1
         b['weight'] = 0
         student_grade_list.each do |k|
 
-          if Evaluation.where(id: k.evaluations_id).first.parent_id == parent_id && !(evaluations_id_falg.include? k.evaluations_id)
+          if Evaluation.where(id: k.evaluations_id).first.parent_id == parent_id1 && !(evaluations_id_falg.include? k.evaluations_id)
             b['weight'] +=  Weight.where(evaluations_id:k.evaluations_id).where(courses_id:course_id).first.weight.to_f
             evaluations_id_falg.push k.evaluations_id
           end
