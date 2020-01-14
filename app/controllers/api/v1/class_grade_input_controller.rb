@@ -484,7 +484,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
           flag = 1
           next
         else
-          parent_id1 = Evaluation.where(id: j.evaluations_id).first
+          parent_id1 = Evaluation.where(id: j.evaluations_id).first.parent_id
         end
         b[:parent_id_b] = parent_id1
         b[:weight] = 1
