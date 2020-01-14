@@ -477,7 +477,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     students_list.each do |i|
       student_grade_list = Grade.where(students_id: i.id).where(courses_id: course_id).where(class_rooms_id:class_room_id).where(term:term_id)
       student_grade_list.each do |j|
-        eva = Evaluation.where(id: j.evaluations_id) 
+        
         
         evaluations_weight.push Evaluation.where(id: j.evaluations_id)
       #  ee = evaluations_weight[1].parent_id
