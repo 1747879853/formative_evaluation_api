@@ -443,7 +443,11 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
   end
 
   def get_detail_achieve
+    begin
     render json: {'term': Term.all}  
+    rescue Exception => e
+      render json: { msg: e }, status: 500      
+    end
   end
 
   def get_teacher_course
@@ -484,7 +488,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         eva = Evaluation.where(id: j.evaluations_id).first
         if eva == nil
           flag = 1
-          bbb.push Evaluation.where(id: j.evaluations_id)
+          #bbb.push Evaluation.where(id: j.evaluations_id)
           next
         else
           if !(evaluations_id_falg_.include? Evaluation.where(id: j.evaluations_id).first.parent_id)
