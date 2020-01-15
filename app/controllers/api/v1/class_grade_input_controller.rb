@@ -636,7 +636,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     end
     all_s = 0
     all_w = 0
-    if 
+   
     student_id_last = student_score_midle[0].id_s
       student_score_midle.each do |l|
         if student_id_last == l.id_s
