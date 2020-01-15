@@ -496,7 +496,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
          parents_flag.push eva.parent_id
           eva_list = Evaluation.where(parent_id: eva.parent_id)
           eva_list.each do |z|
-            uuu.push z.evaluation_id
+            uuu.push z[0].evaluation_id
             eva2 = Evaluation.where(id: z.evaluation_id).first
        #    uuu.push eva2
         #    if eva2 == nil
