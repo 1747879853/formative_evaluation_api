@@ -497,7 +497,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         student_grade_list.each do |k|
           eva = Evaluation.where(id: k.evaluations_id).first
           if eva == nil
-            flag = 1
+            flag = k.evaluations_id
             next
           else
             if Evaluation.where(id: k.evaluations_id).first.parent_id == parent_id1 && !(evaluations_id_falg.include? k.evaluations_id)
@@ -624,7 +624,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
      student_score_end.push b
      b = {}
     end
-    render json: {'a': student_score_midle,'b': evaluations_weight,'c': test_,'d': bbb}
+    render json: {'a': student_score_midle,'b': evaluations_weight,'c': test_,'d': bbb,'e': flag}
     rescue Exception => e
       render json: { msg: e }, status: 500      
     end
