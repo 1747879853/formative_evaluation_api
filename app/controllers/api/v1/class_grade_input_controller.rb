@@ -600,7 +600,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
      puts '###################'
      puts all_sco
      puts all_weight
-     b[:score]=all_sco/all_weight
+     #b[:score]=all_sco/all_weight
      student_score_end.push b
      b = {}
     end
