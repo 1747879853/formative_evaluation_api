@@ -629,7 +629,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
      student_score_end.push b
      b = {}
     end
-    render json: {'a': student_score_midle,'b': evaluations_weight,'c': test_,'d': bbb,'e': flag,'f': evaluations_id_falg_}
+    render json: {'a': student_score_midle,'b': evaluations_weight,'c': test_,'d': bbb,'e': flag,'f': uuu}
     rescue Exception => e
       render json: { msg: e }, status: 500      
     end
