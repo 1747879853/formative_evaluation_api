@@ -470,6 +470,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     evaluations_weight = []
     b = {}
     bbb=[]
+    ccc=[]
     flag =0
     evaluations_id_falg = []
     evaluations_id_falg_ = []
@@ -496,9 +497,10 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         b[:weight] = 0
         c_e = CoursesEvaluation.where(course_id:course_id)
         c_e.each do |x|
+          ccc.push x.evaluation_id
           if Evaluation.where(id: x.evaluation_id).first !=nil
             if Evaluation.where(id:x.evaluation_id).first.parent_id ==parent_id1
-              b[:weight] += Weight.where(id:x.evaluation_id).where(courses_id:course_id).where(status: 1).first.weight.to_f
+              #b[:weight] += Weight.where(id:x.evaluation_id).where(courses_id:course_id).where(status: 1).first.weight.to_f
             end
           end
         end
