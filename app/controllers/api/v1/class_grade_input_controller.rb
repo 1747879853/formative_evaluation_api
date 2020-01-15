@@ -623,6 +623,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
      b[:score]=all_sco/all_weight
      student_score_end.push b
      b = {}
+     student_score_midle =[]
     end
     
     render json: {'a': student_score_end,'b': evaluations_weight,'e': uuu,'f': parents}
