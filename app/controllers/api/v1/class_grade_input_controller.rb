@@ -479,16 +479,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     class_room_id = params[:class_room_id]
     course_id = params[:course_id]
     students_list = Student.where(class_room_id: class_room_id).where(status:1)
-    CoursesEvaluation.where(course_id:course_id).each do |q|
-      if Evaluation.where(id: q.evaluation_id).first !=nil
-            if !(parents.include? Evaluation.where(id: q.evaluation_id).first.parent_id)
-              b[:parent_id] = Evaluation.where(id: q.evaluation_id).first.parent_id
-              b[:weight] = 0
-              parents.push b
-              b = {}
-            end
-      end
-    end
+    
 
     students_list.each do |i|
       student_grade_list = Grade.where(students_id: i.id).where(courses_id: course_id).where(class_rooms_id:class_room_id).where(term:term_id)
@@ -521,6 +512,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
           end
         end
         if b[:weight] > 0
+
           evaluations_weight.push b
         end
         b = {}
