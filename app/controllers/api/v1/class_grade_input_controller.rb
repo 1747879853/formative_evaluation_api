@@ -594,9 +594,9 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       puts student_score_midle
       puts '^^^^^^^^^^^^^^^^'
       student_score_midle.each do |l|
-       all_weight += Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).first.weight.to_f
-       all_sco += l[:score]*Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).first.weight.to_f
-     end
+       #all_weight += Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).first.weight.to_f
+       #all_sco += l[:score]*Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).first.weight.to_f
+      end
      puts '###################'
      puts all_sco
      puts all_weight
