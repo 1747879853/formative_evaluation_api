@@ -528,7 +528,9 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       student_grade_list = Grade.where(students_id: i.id).where(courses_id: course_id).where(class_rooms_id:class_room_id)
       evaluations_weight.each do |k|
         c[:parent_id_c] = k['parent_id_b']
+        student_score_end.push k['parent_id_b']
         student_grade_list.each do |j|
+
           if Evaluation.where(id: j.evaluations_id).first !=nil
             if Evaluation.where(id: j.evaluations_id).first.parent_id == k['parent_id_b']
               puts '+++++++++++++++++++++++++++grade'
