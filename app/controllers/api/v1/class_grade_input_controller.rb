@@ -469,8 +469,10 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     student_grade_list = []
     evaluations_weight = []
     b = {}
+    t = {}
     bbb = []
     uuu = []
+    uuu2 = []
     parents = []
     parents_flag = []
     flag =0
@@ -613,19 +615,28 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       puts '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
       puts student_score_midle
       puts '^^^^^^^^^^^^^^^^'
+      #student_id_last = student_score_midle[0].id_s
       student_score_midle.each do |l|
-       all_weight += Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).where(status: 1).first.weight.to_f
-       all_sco += l[:score]*Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).where(status: 1).first.weight.to_f
+        #if student_id_last == l.id_s
+          all_weight += Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).where(status: 1).first.weight.to_f
+          all_sco += l[:score]*Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).where(status: 1).first.weight.to_f
+        #end
+
       end
      puts '###################'
      puts all_sco
      puts all_weight
+     t[:all_sco] = all_sco
+     t[:all_weight] = all_weight
+     t[:students_id] = b[:name]
+     uuu2.push t
+     t ={}
      b[:score]=all_sco/all_weight
      student_score_end.push b
      b = {}
     end
     
-    render json: {'a': student_score_end,'b': evaluations_weight,'e': uuu,'f': parents,'g': student_score_midle}
+    render json: {'a': student_score_end,'b': evaluations_weight,'e': uuu,'f': parents,'g': student_score_midle,'h': uuu2}
     rescue Exception => e
       render json: { msg: e }, status: 500      
     end
