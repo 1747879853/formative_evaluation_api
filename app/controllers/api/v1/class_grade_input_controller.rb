@@ -489,7 +489,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
 
     grade_lists = Grade.where(courses_id:course_id).where(term:term_id).where(class_rooms_id:class_room_id).where(term:term_id)
     grade_lists.each do |i|
-      eva = Evaluation.where(id: i.evaluation_id).first
+      eva = Evaluation.where(id: i.evaluations_id).first
       if eva == nil
         next
       else
@@ -500,13 +500,13 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     end
     eva_par_id.each do |j|
       grade_lists.each do |k|
-        eva = Evaluation.where(id: k.evaluation_id).first
+        eva = Evaluation.where(id: k.evaluations_id).first
         if eva == nil
           next
         else 
           if !(eva_id.include? eva.id)
-            if Weight.where(evaluations_id:k.evaluation_id).first != nil 
-              we += Weight.where(evaluations_id:k.evaluation_id).where(status: 1).where(courses_id:course_id).first.weight.to_f
+            if Weight.where(evaluations_id:k.evaluations_id).first != nil 
+              we += Weight.where(evaluations_id:k.evaluations_id).where(status: 1).where(courses_id:course_id).first.weight.to_f
             end
           end
         end
