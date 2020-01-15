@@ -519,6 +519,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     student_score_end = []
     sco = 0
     c = {}
+    s_id = ''
     grade_sco = 0
     students_list.each do |i|
       b[:name] = i.name
@@ -534,42 +535,42 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
               puts '+++++++++++++++++++++++++++grade'
               puts j.grade
               if j.grade == 'Excellent'
-                 
+                 s_id = j.students_id
                  sco += 100*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
                  puts 'ininininininini------------------'
               end
               puts grade_sco
               if j.grade == 'Good'
                 puts 'goodgoodgood'
-                 
+                 s_id = j.students_id
                  sco += 90*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
               end
               if j.grade == 'Average'
                 puts 'aveaveave'
-                 
+                 s_id = j.students_id
                  sco += 80*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
               end
               if j.grade == 'Fair'
-                
+                s_id = j.students_id
                  sco += 70*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
               end
               if j.grade == 'Poor'
-                 
+                 s_id = j.students_id
                 sco += 60*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
 
               end
               if j.grade == 'Fail'
-                 
+                 s_id = j.students_id
                  sco += 50*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
 
               end
               
               if  j.grade.to_f <= 10
-                 
+                 s_id = j.students_id
                  sco += (j.grade.to_f*10)*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
               end
               if j.grade.to_f > 10
-                 
+                 s_id = j.students_id
                  sco += j.grade.to_f*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
               end
               puts ' _____________________'
@@ -582,11 +583,14 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         puts sco
         c[:we] = k[:weight]
         c[:sc] = sco
+        c[:id_s] = s_id
+
        # c[:score]=sco/k[:weight]
         student_score_midle.push c
         c={}
         sco = 0
         grade_sco = 0
+        s_id = ''
       end
       all_weight = 0
       all_sco = 0
