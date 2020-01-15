@@ -518,49 +518,55 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       eva_we.push we
       we = 0
     end
-
-
-
-
-
-
-
-    course_eva.each do |t|
-      
-      eva = Evaluation.where(id: t.evaluation_id).first
-      
-      if eva == nil
-        flag = 1
-        next
-      else
-        if !(parents_flag.include? eva.parent_id)
-          b[:parent_id]= eva.parent_id
-         b[:weight] = 0
-         parents_flag.push eva.parent_id
-          
-          course_eva.each do |z|
-            uuu.push z.evaluation_id
-            eva2 = Evaluation.where(id: z.evaluation_id).first
-          
-            if eva2 == nil
-              next
-            else
-              if Weight.where(evaluations_id:z.evaluation_id).first != nil 
-                eva3 = Evaluation.where(id: z.evaluation_id)
-                if eva3 != nil
-                  if Evaluation.where(id: z.evaluation_id).first.parent_id == eva.parent_id
-                    b[:weight] += Weight.where(evaluations_id:z.evaluation_id).first.weight.to_f
-                  end
-                end
-              end
-            end
-          end
-          evaluations_weight.push b
-          b = {}
-        end
-       evaluations_id_falg_.push Evaluation.where(id: t.evaluation_id).first.parent_id
-      end
+    indx = 0
+    eva_par_id.each do |i|
+      b[:parent_id] = i
+      b[:weight] = eva_we[indx++]
+      evaluations_weight.push b
+      b = {}
     end
+
+
+
+
+
+
+    #course_eva.each do |t|
+      
+    #  eva = Evaluation.where(id: t.evaluation_id).first
+      
+    #  if eva == nil
+    #    flag = 1
+    #    next
+    #  else
+    #    if !(parents_flag.include? eva.parent_id)
+    #      b[:parent_id]= eva.parent_id
+    #     b[:weight] = 0
+    #     parents_flag.push eva.parent_id
+          
+          #course_eva.each do |z|
+            #uuu.push z.evaluation_id
+           # eva2 = Evaluation.where(id: z.evaluation_id).first
+          #
+          #  if eva2 == nil
+          #    next
+          #  else
+          #    if Weight.where(evaluations_id:z.evaluation_id).first != nil 
+          #      eva3 = Evaluation.where(id: z.evaluation_id)
+          #      if eva3 != nil
+          #        if Evaluation.where(id: z.evaluation_id).first.parent_id == eva.parent_id
+          #          b[:weight] += Weight.where(evaluations_id:z.evaluation_id).first.weight.to_f
+          #        end
+          #      end
+          #    end
+         #   end
+        #  end
+       #   evaluations_weight.push b
+      #    b = {}
+      #  end
+      # evaluations_id_falg_.push Evaluation.where(id: t.evaluation_id).first.parent_id
+      #end
+    #end
     student_score_midle = []
     student_score_end = []
     sco = 0
