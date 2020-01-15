@@ -496,9 +496,8 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         b[:weight] = 0
         c_e = CoursesEvaluation.where(course_id:course_id)
         c_e.each do |x|
-          if Evaluation.where(id: x.id).first !=nil
-            Evaluation.where(id:x.id).where(parent_id:parent_id1)
-            b[:weight] += Evaluation.where(id:x.id).where(parent_id:parent_id1).first.weight.to_f
+          if Evaluation.where(id: x.evaluation_id).first !=nil
+            b[:weight] += Evaluation.where(id:x.evaluation_id).where(parent_id:parent_id1).first.weight.to_f
           end
         end
         
