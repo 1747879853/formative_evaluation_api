@@ -496,20 +496,22 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
          parents_flag.push eva.parent_id
           eva_list = Evaluation.where(parent_id: eva.parent_id)
           eva_list.each do |z|
-            uuu.push z[0].evaluation_id
-            eva2 = Evaluation.where(id: z.evaluation_id).first
-       #    uuu.push eva2
-        #    if eva2 == nil
-        #      next
-       #     else
-       #       b[:weight] += Weight.where(evaluations_id:z.id).first.weight.to_f
-        #    end
+            uuu.push z.id
+            eva2 = Evaluation.where(id: z.id).first
+          
+            if eva2 == nil
+              next
+            else
+              if Weight.where(evaluations_id:z.id).first != nil
+                b[:weight] += Weight.where(evaluations_id:z.id).first.weight.to_f
+              end
+            end
           end
-        #  parents.push b
-         # b = {}
+          parents.push b
+          b = {}
         end
 
-       # evaluations_id_falg_.push Evaluation.where(id: t.evaluation_id).first.parent_id
+       evaluations_id_falg_.push Evaluation.where(id: t.evaluation_id).first.parent_id
       end
     end
     
