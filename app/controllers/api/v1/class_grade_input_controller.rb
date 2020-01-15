@@ -476,7 +476,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     flag =0
     evaluations_id_falg = []
     evaluations_id_falg_ = []
-
+    we = 0
     term_id = params[:term]
     class_room_id = params[:class_room_id]
     course_id = params[:course_id]
