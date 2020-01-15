@@ -505,7 +505,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
           next
         else 
           if !(eva_id.include? eva.id)
-            if Weight.where(evaluations_id:k.evaluations_id).first != nil 
+            if Weight.where(evaluations_id:k.evaluations_id).where(status: 1).where(courses_id:course_id).first != nil 
               we += Weight.where(evaluations_id:k.evaluations_id).where(status: 1).where(courses_id:course_id).first.weight.to_f
             end
           end
