@@ -529,51 +529,52 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       evaluations_weight.each do |k|
         c[:parent_id_c] = k['parent_id_b']
         student_grade_list.each do |j|
-          if Evaluation.where(id: j.evaluations_id).first.parent_id == k['parent_id_b']
-            puts '+++++++++++++++++++++++++++grade'
-            puts j.grade
-            if j.grade == 'Excellent'
-               
-               sco += 100*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
-               puts 'ininininininini------------------'
-            end
-            puts grade_sco
-            if j.grade == 'Good'
-              puts 'goodgoodgood'
-               
-               sco += 90*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
-            end
-            if j.grade == 'Average'
-              puts 'aveaveave'
-               
-               sco += 80*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
-            end
-            if j.grade == 'Fair'
+          if Evaluation.where(id: j.evaluations_id).first !=nil
+            if Evaluation.where(id: j.evaluations_id).first.parent_id == k['parent_id_b']
+              puts '+++++++++++++++++++++++++++grade'
+              puts j.grade
+              if j.grade == 'Excellent'
+                 
+                 sco += 100*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+                 puts 'ininininininini------------------'
+              end
+              puts grade_sco
+              if j.grade == 'Good'
+                puts 'goodgoodgood'
+                 
+                 sco += 90*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+              end
+              if j.grade == 'Average'
+                puts 'aveaveave'
+                 
+                 sco += 80*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+              end
+              if j.grade == 'Fair'
+                
+                 sco += 70*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+              end
+              if j.grade == 'Poor'
+                 
+                sco += 60*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+
+              end
+              if j.grade == 'Fail'
+                 
+                 sco += 50*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+
+              end
               
-               sco += 70*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+              if  j.grade.to_f <= 10
+                 
+                 sco += (j.grade.to_f*10)*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+              end
+              if j.grade.to_f > 10
+                 
+                 sco += j.grade.to_f*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+              end
+              puts ' _____________________'
+              puts sco
             end
-            if j.grade == 'Poor'
-               
-              sco += 60*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
-
-            end
-            if j.grade == 'Fail'
-               
-               sco += 50*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
-
-            end
-            
-            if  j.grade.to_f <= 10
-               
-               sco += (j.grade.to_f*10)*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
-            end
-            if j.grade.to_f > 10
-               
-               sco += j.grade.to_f*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
-            end
-            puts ' _____________________'
-            puts sco
-            
           end
         end
         puts '############kkkk'
