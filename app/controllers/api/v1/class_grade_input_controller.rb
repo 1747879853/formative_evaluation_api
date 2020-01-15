@@ -612,8 +612,8 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       puts student_score_midle
       puts '^^^^^^^^^^^^^^^^'
       student_score_midle.each do |l|
-       all_weight += Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).first.weight.to_f
-       all_sco += l[:score]*Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).first.weight.to_f
+       all_weight += Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).where(status: 1).first.weight.to_f
+       all_sco += l[:score]*Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).where(status: 1).first.weight.to_f
       end
      puts '###################'
      puts all_sco
@@ -622,7 +622,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
      student_score_end.push b
      b = {}
     end
-    render json: {'a': student_score_midle,'b': evaluations_weight,'c': test_}
+    render json: {'a': student_score_end,'b': evaluations_weight,'c': test_}
     rescue Exception => e
       render json: { msg: e }, status: 500      
     end
