@@ -492,9 +492,9 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       else
         if !(parents_flag.include? eva.parent_id)
           b[:parent_id]= eva.parent_id
-         b[:weight] = 0
+          b[:weight] = 0
           parents_flag.push eva.parent_id
-          eva_list = Evaluation.where(parent_id:Evaluation.where(parent_id: eva.parent_id)
+          eva_list = Evaluation.where(parent_id: eva.parent_id)
           eva_list.each do |z|
             eva2 = Evaluation.where(id: z.evaluation_id).first
        #    uuu.push eva2
