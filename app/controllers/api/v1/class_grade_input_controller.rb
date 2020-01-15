@@ -533,6 +533,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       b[:sno] = i.sno
       b[:class_room] = ClassRoom.where(id:class_room_id).first.name
       b[:course] = Course.where(id:course_id).first.name
+      s_id = i.id
       student_grade_list = Grade.where(students_id: i.id).where(courses_id: course_id).where(class_rooms_id:class_room_id).select(:evaluations_id,:students_id,:grade)
       evaluations_weight.each do |k|
         c[:parent_id_c] = k[:parent_id]
@@ -541,7 +542,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
             if Evaluation.where(id: j.evaluations_id).first.parent_id == k[:parent_id]
               puts '+++++++++++++++++++++++++++grade'
               puts j.grade
-              s_id = j.students_id
+              
                 test_.push j.grade
                 test_.push Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight
               if j.grade == 'Excellent'
@@ -635,6 +636,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     end
     all_s = 0
     all_w = 0
+    if 
     student_id_last = student_score_midle[0].id_s
       student_score_midle.each do |l|
         if student_id_last == l.id_s
