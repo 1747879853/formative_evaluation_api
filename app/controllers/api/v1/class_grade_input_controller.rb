@@ -476,45 +476,12 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     flag =0
     evaluations_id_falg = []
     evaluations_id_falg_ = []
-    eva_id = []
-    eva_par_id =[]
-    grade_lists = []
-    eva_we = []
-    we = 0
+
     term_id = params[:term]
     class_room_id = params[:class_room_id]
     course_id = params[:course_id]
     students_list = Student.where(class_room_id: class_room_id).where(status:1).select(:id,:name,:sno)
     course_eva = CoursesEvaluation.where(course_id:course_id)
-    grade_lists = Grade.where(courses_id:course_id).where(term:term_id)
-    grade_lists.each do |i|
-      
-      eva = Evaluation.where(id: i.evaluation_id).first
-      
-      if eva == nil
-        next
-      else
-        if !(eva_id .include? eva.id)
-          eva_we.push eva.parent_id
-        end
-      end
-    end
-    eva_par_id.each do |j|
-      grade_lists.each do |k|
-        eva = Evaluation.where(id: k.evaluation_id).first
-        
-        if eva == nil
-          next
-        else 
-          if !(eva_par_id.include? eva.parent_id)
-            if Weight.where(evaluations_id:k.evaluation_id).first != nil 
-             we += Weight.where(evaluations_id:k.evaluation_id).first.weight.to_f
-          end
-        end
-      end
-      eva_we.push we
-      we = 0
-    end
     course_eva.each do |t|
       
       eva = Evaluation.where(id: t.evaluation_id).first
@@ -527,9 +494,11 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
           b[:parent_id]= eva.parent_id
          b[:weight] = 0
          parents_flag.push eva.parent_id
+          
           course_eva.each do |z|
             uuu.push z.evaluation_id
             eva2 = Evaluation.where(id: z.evaluation_id).first
+          
             if eva2 == nil
               next
             else
@@ -657,7 +626,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
      student_score_midle =[]
     end
     
-    render json: {'a': student_score_end,'b': evaluations_weight,'e': uuu,'f': parents,'i': eva_we,'j': eva_par_id}
+    render json: {'a': student_score_end,'b': evaluations_weight,'e': uuu,'f': parents}
     rescue Exception => e
       render json: { msg: e }, status: 500      
     end
