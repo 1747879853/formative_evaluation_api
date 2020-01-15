@@ -495,15 +495,20 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
          b[:weight] = 0
          parents_flag.push eva.parent_id
           eva_list = Evaluation.where(parent_id: eva.parent_id)
-          eva_list.each do |z|
+          course_eva.each do |z|
             uuu.push z.id
             eva2 = Evaluation.where(id: z.id).first
           
             if eva2 == nil
               next
             else
-              if Weight.where(evaluations_id:z.id).first != nil
-                b[:weight] += Weight.where(evaluations_id:z.id).first.weight.to_f
+              if Weight.where(evaluations_id:z.id).first != nil 
+                eva3 = Evaluation.where(id: z.evaluation_id)
+                if eva2 != nil
+                  if Evaluation.where(id: z.evaluation_id).first.parent_id == eva.parent_id
+                    b[:weight] += Weight.where(evaluations_id:z.id).first.weight.to_f
+                  end
+                end
               end
             end
           end
