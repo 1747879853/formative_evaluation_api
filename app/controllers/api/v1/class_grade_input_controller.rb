@@ -482,10 +482,14 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     CoursesEvaluation.where(course_id:course_id).each do |q|
       if Evaluation.where(id: q.evaluation_id).first !=nil
             if !(parents.include? Evaluation.where(id: q.evaluation_id).first.parent_id)
-              parents.push Evaluation.where(id: q.evaluation_id).first.parent_id
+              b[:parent_id] = Evaluation.where(id: q.evaluation_id).first.parent_id
+              b[:weight] = 0
+              parents.push b
+              b = {}
             end
       end
     end
+
     students_list.each do |i|
       student_grade_list = Grade.where(students_id: i.id).where(courses_id: course_id).where(class_rooms_id:class_room_id).where(term:term_id)
       student_grade_list.each do |j|
@@ -524,9 +528,11 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
            # end
         end
         #flag = b['weight'].class
-        if b[:weight] > 0 
-          evaluations_weight.push b
-        end
+          evaluations_weight.each do |z|
+            if z.parent_id_b = b[:parent_id_b] && z.weight > b[:weight]
+              z.weight= b[:weight]
+            end
+          end
         b = {}
       end
     end
@@ -637,7 +643,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
      student_score_end.push b
      b = {}
     end
-    render json: {'a': student_score_midle,'b': evaluations_weight,'c': test_,'d': bbb,'e': flag,'f': parents}
+    render json: {'a': student_score_midle,'b': evaluations_weight,'c': test_,'d': bbb,'e': flag,'f': evaluations_weight}
     rescue Exception => e
       render json: { msg: e }, status: 500      
     end
