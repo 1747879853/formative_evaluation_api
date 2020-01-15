@@ -488,18 +488,19 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         flag = 1
         next
       else
-        if !(parents_flag.include? Evaluation.where(id: t.evaluation_id).first.parent_id)
-          b[:parent_id]= Evaluation.where(id: t.evaluation_id).first.parent_id
+        if !(parents_flag.include? eva.parent_id)
+          b[:parent_id]= eva.parent_id
           b[:weight] = 0
-          parents_flag.push Evaluation.where(id: t.evaluation_id).first.parent_id
+          parents_flag.push eva.parent_id
           eva_list = Evaluation.where(parent_id:Evaluation.where(id: t.evaluation_id).first.parent_id)
           eva_list.each do |z|
             eva2 = Evaluation.where(id: z.evaluation_id).first
-            if eva2 == nil
-              next
-            else
-              b[:weight] += Weight.where(evaluations_id:z.id).first.weight.to_f
-            end
+            uuu.push eva2
+            #if eva2 == nil
+            #  next
+            #else
+            #  b[:weight] += Weight.where(evaluations_id:z.id).first.weight.to_f
+            #end
           end
           parents.push b
           b = {}
@@ -510,7 +511,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     end
     
     
-    render json: {'a': student_score_midle,'b': evaluations_weight,'e': flag,'f': parents}
+    render json: {'a': student_score_midle,'b': evaluations_weight,'e': uuu'f': parents}
     rescue Exception => e
       render json: { msg: e }, status: 500      
     end
