@@ -525,7 +525,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       b[:sno] = i.sno
       b[:class_room] = ClassRoom.where(id:class_room_id).first.name
       b[:course] = Course.where(id:course_id).first.name
-      student_grade_list g s= Grade.where(students_id: i.id).where(courses_id: course_id).where(class_rooms_id:class_room_id)
+      student_grade_list = Grade.where(students_id: i.id).where(courses_id: course_id).where(class_rooms_id:class_room_id)
       evaluations_weight.each do |k|
         c[:parent_id_c] = k['parent_id_b']
         student_grade_list.each do |j|
