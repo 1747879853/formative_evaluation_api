@@ -543,40 +543,48 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
 
                  sco += 100*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
                  puts 'ininininininini------------------'
+                 test_.push 100*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
               end
               puts grade_sco
               if j.grade == 'Good'
                 puts 'goodgoodgood'
                  s_id = j.students_id
                  sco += 90*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+                 test_.push 90*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
               end
               if j.grade == 'Average'
                 puts 'aveaveave'
                  s_id = j.students_id
                  sco += 80*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+                 test_.push 80*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
               end
               if j.grade == 'Fair'
                 s_id = j.students_id
                  sco += 70*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+                 test_.push 70*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
               end
               if j.grade == 'Poor'
                  s_id = j.students_id
                 sco += 60*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+                test_.push 60*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
 
               end
               if j.grade == 'Fail'
                  s_id = j.students_id
                  sco += 50*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+                 test_.push 50*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
 
               end
               
               if  j.grade.to_f <= 10
                  s_id = j.students_id
                  sco += (j.grade.to_f*10)*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+                  test_.push (j.grade.to_f*10)*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
               end
               if j.grade.to_f > 10
                  s_id = j.students_id
                  sco += j.grade.to_f*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+                test_.puts j.grade.to_f*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
               end
             end
               puts ' _____________________'
