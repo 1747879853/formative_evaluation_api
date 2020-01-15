@@ -483,7 +483,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     students_list = Student.where(class_room_id: class_room_id).where(status:1).select(:id,:name,:sno)
     course_eva = CoursesEvaluation.where(course_id:course_id)
     course_eva.each do |t|
-      uuu.push t
+      uuu.push t.evaluation_id
       #eva = Evaluation.where(id: t.evaluation_id).first
       
       #if eva == nil
