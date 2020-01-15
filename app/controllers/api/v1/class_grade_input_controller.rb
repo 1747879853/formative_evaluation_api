@@ -524,6 +524,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     student_score_end = []
     sco = 0
     c = {}
+    d = {}
     test_=[]
     s_id = ''
     grade_sco = 0
@@ -604,6 +605,10 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         c[:sc] = sco
         c[:id_s] = s_id
         c[:score]=sco/k[:weight]
+        c[:name] = b[:name]
+        c[:sno] = b[:sno] 
+        c[:class_room] = b[:class_room] 
+        c[:course] = b[:course] 
         student_score_midle.push c
         c={}
         sco = 0
@@ -616,26 +621,40 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       puts student_score_midle
       puts '^^^^^^^^^^^^^^^^'
       #student_id_last = student_score_midle[0].id_s
-      student_score_midle.each do |l|
+      #student_score_midle.each do |l|
         #if student_id_last == l.id_s
-          all_weight += Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).where(status: 1).first.weight.to_f
-          all_sco += l[:score]*Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).where(status: 1).first.weight.to_f
+          #all_weight += Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).where(status: 1).first.weight.to_f
+          #all_sco += l[:score]*Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).where(status: 1).first.weight.to_f
         #end
 
-      end
-     puts '###################'
-     puts all_sco
-     puts all_weight
-     t[:all_sco] = all_sco
-     t[:all_weight] = all_weight
-     t[:students_id] = b[:name]
-     uuu2.push t
-     t ={}
-     b[:score]=all_sco/all_weight
-     student_score_end.push b
+      #end
+    
+     #b[:score]=all_sco/all_weight
+     #student_score_end.push b
      b = {}
     end
-    
+    all_s = 0
+    all_w = 0
+    student_id_last = student_score_midle[0].id_s
+      student_score_midle.each do |l|
+        if student_id_last == l.id_s
+          all_w += Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).where(status: 1).first.weight.to_f
+          all_s += l[:score]*Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).where(status: 1).first.weight.to_f
+        else
+          d[:score] = all_s/all_w
+          d[:name] = c[:name] = b[:name]
+          d[:sno] = c[:sno] = b[:sno] 
+          d[:class_room] = c[:class_room] = b[:class_room] 
+          d[:course] = c[:course] = b[:course] 
+          student_score_end.push d
+          d ={}
+          all_w = 0
+          all_s = 0
+          student_id_last = l.id_s
+           all_w += Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).where(status: 1).first.weight.to_f
+          all_s += l[:score]*Weight.where(evaluations_id:l[:parent_id_c]).where(courses_id:course_id).where(status: 1).first.weight.to_f
+        end
+      end
     render json: {'a': student_score_end,'b': evaluations_weight,'e': uuu,'f': parents,'g': student_score_midle,'h': uuu2}
     rescue Exception => e
       render json: { msg: e }, status: 500      
