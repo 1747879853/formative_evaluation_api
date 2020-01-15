@@ -535,6 +535,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
               puts j.grade
               student_score_end.push Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
               puts ' _____________________'
+              student_score_end.push 1111
               puts sco
             end
           end
@@ -543,7 +544,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       end
       
     end
-    render json: {'a': student_score_end}
+    render json: {'a': student_score_end,'b': evaluations_weight}
     rescue Exception => e
       render json: { msg: e }, status: 500      
     end
