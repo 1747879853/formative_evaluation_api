@@ -576,12 +576,12 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
 
               end
               
-              if  j.grade.to_f <= 10
+              if  j.grade.to_f <= 10 && j.grade.length < 4
                  s_id = j.students_id
                  sco += (j.grade.to_f*10)*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
                   test_.push (j.grade.to_f*10)*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
               end
-              if j.grade.to_f > 10
+              if j.grade.to_f > 10 && j.grade.length < 4
                  s_id = j.students_id
                  sco += j.grade.to_f*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
                 test_.push j.grade.to_f*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
