@@ -528,10 +528,9 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
            # end
         end
         #flag = b['weight'].class
-          evaluations_weight.each do |z|
-            if z.parent_id_b = b[:parent_id_b] && z.weight > b[:weight]
-              z.weight= b[:weight]
-            end
+          
+            if b[:weight] > 0
+            evaluations_weight.push b
           end
         b = {}
       end
