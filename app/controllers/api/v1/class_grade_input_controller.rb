@@ -481,8 +481,8 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     students_list = Student.where(class_room_id: class_room_id).where(status:1)
     CoursesEvaluation.where(course_id:course_id).each do |q|
       if Evaluation.where(id: q.evaluation_id).first !=nil
-            if !(parents.include? Evaluation.where(id: q.evaluations_id).first.parent_id)
-              parents.push Evaluation.where(id: q.evaluations_id).first.parent_id
+            if !(parents.include? Evaluation.where(id: q.evaluation_id).first.parent_id)
+              parents.push Evaluation.where(id: q.evaluation_id).first.parent_id
             end
       end
     end
