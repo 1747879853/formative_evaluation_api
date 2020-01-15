@@ -512,6 +512,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
           end
         end
       end
+      eva_id = []
       eva_we.push we
       we = 0
     end
