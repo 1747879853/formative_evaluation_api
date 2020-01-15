@@ -500,7 +500,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
           b = {}
         end
 
-          evaluations_id_falg_.push parent_id1
+        evaluations_id_falg_.push Evaluation.where(id: t.evaluation_id).first.parent_id
       end
     end
     
