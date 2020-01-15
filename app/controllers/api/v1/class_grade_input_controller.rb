@@ -506,7 +506,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
                 eva3 = Evaluation.where(id: z.evaluation_id)
                 if eva3 != nil
                   if Evaluation.where(id: z.evaluation_id).first.parent_id == eva.parent_id
-                    b[:weight] += Weight.where(evaluations_id:z.id).first.weight.to_f
+                    b[:weight] += Weight.where(evaluations_id:z.evaluation_id).first.weight.to_f
                   end
                 end
               end
