@@ -521,7 +521,8 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     indx = 0
     eva_par_id.each do |i|
       b[:parent_id] = i
-      b[:weight] = eva_we[indx++]
+      b[:weight] = eva_we[indx]
+      indx += 1
       evaluations_weight.push b
       b = {}
     end
