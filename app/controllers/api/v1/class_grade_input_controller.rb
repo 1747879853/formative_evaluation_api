@@ -515,7 +515,93 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         b = {}
       end
     end
-    render json: {'a': evaluations_weight,'b':flag}
+    student_score_midle = []
+    student_score_end = []
+    sco = 0
+    c = {}
+    grade_sco = 0
+    students_list.each do |i|
+      b[:name] = i.name
+      b[:sno] = i.sno
+      b[:class_room] = ClassRoom.where(id:class_room_id).first.name
+      b[:course] = Course.where(id:course_id).first.name
+      student_grade_list g s= Grade.where(students_id: i.id).where(courses_id: course_id).where(class_rooms_id:class_room_id)
+      evaluations_weight.each do |k|
+        c[:parent_id_c] = k['parent_id_b']
+        student_grade_list.each do |j|
+          if Evaluation.where(id: j.evaluations_id).first.parent_id == k['parent_id_b']
+            puts '+++++++++++++++++++++++++++grade'
+            puts j.grade
+            if j.grade == 'Excellent'
+               
+               sco += 100*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+               puts 'ininininininini------------------'
+            end
+            puts grade_sco
+            if j.grade == 'Good'
+              puts 'goodgoodgood'
+               
+               sco += 90*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+            end
+            if j.grade == 'Average'
+              puts 'aveaveave'
+               
+               sco += 80*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+            end
+            if j.grade == 'Fair'
+              
+               sco += 70*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+            end
+            if j.grade == 'Poor'
+               
+              sco += 60*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+
+            end
+            if j.grade == 'Fail'
+               
+               sco += 50*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+
+            end
+            
+            if  j.grade.to_f <= 10
+               
+               sco += (j.grade.to_f*10)*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+            end
+            if j.grade.to_f > 10
+               
+               sco += j.grade.to_f*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
+            end
+            puts ' _____________________'
+            puts sco
+            
+          end
+        end
+        puts '############kkkk'
+        puts k['weight']
+        puts sco
+        c[:score]=sco/k['weight']
+        student_score_midle.push c
+        c={}
+        sco = 0
+        grade_sco = 0
+      end
+      all_weight = 0
+      all_sco = 0
+      puts '$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'
+      puts student_score_midle
+      puts '^^^^^^^^^^^^^^^^'
+      student_score_midle.each do |l|
+       all_weight += Weight.where(evaluations_id:l['parent_id_c']).where(courses_id:course_id).first.weight.to_f
+       all_sco += l['score']*Weight.where(evaluations_id:l['parent_id_c']).where(courses_id:course_id).first.weight.to_f
+     end
+     puts '###################'
+     puts all_sco
+     puts all_weight
+     b[:score]=all_sco/all_weight
+     student_score_end.push b
+     b = {}
+    end
+    render json: {'a': student_score_end}
     rescue Exception => e
       render json: { msg: e }, status: 500      
     end
