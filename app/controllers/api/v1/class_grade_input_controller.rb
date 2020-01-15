@@ -493,7 +493,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
       if eva == nil
         next
       else
-        if !(eva_par_id .include? eva.first.parent_id)
+        if !(eva_par_id .include? eva.parent_id)
           eva_par_id.push eva.parent_id
         end
       end
