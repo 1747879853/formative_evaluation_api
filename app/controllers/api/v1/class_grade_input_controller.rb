@@ -525,6 +525,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         end
         b = {}
       end
+      evaluations_id_falg = []
     end
     student_score_midle = []
     student_score_end = []
