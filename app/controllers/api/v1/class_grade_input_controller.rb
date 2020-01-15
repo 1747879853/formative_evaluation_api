@@ -519,6 +519,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     student_score_end = []
     sco = 0
     c = {}
+    test_=[]
     s_id = ''
     grade_sco = 0
     students_list.each do |i|
@@ -534,8 +535,12 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
             if Evaluation.where(id: j.evaluations_id).first.parent_id == k[:parent_id_b]
               puts '+++++++++++++++++++++++++++grade'
               puts j.grade
+              if j.students_id == 1121
+                test_.push j.grade
+                test_.push Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight
               if j.grade == 'Excellent'
                  s_id = j.students_id
+
                  sco += 100*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
                  puts 'ininininininini------------------'
               end
@@ -573,6 +578,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
                  s_id = j.students_id
                  sco += j.grade.to_f*Weight.where(evaluations_id:j.evaluations_id).where(courses_id:course_id).first.weight.to_f
               end
+            end
               puts ' _____________________'
               puts sco
             end
@@ -608,7 +614,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
      student_score_end.push b
      b = {}
     end
-    render json: {'a': student_score_midle,'b': evaluations_weight}
+    render json: {'a': student_score_midle,'b': evaluations_weight,'c': test_}
     rescue Exception => e
       render json: { msg: e }, status: 500      
     end
