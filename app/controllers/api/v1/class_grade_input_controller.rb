@@ -580,7 +580,9 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         puts '############kkkk'
         puts k['weight']
         puts sco
-        c[:score]=sco/k[:weight]
+        c[:we] = k[:weight]
+        c[:sc] = sco
+       # c[:score]=sco/k[:weight]
         student_score_midle.push c
         c={}
         sco = 0
