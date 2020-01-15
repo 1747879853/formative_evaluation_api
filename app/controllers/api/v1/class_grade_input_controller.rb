@@ -494,25 +494,12 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
         end
         b[:parent_id_b] = parent_id1
         b[:weight] = 0
-        student_grade_list.each do |k|
-          eva = Evaluation.where(id: k.evaluations_id).first
-          if eva == nil
-            flag = 1
-            next
-          else
-            if Evaluation.where(id: k.evaluations_id).first.parent_id == parent_id1
-              bbb.push Evaluation.where(id: k.evaluations_id)
-            end
-            if Evaluation.where(id: k.evaluations_id).first.parent_id == parent_id1 && !(evaluations_id_falg.include? k.evaluations_id)
-              b[:weight] +=  Weight.where(evaluations_id:k.evaluations_id).where(courses_id:course_id).first.weight.to_f
-              evaluations_id_falg.push k.evaluations_id
-            end
-          end
-            #if Evaluation.where(id: k.evaluations_id).first.parent_id == parent_id1 && !(evaluations_id_falg.include? k.evaluations_id)
-            #  b[:weight] +=  Weight.where(evaluations_id:k.evaluations_id).where(courses_id:course_id).first.weight.to_f
-            #  evaluations_id_falg.push k.evaluations_id
-           # end
+        c_e = CoursesEvaluation.where(course_id:course_id)
+        c_e.each do |x|
+          Evaluation.where(id:x.id).where(parent_id:parent_id1)
+          b[:weight] += Evaluation.where(id:x.id).where(parent_id:parent_id1).first.weight.to_f
         end
+        
         #flag = b['weight'].class
         if b[:weight] > 0 
           evaluations_weight.push b
