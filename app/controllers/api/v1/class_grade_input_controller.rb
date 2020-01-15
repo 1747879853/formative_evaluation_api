@@ -471,6 +471,7 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
     b = {}
     flag =0
     evaluations_id_falg = []
+    evaluations_id_falg_=[]
     term_id = params[:term]
     class_room_id = params[:class_room_id]
     course_id = params[:course_id]
@@ -484,7 +485,10 @@ class Api::V1::ClassGradeInputController < Api::V1::BaseController
           flag = 1
           next
         else
-          parent_id1 = Evaluation.where(id: j.evaluations_id).first.parent_id
+          if !(evaluations_id_falg_.include? Evaluation.where(id: j.evaluations_id).first.parent_id)
+            parent_id1 = Evaluation.where(id: j.evaluations_id).first.parent_id
+            evaluations_id_falg_.push parent_id1
+          end
         end
         b[:parent_id_b] = parent_id1
         b[:weight] = 0
